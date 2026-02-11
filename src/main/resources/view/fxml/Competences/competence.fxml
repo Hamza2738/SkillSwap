@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:id="root"
+            fx:controller="org.controller.Competences.CompetenceController"
+            styleClass="app-root">
+
+    <top>
+        <VBox styleClass="topbar">
+            <padding>
+                <Insets top="14" right="22" bottom="14" left="22"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="14">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="50" preserveRatio="true" smooth="true">
+                        <image>
+                            <Image url="@/view/image/logo.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="SkillSwap" styleClass="brand"/>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Accueil" styleClass="nav-btn"/>
+                <Button text="Profil" styleClass="nav-btn"/>
+                <Button text="Échanges" styleClass="nav-btn"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane alignment="CENTER">
+            <VBox spacing="18" styleClass="page" maxWidth="1400">
+
+                <Label text="Compétences" styleClass="page-title"/>
+
+                <!-- 🎵 MUSIC CONTROLS -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fx:id="imgMusicIcon" fitHeight="22" fitWidth="22" preserveRatio="true"/>
+
+                    <Button fx:id="btnMusicToggle"
+                            text="🔊"
+                            onAction="#onToggleMusic"
+                            styleClass="btn "/>
+
+                    <Slider fx:id="slVolume"
+                            min="0" max="1" value="0.35"
+                            prefWidth="140"
+                            blockIncrement="0.05"
+                            showTickLabels="true"
+                            showTickMarks="true"/>
+                </HBox>
+
+                <HBox spacing="18" alignment="CENTER">
+
+                    <!-- LEFT CARD -->
+                    <VBox styleClass="card" spacing="14" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                        <Label text="Recherche" styleClass="card-title"/>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+
+                            <!-- ✅ ComboBox = attributs du tableau -->
+                            <ComboBox fx:id="cbTypeFilter"
+                                      promptText="Attribut"
+                                      styleClass="input dark-combo"
+                                      prefWidth="190"/>
+
+                            <!-- ✅ Champ de recherche selon l'attribut -->
+                            <TextField fx:id="tfSearchValue"
+                                       promptText="Rechercher..."
+                                       styleClass="input"
+                                       prefWidth="260"/>
+
+                            <Button text="Réinitialiser"
+                                    onAction="#onResetSearch"
+                                    styleClass="btn"/>
+                        </HBox>
+
+                        <TableView fx:id="table" styleClass="dark-table" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
+
+                                <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                                <TableColumn fx:id="colCategory" text="Catégorie" prefWidth="130"/>
+
+                                <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
+                                <TableColumn fx:id="colAnnees" text="Années" prefWidth="80"/>
+                                <TableColumn fx:id="colCertification" text="Certification" prefWidth="140"/>
+                                <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+
+                                <TableColumn fx:id="colDescription" text="Description" prefWidth="320"/>
+                            </columns>
+                        </TableView>
+
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Button text="Télécharger PDF" onAction="#onExportPDF" styleClass="btn"/>
+                            <Button fx:id="btnCalendar" text="Calendrier" onAction="#onCalendar" styleClass="btn"/>
+                            <Button text="Dashboard" onAction="#onDashboard" styleClass="btn"/>
+                            <Button text="Chatbot" onAction="#onChatbot" styleClass="btn"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- RIGHT CARD -->
+                    <VBox styleClass="card" spacing="14" prefWidth="460" maxWidth="460">
+                        <Label text="Changer la liste" styleClass="card-title"/>
+
+                        <!-- FORM -->
+                        <VBox spacing="8">
+                            <Label text="Type" styleClass="field-label"/>
+                            <TextField fx:id="tfType" promptText="Ex: Java" styleClass="input"/>
+
+                            <Label text="Catégorie" styleClass="field-label"/>
+                            <TextField fx:id="tfCategory" promptText="Ex: IT" styleClass="input"/>
+
+                            <Label text="Description" styleClass="field-label"/>
+                            <TextArea fx:id="taDescription" promptText="Description..." prefRowCount="4" styleClass="input"/>
+
+                            <!-- Niveau + Statut côte à côte -->
+                            <HBox spacing="12">
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Niveau" styleClass="field-label"/>
+                                    <ComboBox fx:id="cbNiveau"
+                                              promptText="Sélectionner un niveau"
+                                              styleClass="input dark-combo"
+                                              maxWidth="Infinity"/>
+                                </VBox>
+
+                                <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                    <Label text="Statut" styleClass="field-label"/>
+                                    <ComboBox fx:id="cbStatut"
+                                              promptText="Sélectionner un statut"
+                                              styleClass="input dark-combo"
+                                              maxWidth="Infinity"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Années = TextField -->
+                            <Label text="Années d'expérience" styleClass="field-label"/>
+                            <TextField fx:id="tfAnnees" promptText="Ex: 2" styleClass="input"/>
+
+                            <Label text="Certification" styleClass="field-label"/>
+                            <TextField fx:id="tfCertification" promptText="Ex: Oracle, AWS..." styleClass="input"/>
+                        </VBox>
+
+                        <!-- BUTTONS -->
+                        <HBox spacing="10">
+                            <Button text="Ajouter" onAction="#onAdd" styleClass="btn"/>
+                            <Button text="Modifier" onAction="#onUpdate" styleClass="btn"/>
+                            <Button text="Supprimer" onAction="#onDelete" styleClass="btn"/>
+                        </HBox>
+
+                        <Label fx:id="lblError" styleClass="hint"/>
+                        <Label text="Astuce : clique sur une ligne pour remplir le formulaire." styleClass="hint"/>
+                    </VBox>
+
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>
