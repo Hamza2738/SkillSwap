@@ -23,7 +23,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <ImageView fitHeight="50" preserveRatio="true" smooth="true">
                         <image>
-                            <Image url="@/view/image/logo.png"/>
+                            <Image url="@/view/image/competences/logo.png"/>
                         </image>
                     </ImageView>
                     <Label text="SkillSwap" styleClass="brand"/>
@@ -33,7 +33,7 @@
 
                 <Button text="Accueil" styleClass="nav-btn"/>
                 <Button text="Profil" styleClass="nav-btn"/>
-                <Button text="Échanges" styleClass="nav-btn"/>
+                <Button text="Offres" styleClass="nav-btn"/>
             </HBox>
         </VBox>
     </top>
@@ -64,18 +64,16 @@
                 <HBox spacing="18" alignment="CENTER">
 
                     <!-- LEFT CARD -->
-                    <VBox styleClass="card" spacing="14" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <VBox styleClass="card" spacing="14" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="1800">
                         <Label text="Recherche" styleClass="card-title"/>
 
                         <HBox spacing="12" alignment="CENTER_LEFT">
 
-                            <!-- ✅ ComboBox = attributs du tableau -->
                             <ComboBox fx:id="cbTypeFilter"
                                       promptText="Attribut"
                                       styleClass="input dark-combo"
                                       prefWidth="190"/>
 
-                            <!-- ✅ Champ de recherche selon l'attribut -->
                             <TextField fx:id="tfSearchValue"
                                        promptText="Rechercher..."
                                        styleClass="input"
@@ -88,15 +86,19 @@
 
                         <TableView fx:id="table" styleClass="dark-table" VBox.vgrow="ALWAYS">
                             <columns>
-                                <TableColumn fx:id="colId" text="ID" prefWidth="60"/>
-
-                                <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
-                                <TableColumn fx:id="colCategory" text="Catégorie" prefWidth="130"/>
+                                <TableColumn fx:id="colId" text="ID" prefWidth="40"/>
+                                <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+                                <TableColumn fx:id="colStatut" text="Statut" prefWidth="120"/>
 
                                 <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="120"/>
-                                <TableColumn fx:id="colAnnees" text="Années" prefWidth="80"/>
-                                <TableColumn fx:id="colCertification" text="Certification" prefWidth="140"/>
-                                <TableColumn fx:id="colStatut" text="Statut" prefWidth="110"/>
+                                <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                                <TableColumn fx:id="colCategory" text="Catégorie" prefWidth="120"/>
+                                <TableColumn fx:id="colCertification" text="Certification" prefWidth="150"/>
+                                <TableColumn fx:id="colAnnees" text="expérience" prefWidth="90"/>
+
+
+
+
 
                                 <TableColumn fx:id="colDescription" text="Description" prefWidth="320"/>
                             </columns>
@@ -107,12 +109,18 @@
                             <Button fx:id="btnCalendar" text="Calendrier" onAction="#onCalendar" styleClass="btn"/>
                             <Button text="Dashboard" onAction="#onDashboard" styleClass="btn"/>
                             <Button text="Chatbot" onAction="#onChatbot" styleClass="btn"/>
+                            <Button text="Historique"
+                                    onAction="#onHistorique"
+                                    styleClass="btn"/>
                         </HBox>
                     </VBox>
 
                     <!-- RIGHT CARD -->
-                    <VBox styleClass="card" spacing="14" prefWidth="460" maxWidth="460">
-                        <Label text="Changer la liste" styleClass="card-title"/>
+                    <!-- RIGHT CARD -->
+                    <VBox styleClass="card" spacing="14" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="1300">
+
+
+                    <Label text="Changer la liste" styleClass="card-title"/>
 
                         <!-- FORM -->
                         <VBox spacing="8">
@@ -125,7 +133,6 @@
                             <Label text="Description" styleClass="field-label"/>
                             <TextArea fx:id="taDescription" promptText="Description..." prefRowCount="4" styleClass="input"/>
 
-                            <!-- Niveau + Statut côte à côte -->
                             <HBox spacing="12">
                                 <VBox spacing="6" HBox.hgrow="ALWAYS">
                                     <Label text="Niveau" styleClass="field-label"/>
@@ -144,12 +151,15 @@
                                 </VBox>
                             </HBox>
 
-                            <!-- Années = TextField -->
                             <Label text="Années d'expérience" styleClass="field-label"/>
                             <TextField fx:id="tfAnnees" promptText="Ex: 2" styleClass="input"/>
 
                             <Label text="Certification" styleClass="field-label"/>
                             <TextField fx:id="tfCertification" promptText="Ex: Oracle, AWS..." styleClass="input"/>
+
+                            <!-- ✅ NEW -->
+                            <Label text="Email utilisateur" styleClass="field-label"/>
+                            <TextField fx:id="tfEmail" promptText="Ex:utilisateur@mail.com" styleClass="input"/>
                         </VBox>
 
                         <!-- BUTTONS -->

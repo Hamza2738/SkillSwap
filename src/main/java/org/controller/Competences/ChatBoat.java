@@ -23,9 +23,24 @@ public class ChatBoat {
 
     @FXML
     public void initialize() {
-        addBotMessage("Salut 👋 Je suis ton chatbot pro. Dis-moi ce que tu veux améliorer : CV, entretien, communication, gestion du stress, organisation, conflit, carrière…");
+        addBotMessage("""
+Bienvenue sur SkillSwap.
 
-        // Entrée = envoyer / Shift+Entrée = ne rien faire (tu peux changer si tu veux multiline)
+Je suis là pour vous accompagner dans vos questions  professionnel.
+
+Vous pouvez me consulter concernant :
+• CV et préparation aux entretiens  
+• Gestion du stress  
+• Organisation et productivité  
+• Gestion des conflits  
+• Orientation et évolution de carrière  
+
+Je peux également vous fournir les compétences requises par chaque domaine par exp (
+Business, Management, Créatif, Santé, Éducation, Juridique, Industrie, Agriculture, Tourisme, Sport, Art, Transport, Énergie, Médias, Sécurité, Immobilier, Culture, Environnement )
+""");
+
+
+
         tfMessage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 if (e.isShiftDown()) return;
@@ -34,7 +49,6 @@ public class ChatBoat {
             }
         });
 
-        // ScrollPane transparent (au cas où)
         if (scroll != null) {
             scroll.setFitToWidth(true);
         }
@@ -92,57 +106,73 @@ public class ChatBoat {
     }
 
     private void autoScroll() {
+        if (scroll == null) return;
         Platform.runLater(() -> scroll.setVvalue(1.0));
     }
 
-    // -----------------------------
-    // BOT LOGIQUE (mots-clés pro)
-    // -----------------------------
-    private String generateProfessionalReply(String input) {
-        String t = input.toLowerCase().trim();
 
-        // salutations
+    private String generateProfessionalReply(String input) {
+        String t = normalize(input);
+
+
         if (t.matches(".*\\b(salut|bonjour|bonsoir|cc|hey)\\b.*")) {
-            return "Salut ! Dis-moi ton objectif : trouver un job, améliorer ton CV, préparer un entretien, mieux communiquer au travail…";
+            return "Salut ! Dis-moi ton objectif : CV, entretien, stress, organisation… ou 'compétences + domaine' (ex: compétences industrie).";
         }
 
-        // CV
+
+        String domain = detectDomain(t);
+        boolean asksSkills = containsAny(t, "competence", "competences", "skills", "exige", "exigee", "exigence", "domaine", "secteur");
+
+        if (domain != null && (asksSkills || isDomainOnly(t))) {
+            return skillsByDomain(domain);
+        }
+
+        if (asksSkills && domain == null) {
+            return """
+                    Tu veux les compétences pour quel domaine ?
+                    Business, Management, Créatif, Santé, Éducation, Juridique, Industrie, Agriculture,
+                    Tourisme, Sport, Art, Transport, Énergie, Médias, Sécurité, Immobilier, Culture, Environnement.
+                    Exemple : "compétences tourisme"
+                    """;
+        }
+
+
         if (containsAny(t, "cv", "resume", "curriculum")) {
             return """
                     Pour améliorer ton CV :
                     1) Mets un titre clair (poste visé)
                     2) Résumé en 3 lignes (profil + forces + objectif)
-                    3) Expériences avec verbes d’action + résultats chiffrés
+                    3) Expériences : verbes d’action + résultats chiffrés
                     4) Compétences triées (techniques / soft skills)
                     5) 1 page si possible
                     Tu veux un CV pour quel domaine et quel niveau (junior/stage/confirmé) ?
                     """;
         }
 
-        // Entretien
+
         if (containsAny(t, "entretien", "interview", "recruteur")) {
             return """
                     Pour un entretien :
                     - Prépare 5 histoires STAR (Situation, Tâche, Action, Résultat)
                     - Fais une présentation 60 secondes (qui tu es, ce que tu sais faire, ce que tu veux)
-                    - Prépare des questions au recruteur (équipe, missions, attentes 3 mois)
+                    - Prépare des questions au recruteur (équipe, missions, attentes à 3 mois)
                     Donne-moi le poste visé et je te propose une liste de questions + réponses.
                     """;
         }
 
-        // Stress
+
         if (containsAny(t, "stress", "angoisse", "pression", "panic", "peur")) {
             return """
                     Pour gérer le stress au travail :
                     - Clarifie ce qui est sous ton contrôle (priorités, plan)
                     - Découpe en micro-tâches (10–20 min)
                     - Respiration 4-4-6 (4s inspire, 4s pause, 6s expire) x 5
-                    Si tu veux, dis-moi la situation exacte (deadline, conflit, surcharge) et je t’aide à faire un plan.
+                    Dis-moi la situation (deadline, conflit, surcharge) et je t’aide à faire un plan.
                     """;
         }
 
-        // Conflit
-        if (containsAny(t, "conflit", "dispute", "problème", "tension", "collègue", "manager")) {
+
+        if (containsAny(t, "conflit", "dispute", "probleme", "tension", "collegue", "manager")) {
             return """
                     Gestion de conflit (méthode simple) :
                     1) Décrire le fait sans jugement (“Quand X arrive…”)
@@ -153,7 +183,7 @@ public class ChatBoat {
                     """;
         }
 
-        // Organisation / productivité
+
         if (containsAny(t, "organis", "priorit", "productiv", "deadline", "planning", "charge")) {
             return """
                     Organisation efficace :
@@ -165,8 +195,8 @@ public class ChatBoat {
                     """;
         }
 
-        // Compétences / carrière
-        if (containsAny(t, "carri", "promotion", "évolution", "salaire", "compétence", "skill")) {
+
+        if (containsAny(t, "carri", "promotion", "evolution", "salaire")) {
             return """
                     Pour évoluer :
                     - Choisis 1 compétence “levier” (ex: communication, leadership, data, dev…)
@@ -176,7 +206,7 @@ public class ChatBoat {
                     """;
         }
 
-        // défaut
+
         return """
                 Je peux t’aider sur :
                 - CV / Lettre / LinkedIn
@@ -184,14 +214,200 @@ public class ChatBoat {
                 - Organisation / productivité
                 - Communication / conflits
                 - Stress / posture pro
-                Dis-moi ton contexte (étudiant, stage, job) et ton objectif.
+                - Compétences par domaine (ex: "industrie")
+                
                 """;
     }
+
+
+    private String detectDomain(String t) {
+
+        if (containsAny(t, "business", "commerce", "marketing", "vente", "commercial")) return "BUSINESS";
+
+        if (containsAny(t, "management", "manager", "leadership", "gestion d'equipe", "gestion equipe")) return "MANAGEMENT";
+
+        if (containsAny(t, "creatif", "créatif", "design", "graphisme", "ux", "ui", "contenu", "content")) return "CREATIF";
+
+        if (containsAny(t, "sante", "santé", "medical", "médical", "hopital", "hôpital", "infirm")) return "SANTE";
+
+        if (containsAny(t, "education", "éducation", "enseign", "prof", "pedagog", "pédagog")) return "EDUCATION";
+
+        if (containsAny(t, "juridique", "droit", "avocat", "loi", "contrat")) return "JURIDIQUE";
+
+        if (containsAny(t, "industrie", "usine", "production", "maintenance", "qualite", "qualité", "lean", "5s")) return "INDUSTRIE";
+
+        if (containsAny(t, "agriculture", "ferme", "elevage", "élevage", "culture")) return "AGRICULTURE";
+
+        if (containsAny(t, "tourisme", "hotel", "hôtel", "voyage", "guide")) return "TOURISME";
+
+        if (containsAny(t, "sport", "coach", "entrain", "entraînement", "fitness")) return "SPORT";
+
+        if (containsAny(t, "art", "artiste", "peinture", "musique", "photo", "photographie")) return "ART";
+
+        if (containsAny(t, "transport", "logistique", "livraison", "chauffeur")) return "TRANSPORT";
+
+        if (containsAny(t, "energie", "énergie", "electricite", "électricité", "solaire", "gaz")) return "ENERGIE";
+
+        if (containsAny(t, "medias", "médias", "journalisme", "montage", "reseaux", "réseaux", "presse")) return "MEDIAS";
+
+        if (containsAny(t, "securite", "sécurité", "surveillance", "agent de securite", "agent de sécurité")) return "SECURITE";
+
+        if (containsAny(t, "immobilier", "immo", "agent immobilier", "location", "vente immo")) return "IMMOBILIER";
+
+        if (containsAny(t, "culture", "culturel", "musee", "musée", "evenement", "événement", "patrimoine")) return "CULTURE";
+
+        if (containsAny(t, "environnement", "ecologie", "écologie", "climat", "rse", "durable")) return "ENVIRONNEMENT";
+
+        return null;
+    }
+
+    private boolean isDomainOnly(String t) {
+
+        return detectDomain(t) != null && t.split("\\s+").length <= 2;
+    }
+
+    private String skillsByDomain(String domain) {
+        return switch (domain) {
+            case "BUSINESS" -> """
+                    Compétences exigées — Business :
+                    - Analyse de marché, stratégie, segmentation, proposition de valeur
+                    - Vente / négociation, relation client, CRM
+                    - KPI, reporting, notions finance (marge, ROI)
+                    - Soft skills : persuasion, communication, orientation résultats
+                    Outils : Excel/Sheets, PowerPoint, CRM (Salesforce/HubSpot)
+                    """;
+            case "MANAGEMENT" -> """
+                    Compétences exigées — Management :
+                    - Leadership, coaching, feedback
+                    - Planification, priorisation, délégation
+                    - Gestion de conflit, conduite de réunion, décision
+                    - Suivi performance (KPI/OKR), gestion du changement
+                    Outils : Jira/Trello, Notion, méthodes Agile (Scrum/Kanban)
+                    """;
+            case "CREATIF" -> """
+                    Compétences exigées — Créatif :
+                    - Créativité + méthode (brief → idées → itérations)
+                    - Design/UX/UI ou contenu (selon poste)
+                    - Storytelling, sens du détail, gestion des retours
+                    Outils : Figma, Adobe, Canva (selon besoin)
+                    """;
+            case "SANTE" -> """
+                    Compétences exigées — Santé :
+                    - Protocoles, hygiène, sécurité, confidentialité
+                    - Rigueur, traçabilité, travail en équipe
+                    - Soft skills : empathie, écoute, gestion du stress
+                    """;
+            case "EDUCATION" -> """
+                    Compétences exigées — Éducation :
+                    - Pédagogie, animation, évaluation
+                    - Communication claire, patience, adaptation
+                    - Conception de supports, suivi progression
+                    Outils : Moodle/Teams/Google Classroom
+                    """;
+            case "JURIDIQUE" -> """
+                    Compétences exigées — Juridique :
+                    - Analyse de textes, rédaction, recherche juridique
+                    - Argumentation, gestion de dossier
+                    - Rigueur, précision, confidentialité
+                    """;
+            case "INDUSTRIE" -> """
+                    Compétences exigées — Industrie :
+                    - Process, qualité (5S/Lean/ISO), sécurité
+                    - Respect procédures, traçabilité, amélioration continue
+                    - Soft skills : rigueur, autonomie, esprit d’équipe
+                    Outils : ERP/MES, checklists, tableaux de suivi
+                    """;
+            case "AGRICULTURE" -> """
+                    Compétences exigées — Agriculture :
+                    - Techniques de production, saisonnalité, normes sanitaires
+                    - Maintenance matériel, organisation, observation terrain
+                    - Soft skills : endurance, autonomie, rigueur
+                    """;
+            case "TOURISME" -> """
+                    Compétences exigées — Tourisme :
+                    - Accueil, langues, gestion des réclamations
+                    - Organisation, vente de prestations, gestion d’imprévus
+                    - Soft skills : sens du service, communication
+                    """;
+            case "SPORT" -> """
+                    Compétences exigées — Sport :
+                    - Planification entraînement, suivi performance
+                    - Pédagogie, motivation, prévention blessures
+                    - Soft skills : discipline, communication
+                    """;
+            case "ART" -> """
+                    Compétences exigées — Art :
+                    - Technique artistique + créativité, portfolio
+                    - Gestion de projet, exposition/vente, réseau
+                    - Soft skills : persévérance, communication
+                    """;
+            case "TRANSPORT" -> """
+                    Compétences exigées — Transport :
+                    - Réglementation, sécurité, ponctualité
+                    - Logistique, itinéraires, gestion d’incidents
+                    - Soft skills : fiabilité, réactivité
+                    """;
+            case "ENERGIE" -> """
+                    Compétences exigées — Énergie :
+                    - Bases techniques + diagnostic/maintenance
+                    - Sécurité stricte, rigueur, travail terrain
+                    Outils : schémas, GMAO, instrumentation
+                    """;
+            case "MEDIAS" -> """
+                    Compétences exigées — Médias :
+                    - Rédaction/montage/production, storytelling
+                    - Vérification de l’info, deadlines, travail d’équipe
+                    Outils : Adobe, CMS, réseaux sociaux
+                    """;
+            case "SECURITE" -> """
+                    Compétences exigées — Sécurité :
+                    - Vigilance, procédures, gestion de crise
+                    - Sang-froid, communication, reporting d’incidents
+                    """;
+            case "IMMOBILIER" -> """
+                    Compétences exigées — Immobilier :
+                    - Prospection, négociation, estimation, visites
+                    - Notions contrats, suivi dossier, relation client
+                    Outils : CRM, annonces, signature électronique
+                    """;
+            case "CULTURE" -> """
+                    Compétences exigées — Culture :
+                    - Médiation, organisation d’événements, communication
+                    - Gestion de projet, partenariats, budget
+                    """;
+            case "ENVIRONNEMENT" -> """
+                    Compétences exigées — Environnement :
+                    - Réglementation, audits, analyse de données terrain
+                    - Sensibilisation, reporting, gestion de projet
+                    Outils : Excel, SIG/QGIS (souvent)
+                    """;
+            default -> "Je n’ai pas reconnu le domaine. Dis : Business, Santé, Industrie, etc.";
+        };
+    }
+
 
     private boolean containsAny(String text, String... keys) {
         for (String k : keys) {
             if (text.contains(k)) return true;
         }
         return false;
+    }
+
+    private String normalize(String s) {
+        if (s == null) return "";
+
+        return s.toLowerCase()
+                .replace("’", "'")
+                .replace("é", "e")
+                .replace("è", "e")
+                .replace("ê", "e")
+                .replace("à", "a")
+                .replace("â", "a")
+                .replace("î", "i")
+                .replace("ï", "i")
+                .replace("ô", "o")
+                .replace("ù", "u")
+                .replace("ç", "c")
+                .trim();
     }
 }

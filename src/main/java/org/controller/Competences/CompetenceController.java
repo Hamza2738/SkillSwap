@@ -1,7 +1,9 @@
 package org.controller.Competences;
 
-import org.model.Competence;
+import com.itextpdf.layout.properties.HorizontalAlignment;
+import org.model.Competences.Competence;
 import org.service.Competences.CompetenceService;
+import org.service.Competences.mailing.MailService;
 
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
@@ -50,6 +52,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.Normalizer;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -57,6 +60,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
@@ -78,12 +85,11 @@ public class CompetenceController {
     @FXML private TableColumn<Competence, String> colCertification;
     @FXML private TableColumn<Competence, String> colStatut;
 
-    // ✅ Recherche par attribut + valeur
-    // (cbTypeFilter est repurposed : il contient les attributs du tableau)
+    @FXML private TableColumn<Competence, String> colEmail;
+
     @FXML private ComboBox<String> cbTypeFilter;
     @FXML private TextField tfSearchValue;
 
-    // ✅ FORM
     @FXML private TextField tfCategory;
     @FXML private TextField tfType;
     @FXML private TextArea taDescription;
@@ -93,13 +99,40 @@ public class CompetenceController {
     @FXML private TextField tfCertification;
     @FXML private ComboBox<String> cbStatut;
 
+    @FXML private TextField tfEmail;
+
     @FXML private Label lblError;
     @FXML private Button btnCalendar;
 
-    // 🎵 music UI
     @FXML private Button btnMusicToggle;
     @FXML private Slider slVolume;
     @FXML private ImageView imgMusicIcon;
+
+
+    // =========================
+    // INIT
+    // =========================
+
+
+    @FXML
+    public void initialize() {
+        initClickSound();
+        Platform.runLater(this::installGlobalClickSound);
+
+        setupInputValidation();
+        setupExtraFields();
+
+        setupTable();
+        setupSearchUI();
+
+        refresh();
+
+        playMusic();
+        setupMusicControls();
+        updateMusicUi();
+    }
+
+
 
     // =========================
     // DATA / SERVICES
@@ -108,18 +141,30 @@ public class CompetenceController {
     private final javafx.collections.ObservableList<Competence> data = FXCollections.observableArrayList();
     private FilteredList<Competence> filteredData;
 
+    private final MailService mailService = new MailService();
+
+    //  pool mail
+    private final ExecutorService mailExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "mail-sender");
+        t.setDaemon(true);
+        return t;
+    });
+
+    //  évite double-clic / double envoi
+    private final Set<String> mailLocks = ConcurrentHashMap.newKeySet();
+
     // =========================
     // SEARCH ATTRIBUTES
     // =========================
     private static final String ATTR_ALL = "Tous";
-
+    private static final String ATTR_NIVEAU = "Niveau";
     private static final String ATTR_TYPE = "Type";
     private static final String ATTR_CATEGORY = "Catégorie";
-    private static final String ATTR_NIVEAU = "Niveau";
-    private static final String ATTR_ANNEES = "Années";
     private static final String ATTR_CERTIF = "Certification";
+    private static final String ATTR_ANNEES = "Expérience";
     private static final String ATTR_STATUT = "Statut";
     private static final String ATTR_DESC = "Description";
+    private static final String ATTR_EMAIL = "Email";
 
     // =========================
     // AUDIO
@@ -133,11 +178,13 @@ public class CompetenceController {
     // =========================
     // VALIDATION
     // =========================
-    private static final Pattern P_SIMPLE = Pattern.compile("^[A-Za-z0-9 _-]*$");
+    private static final Pattern P_SIMPLE =Pattern.compile("^[\\p{L}0-9 _-]*$");
+
+    private static final Pattern P_EMAIL  = Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final Locale LOCALE_FR = Locale.FRENCH;
-    private static final String CSS_PATH = "/view/style.css";
+    private static final String CSS_PATH = "/view/css/competences/style.css";
 
     private static final String[] NIVEAUX = {"Débutant", "Intermédiaire", "Avancé", "Expert"};
     private static final String[] STATUTS = {"Validée", "En cours", "Expirée"};
@@ -152,34 +199,13 @@ public class CompetenceController {
     private LocalDate selectedDate  = LocalDate.now();
 
     // =========================
-    // INIT
-    // =========================
-    @FXML
-    public void initialize() {
-        initClickSound();
-        Platform.runLater(this::installGlobalClickSound);
-
-        setupInputValidation();
-        setupExtraFields();
-
-        setupTable();
-        setupSearchUI();  // ✅ attribut + textfield
-
-        refresh();
-
-        playMusic();
-        setupMusicControls();
-        updateMusicUi();
-    }
-
-    // =========================
-    // ✅ Search UI (combo attribut + text)
+    //  Search UI
     // =========================
     private void setupSearchUI() {
         if (cbTypeFilter != null) {
             cbTypeFilter.setItems(FXCollections.observableArrayList(
-                    ATTR_ALL, ATTR_TYPE, ATTR_CATEGORY, ATTR_NIVEAU,
-                    ATTR_ANNEES, ATTR_CERTIF, ATTR_STATUT, ATTR_DESC
+                    ATTR_ALL, ATTR_EMAIL, ATTR_NIVEAU, ATTR_TYPE, ATTR_CATEGORY,
+                    ATTR_CERTIF, ATTR_ANNEES, ATTR_STATUT, ATTR_DESC
             ));
             cbTypeFilter.setValue(ATTR_ALL);
             cbTypeFilter.valueProperty().addListener((obs, o, n) -> applyFilters());
@@ -201,33 +227,23 @@ public class CompetenceController {
             if (cbStatut.getValue() == null) cbStatut.setValue("En cours");
         }
 
-        // ✅ tfAnnees : ENTIER uniquement + bornes (0..60) + pas de crash + default 0
         if (tfAnnees != null) {
-
             if (tfAnnees.getText() == null || tfAnnees.getText().trim().isEmpty()) {
                 tfAnnees.setText("0");
             }
 
             UnaryOperator<TextFormatter.Change> intFilter = change -> {
                 String newText = change.getControlNewText();
-
-                // autorise vide pendant la saisie (quand on efface)
                 if (newText.isEmpty()) return change;
-
-                // digits only
                 if (!newText.matches("\\d+")) return null;
-
-                // optionnel : limite longueur (60 => 2 chiffres)
                 if (newText.length() > 2) return null;
 
-                // bornes en direct (empêche > 60)
                 try {
                     int v = Integer.parseInt(newText);
                     if (v < ANNEES_MIN || v > ANNEES_MAX) return null;
                 } catch (NumberFormatException e) {
                     return null;
                 }
-
                 return change;
             };
 
@@ -239,7 +255,6 @@ public class CompetenceController {
 
             tfAnnees.setTextFormatter(formatter);
 
-            // À la perte de focus : vide => 0
             tfAnnees.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
                 if (!isFocused) {
                     String s = nvl(tfAnnees.getText()).trim();
@@ -247,6 +262,60 @@ public class CompetenceController {
                 }
             });
         }
+    }
+
+    // =========================
+    //  EMAIL (Validée -> sélection, Expirée -> expiration)
+    // =========================
+    private void sendStatusMailAsync(Competence c) {
+        if (c == null) return;
+
+        String statutRaw = nvl(c.getStatut()).trim();
+        String statutNorm = normalize(statutRaw);
+
+        boolean isValidee = statutNorm.equals("valide") || statutNorm.equals("validee");
+        boolean isExpiree = statutNorm.equals("expiree") || statutNorm.equals("expire");
+
+        if (!isValidee && !isExpiree) {
+            setError("⚠️ Aucun mail envoyé : statut = '" + statutRaw + "'. (Seuls Validée / Expirée)");
+            return;
+        }
+
+        String email = nvl(c.getEmail()).trim();
+        if (email.isEmpty() || !P_EMAIL.matcher(email).matches()) {
+            setError("Email invalide dans la ligne.");
+            return;
+        }
+
+        String teamType = nvl(c.getType()).trim();
+        if (teamType.isEmpty()) teamType = "votre domaine";
+
+        //  anti double-clic / double envoi
+        String lockKey = c.getId() + "|" + statutNorm + "|" + email;
+        if (!mailLocks.add(lockKey)) {
+            setError("Email déjà en cours d’envoi...");
+            return;
+        }
+
+        final String emailFinal = email;
+        final String teamTypeFinal = teamType;
+
+        mailExecutor.submit(() -> {
+            try {
+                if (isValidee) {
+                    mailService.sendSelectionEmail(emailFinal, teamTypeFinal);
+                    Platform.runLater(() -> setError(" Email de sélection envoyé à " + emailFinal));
+                } else {
+                    mailService.sendExpiredEmail(emailFinal, teamTypeFinal);
+                    Platform.runLater(() -> setError(" Email d’expiration envoyé à " + emailFinal));
+                }
+            } catch (Exception ex) {
+                Platform.runLater(() -> setError(" Erreur email: " + ex.getMessage()));
+                ex.printStackTrace();
+            } finally {
+                mailLocks.remove(lockKey);
+            }
+        });
     }
 
     private void setupTable() {
@@ -257,9 +326,52 @@ public class CompetenceController {
         if (colNiveau != null) colNiveau.setCellValueFactory(cell -> new SimpleStringProperty(nvl(cell.getValue().getNiveau())));
         if (colAnnees != null) colAnnees.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(cell.getValue().getAnneesExperience()));
         if (colCertification != null) colCertification.setCellValueFactory(cell -> new SimpleStringProperty(nvl(cell.getValue().getCertification())));
-        if (colStatut != null) colStatut.setCellValueFactory(cell -> new SimpleStringProperty(nvl(cell.getValue().getStatut())));
 
-        // Affichage ID en index visuel (comme ton code original)
+        if (colStatut != null) {
+            colStatut.setCellValueFactory(cell -> new SimpleStringProperty(nvl(cell.getValue().getStatut())));
+
+            //  version SAFE (ne dépend pas de getIndex())
+            colStatut.setCellFactory(col -> new TableCell<>() {
+                private final Hyperlink link = new Hyperlink();
+
+                {
+                    link.setOnAction(e -> {
+                        Competence rowItem = getTableRow() != null ? (Competence) getTableRow().getItem() : null;
+                        if (rowItem != null) sendStatusMailAsync(rowItem);
+                    });
+                }
+
+                @Override
+                protected void updateItem(String statut, boolean empty) {
+                    super.updateItem(statut, empty);
+
+                    Competence rowItem = getTableRow() != null ? (Competence) getTableRow().getItem() : null;
+
+                    if (empty || statut == null || rowItem == null) {
+                        setGraphic(null);
+                        setText(null);
+                        return;
+                    }
+
+                    String s = statut.trim();
+                    link.setText(s);
+
+                    String norm = normalize(s);
+                    boolean clickable =
+                            norm.equals("valide") || norm.equals("validee") ||
+                                    norm.equals("expiree") || norm.equals("expire");
+
+                    link.setDisable(!clickable);
+                    link.setOpacity(clickable ? 1.0 : 0.5);
+
+                    setGraphic(link);
+                    setText(null);
+                }
+            });
+        }
+
+        if (colEmail != null) colEmail.setCellValueFactory(cell -> new SimpleStringProperty(nvl(cell.getValue().getEmail())));
+
         colId.setCellValueFactory(cellData ->
                 new ReadOnlyObjectWrapper<>(table.getItems().indexOf(cellData.getValue()) + 1)
         );
@@ -269,7 +381,6 @@ public class CompetenceController {
         sortedData.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedData);
 
-        // Remplissage formulaire au clic sur une ligne
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             setError("");
             if (newV != null) {
@@ -281,6 +392,8 @@ public class CompetenceController {
                 if (tfAnnees != null) tfAnnees.setText(String.valueOf(newV.getAnneesExperience()));
                 if (tfCertification != null) tfCertification.setText(nvl(newV.getCertification()));
                 if (cbStatut != null) cbStatut.setValue(normalizeComboValue(cbStatut, nvl(newV.getStatut()), "En cours"));
+
+                if (tfEmail != null) tfEmail.setText(nvl(newV.getEmail()));
             }
         });
 
@@ -303,13 +416,14 @@ public class CompetenceController {
     }
 
     // =========================
-    // ✅ FILTERS by selected attribute + text
+    //  FILTERS
     // =========================
     private void applyFilters() {
         if (filteredData == null) return;
 
         String attr = nvl(cbTypeFilter != null ? cbTypeFilter.getValue() : ATTR_ALL).trim();
-        String q = nvl(tfSearchValue != null ? tfSearchValue.getText() : "").trim().toLowerCase(Locale.ROOT);
+        String qRaw = nvl(tfSearchValue != null ? tfSearchValue.getText() : "").trim();
+        String q = qRaw.toLowerCase(Locale.ROOT);
 
         filteredData.setPredicate(c -> {
             if (c == null) return false;
@@ -318,41 +432,67 @@ public class CompetenceController {
             java.util.function.Function<String, Boolean> contains =
                     s -> nvl(s).toLowerCase(Locale.ROOT).contains(q);
 
-            String anneesStr = String.valueOf(c.getAnneesExperience());
+            int annees = c.getAnneesExperience();      //  numérique
+            String anneesStr = String.valueOf(annees); // si tu en as besoin ailleurs
 
-            // ID visuel (index affiché)
             int visualId = table.getItems().indexOf(c) + 1;
             String visualIdStr = String.valueOf(visualId);
 
             switch (attr) {
+                case ATTR_EMAIL:
+                    return contains.apply(c.getEmail());
 
                 case ATTR_TYPE:
                     return contains.apply(c.getType());
+
                 case ATTR_CATEGORY:
                     return contains.apply(c.getCategory());
+
                 case ATTR_NIVEAU:
                     return contains.apply(c.getNiveau());
-                case ATTR_ANNEES:
-                    return anneesStr.contains(q);
+
+                case ATTR_ANNEES: {
+                    //  ici c'est >= n
+                    if (!q.matches("\\d+")) return false; // si pas un nombre, aucun résultat
+                    int min = Integer.parseInt(q);
+                    return annees >= min;
+                }
+
                 case ATTR_CERTIF:
                     return contains.apply(c.getCertification());
+
                 case ATTR_STATUT:
                     return contains.apply(c.getStatut());
+
                 case ATTR_DESC:
                     return contains.apply(c.getDescription());
+
                 case ATTR_ALL:
-                default:
+                default: {
+                    //  Si l'utilisateur tape un nombre : on applique annees >= n
+                    boolean matchAnnees = false;
+                    if (q.matches("\\d+")) {
+                        int min = Integer.parseInt(q);
+                        matchAnnees = annees >= min;
+                    } else {
+                        // si texte, on garde le comportement "contains" sur anneesStr si tu veux
+                        matchAnnees = anneesStr.contains(q);
+                    }
+
                     return visualIdStr.contains(q)
+                            || contains.apply(c.getEmail())
                             || contains.apply(c.getType())
                             || contains.apply(c.getCategory())
                             || contains.apply(c.getNiveau())
-                            || anneesStr.contains(q)
+                            || matchAnnees
                             || contains.apply(c.getCertification())
                             || contains.apply(c.getStatut())
                             || contains.apply(c.getDescription());
+                }
             }
         });
     }
+
 
     // =========================
     // CRUD
@@ -372,7 +512,8 @@ public class CompetenceController {
                     cbNiveau != null ? cbNiveau.getValue() : "Débutant",
                     annees,
                     tfCertification != null ? tfCertification.getText().trim() : null,
-                    cbStatut != null ? cbStatut.getValue() : "En cours"
+                    cbStatut != null ? cbStatut.getValue() : "En cours",
+                    tfEmail != null ? tfEmail.getText().trim() : null
             );
 
             int newId = service.addAndReturnId(c);
@@ -385,7 +526,8 @@ public class CompetenceController {
                     c.getNiveau(),
                     c.getAnneesExperience(),
                     c.getCertification(),
-                    c.getStatut()
+                    c.getStatut(),
+                    c.getEmail()
             );
 
             data.add(inserted);
@@ -393,7 +535,7 @@ public class CompetenceController {
             selectRowByDbId(newId);
 
             clearFormOnly();
-            setError("✅ Ajout effectué");
+            setError(" Ajout effectué");
         } catch (Exception e) {
             setError("Erreur ajout: " + e.getMessage());
             e.printStackTrace();
@@ -417,7 +559,8 @@ public class CompetenceController {
                     cbNiveau != null ? cbNiveau.getValue() : selected.getNiveau(),
                     annees,
                     tfCertification != null ? tfCertification.getText().trim() : selected.getCertification(),
-                    cbStatut != null ? cbStatut.getValue() : selected.getStatut()
+                    cbStatut != null ? cbStatut.getValue() : selected.getStatut(),
+                    tfEmail != null ? tfEmail.getText().trim() : selected.getEmail()
             );
 
             service.update(updated);
@@ -429,7 +572,7 @@ public class CompetenceController {
             selectRowByDbId(updated.getId());
 
             table.refresh();
-            setError("✅ Modification effectuée.");
+            setError(" Modification effectuée.");
         } catch (Exception e) {
             setError("Erreur modification: " + e.getMessage());
             e.printStackTrace();
@@ -459,14 +602,13 @@ public class CompetenceController {
             table.getSelectionModel().clearSelection();
             clearFormOnly();
 
-            setError("✅ Suppression effectuée.");
+            setError(" Suppression effectuée.");
         } catch (Exception e) {
             setError("Erreur suppression: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // parse sécurisé + clamp sur 0..60
     private int parseAnneesOr0() {
         if (tfAnnees == null) return 0;
 
@@ -522,50 +664,76 @@ public class CompetenceController {
         if (tfAnnees != null) tfAnnees.setText("0");
         if (tfCertification != null) tfCertification.clear();
         if (cbStatut != null) cbStatut.setValue("En cours");
+
+        if (tfEmail != null) tfEmail.clear();
     }
 
     // =========================
     // VALIDATION
     // =========================
     private boolean validateInputs() {
+
         String category = nvl(tfCategory != null ? tfCategory.getText() : "").trim();
-        String type = nvl(tfType != null ? tfType.getText() : "").trim();
-        String desc = nvl(taDescription != null ? taDescription.getText() : "").trim();
+        String type     = nvl(tfType != null ? tfType.getText() : "").trim();
+        String desc     = nvl(taDescription != null ? taDescription.getText() : "").trim();
 
         String niveau = (cbNiveau != null) ? nvl(cbNiveau.getValue()).trim() : "";
         String statut = (cbStatut != null) ? nvl(cbStatut.getValue()).trim() : "";
         int annees = parseAnneesOr0();
 
-        String cert = nvl(tfCertification != null ? tfCertification.getText() : "").trim();
+        String cert  = nvl(tfCertification != null ? tfCertification.getText() : "").trim();
+        String email = nvl(tfEmail != null ? tfEmail.getText() : "").trim();
 
-        if (category.isEmpty()) { setError("Catégorie obligatoire."); return false; }
-        if (type.isEmpty())     { setError("Nom/Type obligatoire."); return false; }
-        if (desc.isEmpty())     { setError("Description obligatoire."); return false; }
+        //  Champs obligatoires uniquement
+        java.util.List<String> champsVides = new java.util.ArrayList<>();
 
-        if (niveau.isEmpty())   { setError("Niveau obligatoire."); return false; }
-        if (statut.isEmpty())   { setError("Statut obligatoire."); return false; }
+        if (category.isEmpty()) champsVides.add("Catégorie");
+        if (type.isEmpty())     champsVides.add("Type");
+        if (desc.isEmpty())     champsVides.add("Description");
+        if (email.isEmpty())    champsVides.add("Email");
+
+        //  tous les champs obligatoires vides
+        if (champsVides.size() == 4) {
+            setError("Complétez les données");
+            return false;
+        }
+
+        //  certains champs obligatoires vides
+        if (!champsVides.isEmpty()) {
+            setError("Complétez les données (" +
+                    String.join(", ", champsVides) + ")");
+            return false;
+        }
+
+        //  Autres validations
         if (annees < ANNEES_MIN || annees > ANNEES_MAX) {
-            setError("Années d'expérience invalide (" + ANNEES_MIN + ".." + ANNEES_MAX + ").");
+            setError("Années d'expérience invalides (" + ANNEES_MIN + ".." + ANNEES_MAX + ").");
+            return false;
+        }
+
+        if (!P_EMAIL.matcher(email).matches()) {
+            setError("Email invalide.");
             return false;
         }
 
         if (category.length() > 80) { setError("Catégorie trop longue (max 80)."); return false; }
-        if (type.length() > 80)     { setError("Nom/Type trop long (max 80)."); return false; }
+        if (type.length() > 80)     { setError("Type trop long (max 80)."); return false; }
         if (desc.length() > 500)    { setError("Description trop longue (max 500)."); return false; }
         if (cert.length() > 100)    { setError("Certification trop longue (max 100)."); return false; }
 
-        if (!P_SIMPLE.matcher(category).matches()) { setError("Catégorie: caractères interdits."); return false; }
-        if (!P_SIMPLE.matcher(type).matches())     { setError("Type: caractères interdits."); return false; }
+        if (!P_SIMPLE.matcher(category).matches()) { setError("Catégorie : caractères interdits."); return false; }
+        if (!P_SIMPLE.matcher(type).matches())     { setError("Type : caractères interdits."); return false; }
 
         setError("");
         return true;
     }
 
+
     private void setupInputValidation() {
         UnaryOperator<TextFormatter.Change> simpleFilter = change -> {
             String newText = change.getControlNewText();
             if (P_SIMPLE.matcher(newText).matches()) return change;
-            showInvalidCharMessage("⚠️ Caractères interdits : lettres, chiffres, espace, '-' et '_' ");
+            showInvalidCharMessage(" Caractères interdits : <>:?.@ ");
             return null;
         };
 
@@ -594,7 +762,7 @@ public class CompetenceController {
     // =========================
     private void initClickSound() {
         try {
-            URL url = getClass().getResource("/view/files/mouse.wav");
+            URL url = getClass().getResource("/view/files/competences/mouse.wav");
             if (url == null) return;
 
             clickClip = new AudioClip(url.toExternalForm());
@@ -638,7 +806,7 @@ public class CompetenceController {
 
     private void playMusic() {
         try {
-            URL url = getClass().getResource("/view/files/music.mp3");
+            URL url = getClass().getResource("/view/files/competences/music.mp3");
             if (url == null) return;
 
             Media media = new Media(url.toExternalForm());
@@ -866,34 +1034,11 @@ public class CompetenceController {
     }
 
     // =========================
-    // DASHBOARD
-    // =========================
-    @FXML
-    private void onDashboard() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/Dashboard.fxml"));
-            Parent dashRoot = loader.load();
-
-            Dashboard controller = loader.getController();
-            controller.setData(table.getItems());
-
-            Scene scene = new Scene(dashRoot, 720, 520);
-            URL css = getClass().getResource(CSS_PATH);
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
-
-            Stage stage = new Stage();
-            stage.setTitle("Dashboard");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            setError("Erreur Dashboard : " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    // =========================
     // PDF EXPORT
     // =========================
+    // =========================
+// PDF EXPORT   (NE CHANGE RIEN SAUF LE FILTRE)
+// =========================
     @FXML
     private void onExportPDF() {
         try {
@@ -931,10 +1076,10 @@ public class CompetenceController {
             Table header = new Table(new float[]{1, 4});
             header.setWidth(UnitValue.createPercentValue(100));
 
-            Image logoImg = loadLogoFromResources("/view/image/logo.png");
+            Image logoImg = loadLogoFromResources("/view/image/competences/logo.png");
             if (logoImg != null) {
                 logoImg.setAutoScale(true);
-                logoImg.setMaxHeight(60);
+                logoImg.setMaxHeight(50);
 
                 header.addCell(new com.itextpdf.layout.element.Cell()
                         .setBorder(Border.NO_BORDER)
@@ -962,53 +1107,48 @@ public class CompetenceController {
             document.add(header);
             document.add(new Paragraph(" "));
 
-            Table pdfTable = new Table(8);
+            Table pdfTable = new Table(5);
             pdfTable.setWidth(UnitValue.createPercentValue(100));
 
-            pdfTable.addHeaderCell("ID");
-            pdfTable.addHeaderCell("Catégorie");
-            pdfTable.addHeaderCell("Type");
-            pdfTable.addHeaderCell("Description");
+            pdfTable.addHeaderCell("Email");
             pdfTable.addHeaderCell("Niveau");
-            pdfTable.addHeaderCell("Années exp.");
+            pdfTable.addHeaderCell("Type");
             pdfTable.addHeaderCell("Certification");
-            pdfTable.addHeaderCell("Statut");
+            pdfTable.addHeaderCell("Description");
 
-            int i = 1;
+            //  SEULE MODIF : exporter uniquement les lignes Validée
             for (Competence c : table.getItems()) {
-                pdfTable.addCell(String.valueOf(i++));
-                pdfTable.addCell(nvl(c.getCategory()));
-                pdfTable.addCell(nvl(c.getType()));
-                pdfTable.addCell(nvl(c.getDescription()));
+                if (c == null) continue;
+
+                String statutNorm = normalize(nvl(c.getStatut())); // normalize enlève accents + minuscule
+                boolean isValidee = statutNorm.equals("valide") || statutNorm.equals("validee");
+                if (!isValidee) continue;
+
+                pdfTable.addCell(nvl(c.getEmail()));
                 pdfTable.addCell(nvl(c.getNiveau()));
-                pdfTable.addCell(String.valueOf(c.getAnneesExperience()));
+                pdfTable.addCell(nvl(c.getType()));
                 pdfTable.addCell(nvl(c.getCertification()));
-                pdfTable.addCell(nvl(c.getStatut()));
+                pdfTable.addCell(nvl(c.getDescription()));
             }
 
             document.add(pdfTable);
 
-            Image signatureImg = loadLogoFromResources("/view/image/signature.png");
+            document.add(new Paragraph(" "));
+            Image signatureImg = loadLogoFromResources("/view/image/competences/signature.png");
             if (signatureImg != null) {
-                signatureImg.setWidth(120);
-                signatureImg.setHeight(70);
-                signatureImg.setMarginTop(8);
-
-                Paragraph sigWrap = new Paragraph()
-                        .setTextAlignment(TextAlignment.RIGHT)
-                        .setMarginTop(8)
-                        .add(signatureImg);
-
-                document.add(sigWrap);
+                signatureImg.scaleToFit(160, 80);
+                signatureImg.setHorizontalAlignment(HorizontalAlignment.RIGHT);
+                document.add(signatureImg);
             }
 
             document.close();
-            setError("✅ PDF généré avec succès.");
+            setError(" PDF généré avec succès ");
         } catch (Exception e) {
             setError("Erreur PDF : " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     private Image loadLogoFromResources(String resourcePath) {
         try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
@@ -1026,7 +1166,70 @@ public class CompetenceController {
         }
     }
 
+    @FXML
+    private void onDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/Dashboard.fxml"));
+            Parent dashRoot = loader.load();
+
+            Dashboard controller = loader.getController();
+            controller.setData(table.getItems());
+
+            Scene scene = new Scene(dashRoot, 720, 520);
+            URL css = getClass().getResource(CSS_PATH);
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            setError("Erreur Dashboard : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private static String nvl(String s) {
         return s == null ? "" : s;
     }
+
+    private static String normalize(String s) {
+        if (s == null) return "";
+        String lower = s.trim().toLowerCase(Locale.ROOT);
+        return Normalizer.normalize(lower, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+    }
+
+
+    @FXML
+    private void onHistorique() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/HistoriqueCompetences.fxml"));
+            Parent histRoot = loader.load();
+
+            Scene scene = new Scene(histRoot);
+
+            //  réutilise ton CSS competences
+            URL css = getClass().getResource("/view/css/competences/style.css");
+            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+
+            Stage stage = new Stage();
+            stage.setTitle("Historique – Compétences");
+            stage.initModality(Modality.APPLICATION_MODAL); // bloque le dashboard tant que l'historique est ouvert
+            stage.setScene(scene);
+            stage.setMinWidth(950);
+            stage.setMinHeight(600);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // si tu as un label d'erreur dans dashboard tu peux l'afficher,
+            // sinon laisse juste printStackTrace().
+        }
+    }
+
+
+
+
+
 }

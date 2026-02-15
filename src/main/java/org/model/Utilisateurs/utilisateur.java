@@ -1,4 +1,4 @@
-package org.model;
+package org.model.Utilisateurs;
 
 public class utilisateur {
 
@@ -27,6 +27,8 @@ public class utilisateur {
         this.role = role;
         this.statut = statut;
     }
+
+
 
     public int getIdUtilisateur() { return idUtilisateur; }
     public String getNom() { return nom; }

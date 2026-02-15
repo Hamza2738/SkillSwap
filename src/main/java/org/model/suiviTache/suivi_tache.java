@@ -1,4 +1,4 @@
-package org.model;
+package org.model.suiviTache;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

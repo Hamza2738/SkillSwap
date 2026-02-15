@@ -11,9 +11,9 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/competence.fxml"));
         Scene scene = new Scene(loader.load(), 1100, 650);
 
-        // ✅ Charger le CSS
+
         scene.getStylesheets().add(
-                getClass().getResource("/view/css/style.css").toExternalForm()
+                getClass().getResource("/view/css/competences/style.css").toExternalForm()
         );
 
         stage.setTitle("SkillSwap");

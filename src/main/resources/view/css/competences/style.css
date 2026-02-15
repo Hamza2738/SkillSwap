@@ -514,3 +514,147 @@
 /* Optionnel : rendre le slider plus "fin" */
 #slVolume.small .track { -fx-pref-height: 6; }
 #slVolume.small .thumb  { -fx-pref-width: 12; -fx-pref-height: 12; }
+/* ==========================
+   TABLE ROWS (2 couleurs images)
+   ========================== */
+
+/* Important: on enlève le "transparent" sinon tu ne verras pas le zebra */
+.dark-table .table-row-cell {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-cell-size: 40px;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER;
+}
+
+/* Alternance ligne par ligne */
+.dark-table .table-row-cell:filled:even {
+    -fx-background-color: #1C2638; /* image 1 */
+}
+.dark-table .table-row-cell:filled:odd {
+    -fx-background-color: #0F1523; /* image 2 */
+}
+
+/* Hover (optionnel) */
+.dark-table .table-row-cell:filled:hover {
+    -fx-background-color: rgba(123, 97, 255, 0.12);
+}
+
+/* Sélection (garde ta couleur de sélection) */
+.dark-table .table-row-cell:filled:selected,
+.dark-table .table-row-cell:filled:selected:hover {
+    -fx-background-color: rgba(123, 97, 255, 0.22);
+}
+
+/* Pour que la couleur de ligne soit bien visible derrière les cellules */
+.dark-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+}
+.dash-root {
+
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* ====== HEADER ====== */
+.dash-header {
+    -fx-background-color: rgba(0, 0, 0, 0.45);
+    -fx-background-radius: 14;
+}
+
+.dash-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.dash-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-size: 13px;
+}
+
+/* ====== FOOTER ====== */
+.dash-footer {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-background-radius: 14;
+}
+.btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ====== PIECHART (couleurs texte en blanc) ====== */
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-title {
+    -fx-text-fill: white;
+}
+
+.chart-legend {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-background-radius: 10;
+    -fx-padding: 8;
+}
+
+.chart-legend-item {
+    -fx-text-fill: white;
+}
+
+.chart-pie-label {
+    -fx-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: rgba(255, 255, 255, 0.6);
+}
+/* ===== ALERT FULL DARK (NO WHITE ZONE) ===== */
+
+.dark-dialog-pane {
+    -fx-background-color: #0b1220;
+}
+
+.dark-dialog-pane .dialog-pane {
+    -fx-background-color: #0b1220;
+    -fx-padding: 18;
+}
+
+/* force TOUTES les zones */
+.dark-dialog-pane .content,
+.dark-dialog-pane .content.label,
+.dark-dialog-pane .button-bar,
+.dark-dialog-pane .button-bar-container {
+    -fx-background-color: #0b1220;
+}
+
+/* texte */
+.dark-dialog-pane .label {
+    -fx-text-fill: #e5e7eb;
+    -fx-font-size: 13px;
+}
+
+/* boutons */
+.dark-dialog-pane .button {
+    -fx-background-color: #111827;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.dark-dialog-pane .button:hover {
+    -fx-background-color: #1f2937;
+}
+
+/* bouton Supprimer */
+.dark-dialog-pane .button:default {
+    -fx-background-color: #b91c1c;
+}
+
+.dark-dialog-pane .button:default:hover {
+    -fx-background-color: #dc2626;
+}

@@ -11,9 +11,9 @@ public class mydatabase {
     Connection connection;
     static mydatabase instance;
 
-    //constructeur
 
-    private mydatabase(){ //Pour que personne ne puisse faire : new mydatabase() à l’extérieur. il doit rappeler get pour crée la bsae une seul fois
+
+    private mydatabase(){
 
         try {
             connection = DriverManager.getConnection(url, USERNAME, PASSWORD);
@@ -24,12 +24,12 @@ public class mydatabase {
         }
     }
 
-    public static mydatabase getInstance() { //methode static pour peut rappeler dans main
-        if (instance == null) {// si aucune instance n’a encore été créée
-            instance = new mydatabase();// créer l’unique instance
+    public static mydatabase getInstance() {
+        if (instance == null) {
+            instance = new mydatabase();
 
         }
-        return instance;// renvoyer l’instance existante
+        return instance;
     }
 
     public Connection getConnection() {

@@ -1,6 +1,7 @@
 package org.service.Competences;
 
-import org.model.Competence;
+import org.model.Competences.Competence;
+import org.service.Competences.Historiques.HistoriqueCompetenceLogger;
 import org.utils.mydatabase;
 
 import java.sql.*;
@@ -11,10 +12,13 @@ public class CompetenceService implements ICRUD<Competence> {
 
     private final Connection cnx = mydatabase.getInstance().getConnection();
 
+
+    private final HistoriqueCompetenceLogger histLogger = new HistoriqueCompetenceLogger();
+
     @Override
     public List<Competence> getAll() throws SQLException {
         final String sql = """
-            SELECT id, category, type, description, niveau, annees_experience, certification, statut
+            SELECT id, category, type, description, niveau, annees_experience, certification, statut, email
             FROM competences
             ORDER BY id DESC
         """;
@@ -32,7 +36,8 @@ public class CompetenceService implements ICRUD<Competence> {
                         rs.getString("niveau"),
                         rs.getInt("annees_experience"),
                         rs.getString("certification"),
-                        rs.getString("statut")
+                        rs.getString("statut"),
+                        rs.getString("email")
                 ));
             }
         }
@@ -46,8 +51,8 @@ public class CompetenceService implements ICRUD<Competence> {
 
     public int addAndReturnId(Competence c) throws SQLException {
         final String sql = """
-            INSERT INTO competences(category, type, description, niveau, annees_experience, certification, statut)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO competences(category, type, description, niveau, annees_experience, certification, statut, email)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """;
 
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -58,12 +63,23 @@ public class CompetenceService implements ICRUD<Competence> {
             ps.setInt(5, c.getAnneesExperience());
             ps.setString(6, cleanOrNull(c.getCertification()));
             ps.setString(7, clean(c.getStatut()));
+            ps.setString(8, clean(c.getEmail()));
 
             int rows = ps.executeUpdate();
             if (rows == 0) throw new SQLException("Insertion échouée : aucune ligne insérée.");
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) return keys.getInt(1);
+                if (keys.next()) {
+                    int newId = keys.getInt(1);
+
+
+                    c.setId(newId);
+
+
+                    histLogger.logAction(c, "Ajoutée");
+
+                    return newId;
+                }
             }
         }
 
@@ -76,7 +92,7 @@ public class CompetenceService implements ICRUD<Competence> {
 
         final String sql = """
             UPDATE competences
-            SET category=?, type=?, description=?, niveau=?, annees_experience=?, certification=?, statut=?
+            SET category=?, type=?, description=?, niveau=?, annees_experience=?, certification=?, statut=?, email=?
             WHERE id=?
         """;
 
@@ -88,16 +104,23 @@ public class CompetenceService implements ICRUD<Competence> {
             ps.setInt(5, c.getAnneesExperience());
             ps.setString(6, cleanOrNull(c.getCertification()));
             ps.setString(7, clean(c.getStatut()));
-            ps.setInt(8, c.getId());
+            ps.setString(8, clean(c.getEmail()));
+            ps.setInt(9, c.getId());
 
             int rows = ps.executeUpdate();
             if (rows == 0) throw new SQLException("Aucune ligne modifiée. ID introuvable : " + c.getId());
         }
+
+
+        histLogger.logAction(c, "Modifiée");
     }
 
     @Override
     public void delete(int id) throws SQLException {
         if (id <= 0) throw new SQLException("Delete impossible : id invalide (" + id + ")");
+
+
+        Competence beforeDelete = getById(id);
 
         final String sql = "DELETE FROM competences WHERE id=?";
 
@@ -106,6 +129,42 @@ public class CompetenceService implements ICRUD<Competence> {
             int rows = ps.executeUpdate();
             if (rows == 0) throw new SQLException("Aucune ligne supprimée. ID introuvable : " + id);
         }
+
+
+        if (beforeDelete != null) {
+            histLogger.logAction(beforeDelete, "Supprimée");
+        }
+    }
+
+
+    private Competence getById(int id) throws SQLException {
+        final String sql = """
+            SELECT id, category, type, description, niveau, annees_experience, certification, statut, email
+            FROM competences
+            WHERE id=?
+            LIMIT 1
+        """;
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Competence(
+                            rs.getInt("id"),
+                            rs.getString("category"),
+                            rs.getString("type"),
+                            rs.getString("description"),
+                            rs.getString("niveau"),
+                            rs.getInt("annees_experience"),
+                            rs.getString("certification"),
+                            rs.getString("statut"),
+                            rs.getString("email")
+                    );
+                }
+            }
+        }
+        return null;
     }
 
     private static String clean(String s) {

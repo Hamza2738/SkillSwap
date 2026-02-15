@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import org.model.Competence;
+import org.model.Competences.Competence;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
