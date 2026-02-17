@@ -1,4 +1,4 @@
-package org.controller.Competences;
+package org.controller.Competences.back;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;

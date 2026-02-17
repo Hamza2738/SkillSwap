@@ -1,4 +1,4 @@
-package org.controller.Competences;
+package org.controller.Competences.back;
 
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;

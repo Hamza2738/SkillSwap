@@ -20,8 +20,8 @@ public class CompetenceService implements ICRUD<Competence> {
         final String sql = """
             SELECT id, category, type, description, niveau, annees_experience, certification, statut, email
             FROM competences
-            ORDER BY id DESC
-        """;
+            ORDER BY id DESC 
+            """;
 
         List<Competence> list = new ArrayList<>();
         try (PreparedStatement ps = cnx.prepareStatement(sql);

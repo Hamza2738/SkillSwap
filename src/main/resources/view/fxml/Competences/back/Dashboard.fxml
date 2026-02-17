@@ -10,7 +10,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.controller.Competences.Dashboard"
+            fx:controller="org.controller.Competences.back.Dashboard"
             styleClass="dash-root">
 
     <!-- HEADER -->

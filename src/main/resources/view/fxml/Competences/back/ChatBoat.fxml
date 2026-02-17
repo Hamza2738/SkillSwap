@@ -5,8 +5,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.controller.Competences.ChatBoat"
-            stylesheets="@../../css/competences/style.css">
+            fx:controller="org.controller.Competences.back.ChatBoat"
+            stylesheets="@../../../css/competences/style.css">
 
     <center>
         <ScrollPane fx:id="scroll" fitToWidth="true">

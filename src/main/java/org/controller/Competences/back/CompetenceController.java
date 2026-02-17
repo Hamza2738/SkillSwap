@@ -1,4 +1,4 @@
-package org.controller.Competences;
+package org.controller.Competences.back;
 
 import com.itextpdf.layout.properties.HorizontalAlignment;
 import org.model.Competences.Competence;
@@ -587,7 +587,29 @@ public class CompetenceController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setHeaderText("Supprimer cette compétence ?");
-        alert.setContentText("Cette action est irréversible.");
+
+
+        DialogPane dp = alert.getDialogPane();
+
+        // ✅ CSS dark
+        dp.getStyleClass().add("dark-dialog-pane");
+        URL css = getClass().getResource(CSS_PATH);
+        if (css != null) dp.getStylesheets().add(css.toExternalForm());
+
+        // ✅ rendre la fenêtre plus petite
+        dp.setPrefWidth(320);     // ← diminue la largeur (essaie 280..360)
+        dp.setMaxWidth(320);
+        dp.setMinHeight(150);     // ← diminue la hauteur
+        dp.setPrefHeight(140);
+
+        // ✅ empêche l'alert de s'étirer à cause du contenu
+        dp.setExpandableContent(null);
+
+        // ✅ bouton OK par défaut (rouge via :default si ton CSS le fait)
+        Button okBtn = (Button) dp.lookupButton(ButtonType.OK);
+        if (okBtn != null) okBtn.setDefaultButton(true);
+
+        alert.initOwner(table.getScene().getWindow());
 
         if (alert.showAndWait().orElse(ButtonType.CANCEL) != ButtonType.OK) return;
 
@@ -598,10 +620,8 @@ public class CompetenceController {
             if (idx >= 0) data.remove(idx);
 
             applyFilters();
-
             table.getSelectionModel().clearSelection();
             clearFormOnly();
-
             setError(" Suppression effectuée.");
         } catch (Exception e) {
             setError("Erreur suppression: " + e.getMessage());
@@ -820,6 +840,25 @@ public class CompetenceController {
         } catch (Exception ignored) { }
     }
 
+
+
+    @FXML
+    private void onResetForm() {
+        // Important : annuler la sélection sinon le listener refill les champs
+        if (table != null) {
+            table.getSelectionModel().clearSelection();
+        }
+
+        // vider les champs du formulaire
+        clearFormOnly();
+
+        // nettoyer message erreur
+        setError("");
+    }
+
+
+
+
     @FXML
     private void onToggleMusic() {
         try {
@@ -869,7 +908,7 @@ public class CompetenceController {
     @FXML
     private void onChatbot() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/ChatBoat.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/back/ChatBoat.fxml"));
             Parent chatRoot = loader.load();
 
             Scene scene = new Scene(chatRoot);
@@ -1169,7 +1208,7 @@ public class CompetenceController {
     @FXML
     private void onDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/Dashboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/back/Dashboard.fxml"));
             Parent dashRoot = loader.load();
 
             Dashboard controller = loader.getController();
@@ -1204,7 +1243,7 @@ public class CompetenceController {
     @FXML
     private void onHistorique() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/HistoriqueCompetences.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/Competences/back/HistoriqueCompetences.fxml"));
             Parent histRoot = loader.load();
 
             Scene scene = new Scene(histRoot);

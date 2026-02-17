@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.controller.Competences.front.ChatBoatFrontController"
+            styleClass="app-root">
+
+    <top>
+        <VBox spacing="6" styleClass="topbar">
+            <padding>
+                <Insets top="12" right="16" bottom="12" left="16"/>
+            </padding>
+            <Label text="Chatbot (Front)" styleClass="brand"/>
+            <Label text="Mode FRONT : réponse simulée (pas d’IA / pas de DB)" styleClass="hint"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" styleClass="card">
+            <padding>
+                <Insets top="14" right="14" bottom="14" left="14"/>
+            </padding>
+
+            <!-- ✅ Scroll + VBox messages -->
+            <ScrollPane fx:id="scroll" fitToWidth="true" prefHeight="520" styleClass="chat-scroll">
+                <content>
+                    <VBox fx:id="messagesBox" spacing="10" styleClass="messages-box">
+                        <padding>
+                            <Insets top="10" right="10" bottom="10" left="10"/>
+                        </padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <HBox spacing="10">
+                <TextField fx:id="tfMessage"
+                           promptText="Écris ton message..."
+                           styleClass="input"
+                           HBox.hgrow="ALWAYS"/>
+                <Button text="Envoyer" onAction="#onSend" styleClass="btn"/>
+                <Button text="Vider" onAction="#onClear" styleClass="btn"/>
+                <Button text="Fermer" onAction="#onClose" styleClass="btn"/>
+            </HBox>
+        </VBox>
+    </center>
+
+</BorderPane>
