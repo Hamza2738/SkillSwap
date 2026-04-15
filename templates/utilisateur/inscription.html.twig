@@ -1,0 +1,685 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SkillSwap – Inscription{% endblock %}
+
+{% block stylesheets %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Sans:wght@400;500&display=swap');
+
+    *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    :root {
+        --bg:         #0d1b2a;
+        --surface:    #111e30;
+        --card:       rgba(15, 28, 46, 0.82);
+        --border:     rgba(255,255,255,0.09);
+        --accent:     #5b8dee;
+        --accent-h:   #3a6fd8;
+        --success:    #34d399;
+        --error:      #f87171;
+        --text:       #e8edf3;
+        --muted:      #7a91ab;
+        --input-bg:   rgba(255,255,255,0.05);
+        --input-focus:rgba(91,141,238,0.18);
+    }
+
+    html, body {
+        width: 100%;
+        min-height: 100vh;
+        background: var(--bg);
+        font-family: 'DM Sans', sans-serif;
+        color: var(--text);
+        overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND NOISE TEXTURE ── */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image:
+            radial-gradient(ellipse 80% 50% at 20% 10%, rgba(91,141,238,0.10) 0%, transparent 60%),
+            radial-gradient(ellipse 60% 40% at 80% 90%, rgba(52,211,153,0.07) 0%, transparent 55%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        height: 60px;
+        background: rgba(10,18,30,0.85);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 200;
+    }
+
+    .brand-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+    }
+
+    .brand-wrap img { height: 36px; object-fit: contain; }
+
+    .brand-name {
+        font-family: 'Sora', sans-serif;
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #fff;
+    }
+
+    .nav-btn {
+        padding: 6px 18px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-size: 0.88rem;
+        text-decoration: none;
+        background: transparent;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-btn:hover { background: rgba(255,255,255,0.09); color: #fff; }
+
+    /* ── PAGE ── */
+    .page {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 48px 20px 60px;
+        min-height: calc(100vh - 60px);
+    }
+
+    .page-title {
+        font-family: 'Sora', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 28px;
+        letter-spacing: -0.3px;
+    }
+
+    /* ── CARD ── */
+    .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 36px 32px;
+        width: 100%;
+        max-width: 460px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+        animation: slideUp 0.45s cubic-bezier(.22,.68,0,1.2) both;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(28px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-title {
+        font-family: 'Sora', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 22px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    /* ── FLASHES ── */
+    .flash {
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        margin-bottom: 16px;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+    .flash-error   { background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.35); color: #fca5a5; }
+    .flash-success { background: rgba(52,211,153,0.12);  border: 1px solid rgba(52,211,153,0.35);  color: #6ee7b7; }
+
+    /* ── FORM GROUP ── */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-bottom: 14px;
+    }
+
+    .field-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--muted);
+        letter-spacing: 0.3px;
+    }
+
+    /* ── INPUTS ── */
+    .input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .input::placeholder { color: var(--muted); }
+
+    .input:focus {
+        border-color: var(--accent);
+        background: var(--input-focus);
+        box-shadow: 0 0 0 3px rgba(91,141,238,0.15);
+    }
+
+    .input.is-invalid {
+        border-color: var(--error);
+        background: rgba(248,113,113,0.07);
+    }
+
+    /* ── PASSWORD TOGGLE ROW ── */
+    .pw-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .pw-row .input { flex: 1; }
+
+    .btn-toggle {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: background 0.2s, color 0.2s;
+    }
+
+    .btn-toggle:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* ── PHONE ROW ── */
+    .phone-row {
+        display: flex;
+        gap: 0;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        overflow: hidden;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .phone-row:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(91,141,238,0.15);
+    }
+
+    .phone-select {
+        background: rgba(255,255,255,0.07);
+        border: none;
+        border-right: 1px solid var(--border);
+        color: var(--text);
+        font-size: 0.88rem;
+        padding: 0 10px;
+        width: 110px;
+        cursor: pointer;
+        outline: none;
+    }
+
+    .phone-select option { background: #1a2a3a; }
+
+    .phone-input {
+        flex: 1;
+        padding: 10px 12px;
+        background: var(--input-bg);
+        border: none;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem;
+        outline: none;
+    }
+
+    .phone-input::placeholder { color: var(--muted); }
+
+    .btn-verify {
+        padding: 0 14px;
+        background: rgba(91,141,238,0.18);
+        border: none;
+        border-left: 1px solid var(--border);
+        color: var(--accent);
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background 0.2s;
+    }
+
+    .btn-verify:hover { background: rgba(91,141,238,0.30); }
+
+    /* ── ROLE SELECT ── */
+    .select-input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--input-bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: var(--text);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.92rem;
+        outline: none;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a91ab' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .select-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(91,141,238,0.15);
+    }
+
+    .select-input option { background: #1a2a3a; }
+
+    /* ── CLE ACCES ── */
+    #cle-acces-box { display: none; }
+    #cle-acces-box.visible { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+
+    /* ── CHECKBOX ── */
+    .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+        width: 17px;
+        height: 17px;
+        accent-color: var(--accent);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .checkbox-row label {
+        font-size: 0.88rem;
+        color: var(--muted);
+        cursor: pointer;
+        user-select: none;
+    }
+
+    /* ── ERROR MSG ── */
+    .hint {
+        font-size: 0.8rem;
+        color: var(--error);
+        min-height: 18px;
+        display: none;
+    }
+
+    .hint.visible { display: block; }
+
+    /* ── SUBMIT BTN ── */
+    .btn-submit {
+        width: 100%;
+        height: 46px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 9px;
+        font-family: 'Sora', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        margin-top: 6px;
+        transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+        letter-spacing: 0.2px;
+    }
+
+    .btn-submit:hover {
+        background: var(--accent-h);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(91,141,238,0.35);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ── HYPERLINK ── */
+    .link-row {
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    .link-row a {
+        color: var(--accent);
+        font-size: 0.875rem;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .link-row a:hover { color: #fff; text-decoration: underline; }
+
+    /* ── DIVIDER ── */
+    hr.sep {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 18px 0 16px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 500px) {
+        .card { padding: 28px 18px; }
+        .page-title { font-size: 1.4rem; }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+{# ── TOPBAR ── #}
+<nav class="topbar">
+    <a href="{{ path('app_accueil') }}" class="brand-wrap">
+        <img src="{{ asset('image/logo.png') }}" alt="Logo">
+        <span class="brand-name">SkillSwap</span>
+    </a>
+    <a href="{{ path('app_login') }}" class="nav-btn">Se connecter</a>
+</nav>
+
+{# ── PAGE ── #}
+<main class="page">
+
+    <h1 class="page-title">Créer un compte</h1>
+
+    <div class="card">
+
+        <div class="card-title">Inscription</div>
+
+        {# ── FLASH MESSAGES ── #}
+        {% for msg in app.flashes('error') %}
+            <div class="flash flash-error">⚠ {{ msg }}</div>
+        {% endfor %}
+        {% for msg in app.flashes('success') %}
+            <div class="flash flash-success">✓ {{ msg }}</div>
+        {% endfor %}
+
+        {# ── FORM ── #}
+        {{ form_start(form, {
+            'attr': {'novalidate': 'novalidate', 'id': 'inscription-form'}
+        }) }}
+
+            {# NOM #}
+            <div class="form-group">
+                {{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'field-label'}}) }}
+                {{ form_widget(form.nom, {'attr': {'class': 'input', 'placeholder': 'Nom'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+
+            {# PRENOM #}
+            <div class="form-group">
+                {{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'field-label'}}) }}
+                {{ form_widget(form.prenom, {'attr': {'class': 'input', 'placeholder': 'Prénom'}}) }}
+                {{ form_errors(form.prenom) }}
+            </div>
+
+            {# EMAIL #}
+            <div class="form-group">
+                {{ form_label(form.email, 'Email', {'label_attr': {'class': 'field-label'}}) }}
+                {{ form_widget(form.email, {'attr': {'class': 'input', 'placeholder': 'exemple@mail.com'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+
+            {# MOT DE PASSE #}
+            <div class="form-group">
+                {{ form_label(form.motDePasse, 'Mot de passe', {'label_attr': {'class': 'field-label'}}) }}
+                <div class="pw-row">
+                    {{ form_widget(form.motDePasse, {
+                        'attr': {'class': 'input', 'id': 'pw-field', 'placeholder': 'Mot de passe'}
+                    }) }}
+                    <button type="button" class="btn-toggle" onclick="togglePw('pw-field', this)" title="Afficher/Masquer">
+                        👁
+                    </button>
+                </div>
+                {{ form_errors(form.motDePasse) }}
+            </div>
+
+            {# CONFIRMATION MOT DE PASSE #}
+            <div class="form-group">
+                {{ form_label(form.confirmMotDePasse, 'Confirmer le mot de passe', {'label_attr': {'class': 'field-label'}}) }}
+                <div class="pw-row">
+                    {{ form_widget(form.confirmMotDePasse, {
+                        'attr': {'class': 'input', 'id': 'pw-confirm-field', 'placeholder': 'Confirmer le mot de passe'}
+                    }) }}
+                    <button type="button" class="btn-toggle" onclick="togglePw('pw-confirm-field', this)" title="Afficher/Masquer">
+                        👁
+                    </button>
+                </div>
+                {{ form_errors(form.confirmMotDePasse) }}
+            </div>
+
+            {# TELEPHONE #}
+            <div class="form-group">
+                <label class="field-label">Téléphone</label>
+                <div class="phone-row">
+                    <select class="phone-select" id="phone-country">
+                        <option value="+216">🇹🇳 +216</option>
+                        <option value="+33">🇫🇷 +33</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                        <option value="+49">🇩🇪 +49</option>
+                        <option value="+212">🇲🇦 +212</option>
+                        <option value="+213">🇩🇿 +213</option>
+                        <option value="+20">🇪🇬 +20</option>
+                    </select>
+                    {{ form_widget(form.telephone, {
+                        'attr': {'class': 'phone-input', 'id': 'tf-phone', 'placeholder': '(XX) XXX-XXXX'}
+                    }) }}
+                    <button type="button" class="btn-verify" onclick="verifyPhone()">Verify</button>
+                </div>
+                {{ form_errors(form.telephone) }}
+            </div>
+
+            {# ROLE #}
+            <div class="form-group">
+                {{ form_label(form.role, 'Rôle', {'label_attr': {'class': 'field-label'}}) }}
+                {{ form_widget(form.role, {'attr': {'class': 'select-input', 'onchange': 'onRoleChange(this)'}}) }}
+                {{ form_errors(form.role) }}
+            </div>
+
+            {# CLE ACCES (visible si admin) #}
+            <div id="cle-acces-box">
+                <label class="field-label">Clé d'accès</label>
+                {{ form_widget(form.cleAcces, {'attr': {'class': 'input', 'placeholder': 'Clé d\'accès'}}) }}
+                {{ form_errors(form.cleAcces) }}
+            </div>
+
+            {# CAPTCHA / NOT ROBOT #}
+            <div class="checkbox-row">
+                <input type="checkbox" id="cb-not-robot" name="not_robot" required>
+                <label for="cb-not-robot">Je ne suis pas un robot</label>
+            </div>
+
+            {# HINT MESSAGE #}
+            <p class="hint" id="hint-msg"></p>
+
+            {# SUBMIT #}
+            <button type="submit" class="btn-submit" onclick="return validateForm()">
+                S'inscrire
+            </button>
+
+        {{ form_end(form) }}
+
+        <hr class="sep">
+
+        <div class="link-row">
+            <a href="{{ path('app_login') }}">J'ai déjà un compte</a>
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}
+{% block javascripts %}
+<script>
+/* ── Toggle password visibility ── */
+function togglePw(fieldId, btn) {
+    const field = document.getElementById(fieldId);
+    if (!field) return;
+    const isHidden = field.type === 'password';
+    field.type = isHidden ? 'text' : 'password';
+    btn.textContent = isHidden ? '🙈' : '👁';
+}
+
+/* ── Show / hide clé accès based on role ── */
+function onRoleChange(select) {
+    const box = document.getElementById('cle-acces-box');
+    if (select.value && select.value.toLowerCase() === 'admin') {
+        box.classList.add('visible');
+    } else {
+        box.classList.remove('visible');
+    }
+}
+
+/* ── Configuration des règles de validation ── */
+const rules = {
+    nom: [
+        { test: v => v.trim() !== '', msg: 'Le nom est obligatoire.' },
+        { test: v => v.length >= 2, msg: 'Le nom doit contenir au moins 2 caractères.' },
+        { test: v => /^[a-zA-ZÀ-ÿ\s\-]+$/.test(v), msg: 'Le nom ne doit contenir que des lettres.' },
+    ],
+    prenom: [
+        { test: v => v.trim() !== '', msg: 'Le prénom est obligatoire.' },
+        { test: v => v.length >= 2, msg: 'Le prénom doit contenir au moins 2 caractères.' },
+        { test: v => /^[a-zA-ZÀ-ÿ\s\-]+$/.test(v), msg: 'Le prénom ne doit contenir que des lettres.' },
+    ],
+    email: [
+        { test: v => v.trim() !== '', msg: "L'email est obligatoire." },
+        { test: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), msg: "L'adresse email n'est pas valide." },
+    ],
+    'pw-field': [
+        { test: v => v.trim() !== '', msg: 'Le mot de passe est obligatoire.' },
+        { test: v => v.length >= 8, msg: 'Min 8 caractères.' },
+    ],
+    'pw-confirm-field': [
+        { test: v => v.trim() !== '', msg: 'Confirmation requise.' },
+        { test: v => v === document.getElementById('pw-field').value, msg: 'Les mots de passe ne correspondent pas.' },
+    ],
+    'tf-phone': [
+        { test: v => v.trim() !== '', msg: 'Téléphone requis.' },
+        { test: v => /^\+?[0-9\s\-]{8,15}$/.test(v), msg: 'Numéro invalide.' },
+    ],
+};
+
+/* ── Validation ── */
+function showError(field, msg) {
+    let err = field.closest('.form-group')?.querySelector('.live-error');
+    if (!err) {
+        err = document.createElement('span');
+        err.className = 'live-error';
+        err.style.cssText = 'color:#f87171;font-size:0.8rem;margin-top:4px;display:block';
+        field.closest('.form-group')?.appendChild(err);
+    }
+    err.textContent = msg;
+    field.classList.add('is-invalid');
+}
+
+function clearError(field) {
+    const err = field.closest('.form-group')?.querySelector('.live-error');
+    if (err) err.textContent = '';
+    field.classList.remove('is-invalid');
+}
+
+function validateField(fieldId) {
+    const field = document.getElementById(fieldId);
+    if (!field) return true;
+
+    const value = field.value;
+    const fieldRules = rules[fieldId];
+    if (!fieldRules) return true;
+
+    for (const rule of fieldRules) {
+        if (!rule.test(value)) {
+            showError(field, rule.msg);
+            return false;
+        }
+    }
+    clearError(field);
+    return true;
+}
+
+/* ── Init ── */
+document.addEventListener('DOMContentLoaded', function () {
+
+    Object.keys(rules).forEach(id => {
+        const field = document.getElementById(id);
+        if (!field) return;
+
+        field.addEventListener('blur', () => validateField(id));
+        field.addEventListener('input', () => validateField(id));
+    });
+
+    document.getElementById('inscription-form')?.addEventListener('submit', function (e) {
+        let valid = true;
+
+        Object.keys(rules).forEach(id => {
+            if (!validateField(id)) valid = false;
+        });
+
+        const notRobot = document.getElementById('cb-not-robot');
+        if (!notRobot.checked) {
+            showHint('Veuillez cocher « Je ne suis pas un robot ».', true);
+            valid = false;
+        }
+
+        if (!valid) e.preventDefault();
+    });
+
+    const roleSelect = document.querySelector('[name$="[role]"], #inscription-form select');
+    if (roleSelect) onRoleChange(roleSelect);
+});
+
+/* ── Hint ── */
+function showHint(msg, isError) {
+    const hint = document.getElementById('hint-msg');
+    hint.textContent = msg;
+    hint.style.color = isError ? 'var(--error)' : 'var(--success)';
+    hint.classList.add('visible');
+    setTimeout(() => hint.classList.remove('visible'), 4000);
+}
+
+/* ── Phone verify ── */
+function verifyPhone() {
+    if (validateField('tf-phone')) {
+        showHint('✓ Numéro vérifié !', false);
+    }
+}
+</script>
+
+
+{% endblock %}

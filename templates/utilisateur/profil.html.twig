@@ -1,0 +1,675 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil · SkillSwap{% endblock %}
+
+{% block stylesheets %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #050d1f;
+    --surface: #07132b;
+    --surface-2: #0b1833;
+    --line: #1b2b52;
+    --input: #1a2745;
+    --text: #f3f7ff;
+    --muted: #95a3c7;
+    --blue: #4e7bff;
+    --blue-2: #7f5cff;
+    --danger: #8f6bff;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.topbar {
+    height: 58px;
+    background: #071126;
+    border-bottom: 1px solid #132446;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 18px;
+}
+
+.brand {
+    min-width: 120px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.search-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-input {
+    width: 100%;
+    height: 34px;
+    border-radius: 14px;
+    border: 1px solid #6f63ff;
+    background: #1a223d;
+    color: #fff;
+    padding: 0 14px;
+    outline: none;
+    font-size: 13px;
+}
+
+.search-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.top-link {
+    font-size: 12px;
+    color: #f2f5ff;
+    opacity: .92;
+    white-space: nowrap;
+}
+
+.top-link:hover {
+    color: #a9b9ff;
+}
+
+.premium-btn {
+    border: 2px solid #d8a700;
+    color: #ffd659;
+    background: transparent;
+    border-radius: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 12px;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 220px;
+    min-height: calc(100vh - 58px);
+}
+
+.sidebar-left,
+.sidebar-right {
+    background: #061127;
+    border-right: 1px solid #122343;
+}
+
+.sidebar-right {
+    border-right: none;
+    border-left: 1px solid #122343;
+}
+
+.side-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    padding: 16px 14px 10px;
+}
+
+.side-section {
+    padding: 0 14px 14px;
+}
+
+.side-item {
+    margin-bottom: 18px;
+}
+
+.side-item strong {
+    display: block;
+    color: #77a3ff;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.side-item p {
+    margin: 0;
+    color: #6f83ac;
+    font-size: 12px;
+}
+
+.contacts-list {
+    padding: 0 10px 12px;
+}
+
+.contact-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 4px;
+}
+
+.contact-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #243252;
+}
+
+.contact-name {
+    font-size: 13px;
+    color: white;
+}
+
+.main {
+    padding: 22px 24px 28px;
+    background: #020b1b;
+}
+
+.profile-shell {
+    max-width: 910px;
+    margin: 0 auto;
+}
+
+.cover-box {
+    height: 225px;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #112446, #223d74);
+    background-size: cover;
+    background-position: center;
+}
+
+.cover-overlay-soft {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 10, 30, 0.18);
+}
+
+.cover-btn {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    font-size: 13px;
+    color: white;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.cover-click-zone {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.profile-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-top: 8px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #1a2947;
+}
+
+.avatar-box {
+    width: 105px;
+    height: 105px;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    margin-top: -6px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4d7bff, #7d60ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.avatar-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    color: #2fb3ff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: .2s ease;
+    font-size: 14px;
+}
+
+.avatar-box:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.profile-identity {
+    padding-top: 24px;
+}
+
+.profile-identity h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.meta-line {
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.meta-line span {
+    color: #c4d1f1;
+}
+
+.form-block {
+    padding-top: 18px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+.label {
+    font-size: 13px;
+    color: #e5eeff;
+    font-weight: 600;
+}
+
+.input,
+.textarea {
+    width: 100%;
+    border: 1px solid #2b3d62;
+    background: #192744;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 14px;
+    outline: none;
+    font-size: 14px;
+}
+
+.textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.section-block {
+    margin-top: 18px;
+}
+
+.section-head {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #f2f6ff;
+}
+
+.skill-card,
+.project-card {
+    background: #0f1a33;
+    border: 1px solid #24365a;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+
+.skill-card h4,
+.project-card h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+}
+
+.skill-card p,
+.project-card p {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #bfd0f3;
+}
+
+.nav-mini {
+    text-align: center;
+    margin-top: 12px;
+    color: #98a8cb;
+    font-size: 13px;
+}
+
+.bottom-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.save-btn,
+.delete-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #6da3ff, #7f66ff);
+}
+
+.delete-btn {
+    background: linear-gradient(135deg, #8b7dff, #9b6dff);
+}
+
+.flash {
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+.flash-success {
+    background: rgba(52,211,153,.12);
+    border: 1px solid rgba(52,211,153,.35);
+    color: #4ade80;
+}
+.flash-error {
+    background: rgba(248,113,113,.12);
+    border: 1px solid rgba(248,113,113,.35);
+    color: #f87171;
+}
+
+.empty {
+    color: #90a0c3;
+    font-size: 13px;
+}
+
+@media (max-width: 1200px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-left,
+    .sidebar-right {
+        display: none;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<header class="topbar">
+    <div class="brand">Profil</div>
+
+    <div class="search-wrap">
+        <form method="get" action="{{ path('app_profil') }}" class="search-form">
+            <input type="text" name="q" class="search-input" placeholder="Rechercher un utilisateur..." value="{{ search }}">
+            <button class="search-btn" type="submit">⌕</button>
+        </form>
+    </div>
+
+    <div class="top-actions">
+        <a href="#" class="top-link">👥 Réseaux</a>
+        <a href="#" class="top-link">Les Rendez-Vous</a>
+        <a href="{{ path('competence_front_index') }}" class="top-link">compétences</a>
+        <a href="#" class="top-link">Suivre les tâches</a>
+        <a href="{{ path('app_logout') }}" class="top-link">Déconnexion</a>
+        <a href="#" class="premium-btn">Essayez Premium<br>pour 0 USD</a>
+    </div>
+</header>
+
+<div class="layout">
+    <aside class="sidebar-left">
+        <div class="side-title">Mon activité</div>
+
+        <div class="side-section">
+            <div class="side-item">
+                <strong>📘 Mes tâches de projet</strong>
+                <p>Aucune tâche.</p>
+            </div>
+
+            <div class="side-item">
+                <strong>📅 Mes rendez-vous</strong>
+                <p>Aucun rendez-vous.</p>
+            </div>
+
+            <div class="side-item">
+                <strong>📨 Mes postulations</strong>
+                <p>Aucune postulation.</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="profile-shell">
+
+            {% for msg in app.flashes('success') %}
+                <div class="flash flash-success">✓ {{ msg }}</div>
+            {% endfor %}
+            {% for msg in app.flashes('error') %}
+                <div class="flash flash-error">✗ {{ msg }}</div>
+            {% endfor %}
+
+            <form method="post" action="{{ path('app_profil_update') }}" enctype="multipart/form-data" id="profileForm">
+                <div class="cover-box"
+                     style="{% if profil.photoCouverture %}background-image:url('{{ asset(profil.photoCouverture|trim('/') ) }}');{% endif %}">
+                    <div class="cover-overlay-soft"></div>
+
+                    {% if not is_visiting %}
+                        <label for="photoCoverInput" class="cover-click-zone"></label>
+                        <label for="photoCoverInput" class="cover-btn">Changer couverture</label>
+                        <input type="file" name="photo_couverture" id="photoCoverInput" accept="image/*" hidden>
+                    {% endif %}
+                </div>
+
+                <div class="profile-header">
+                    <div class="avatar-box">
+                        {% if profil.photoProfil %}
+                            <img src="{{ asset(profil.photoProfil|trim('/') ) }}" class="avatar-img" alt="Photo profil">
+                        {% else %}
+                            <div class="avatar-placeholder">
+                                {{ (profil.prenom ?: 'U')|slice(0,1)|upper }}
+                            </div>
+                        {% endif %}
+
+                        {% if not is_visiting %}
+                            <label for="photoProfilInput" class="avatar-overlay">Changer</label>
+                            <input type="file" name="photo_profil" id="photoProfilInput" accept="image/*" hidden>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-identity">
+                        <h2>Mon Profil</h2>
+                        <div class="meta-line">Email : <span>{{ profil.email }}</span></div>
+                        <div class="meta-line">Rôle : <span>{{ profil.role }}</span></div>
+                    </div>
+                </div>
+
+                {% if not is_visiting %}
+                    <div class="form-block">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label class="label">Nom</label>
+                                <input type="text" name="nom" class="input" value="{{ user.nom }}">
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Prénom</label>
+                                <input type="text" name="prenom" class="input" value="{{ user.prenom }}">
+                            </div>
+
+                            <div class="field full">
+                                <label class="label">Téléphone</label>
+                                <input type="text" name="telephone" class="input" value="{{ user.telephone }}">
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Lieu</label>
+                                <input type="text" name="lieu" class="input" value="{{ user.lieu }}">
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Invitations</label>
+                                <input type="text" class="input" value="{{ invitationsCount }}" readonly>
+                            </div>
+
+                            <div class="field full">
+                                <label class="label">Bio</label>
+                                <textarea name="bio" class="textarea">{{ user.bio }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+
+            <div class="section-block">
+                <div class="section-head">Compétences</div>
+                {% if competences is empty %}
+                    <div class="project-card">
+                        <p class="empty">Aucune compétence disponible.</p>
+                    </div>
+                {% else %}
+                    {% for c in competences %}
+                        <div class="skill-card">
+                            <h4>{{ c.type ?: '—' }}</h4>
+                            <p><strong>Catégorie :</strong> {{ c.category ?: '—' }}</p>
+                            <p><strong>Niveau :</strong> {{ c.niveau ?: '—' }}</p>
+                            <p><strong>Expérience :</strong> {{ c.anneesExperience ?: 0 }} an(s)</p>
+                            <p><strong>Certification :</strong> {{ c.certification ?: '—' }}</p>
+                            <p><strong>Description :</strong> {{ c.description ?: '—' }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="nav-mini">◀ &nbsp; Aucun projet &nbsp; ▶</div>
+
+            {% if not is_visiting %}
+                <div class="bottom-actions">
+                    <button type="submit" form="profileForm" class="save-btn">Enregistrer</button>
+                    <form method="post" action="{{ path('app_profil_delete') }}" onsubmit="return confirm('Supprimer votre compte ?');">
+                        <button type="submit" class="delete-btn">Supprimer compte</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <aside class="sidebar-right">
+        <div class="side-title">Contacts</div>
+        <div class="contacts-list">
+            {% if contacts is empty %}
+                <div class="contact-row">
+                    <div class="contact-avatar"></div>
+                    <div class="contact-name">Aucun contact</div>
+                </div>
+            {% else %}
+                {% for contact in contacts %}
+                    <div class="contact-row">
+                        {% if contact.photoProfil %}
+                            <img src="{{ asset(contact.photoProfil|trim('/') ) }}" class="contact-avatar" alt="">
+                        {% else %}
+                            <div class="contact-avatar"></div>
+                        {% endif %}
+                        <div class="contact-name">{{ contact.nom }} {{ contact.prenom }}</div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </aside>
+</div>
+
+{% if not is_visiting %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('profileForm');
+    const coverBox = document.querySelector('.cover-box');
+    const photoProfilInput = document.getElementById('photoProfilInput');
+    const photoCoverInput = document.getElementById('photoCoverInput');
+    const avatarImg = document.querySelector('.avatar-img');
+
+    if (photoProfilInput) {
+        photoProfilInput.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+
+            if (avatarImg) {
+                avatarImg.src = URL.createObjectURL(file);
+            }
+
+            form.submit();
+        });
+    }
+
+    if (photoCoverInput) {
+        photoCoverInput.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+
+            if (coverBox) {
+                coverBox.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
+                coverBox.style.backgroundSize = 'cover';
+                coverBox.style.backgroundPosition = 'center';
+            }
+
+            form.submit();
+        });
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

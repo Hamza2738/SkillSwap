@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap — Vos Compétences</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{
+            --bg:#020b1d;--top:#081225;--panel:#081328;--line:#203152;--text:#f6f8ff;
+            --muted:#8fa3c7;--input:#1a2742;--input-border:#31476e;--purple:#7d74ff;--purple2:#6aa2ff;
+        }
+        html,body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+        a{text-decoration:none;color:inherit}
+        .topbar{height:70px;background:var(--top);border-bottom:1px solid #112241;display:flex;align-items:center;padding:0 24px;gap:16px}
+        .brand{display:flex;align-items:center;gap:12px}
+        .brand img{width:42px;height:42px;object-fit:contain}
+        .brand span{color:#fff;font-size:15px;font-weight:700}
+        .spacer{flex:1}
+        .top-nav{display:flex;gap:18px}
+        .nav-link{font-size:13px;color:#eef2ff;opacity:.9}
+        .page{max-width:1280px;width:100%;margin:0 auto;padding:26px 18px 36px}
+        .page-title{font-size:56px;font-weight:800;letter-spacing:-2px;color:#fff4ec;margin-bottom:20px}
+        .layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+        .card{background:var(--panel);border:1px solid #1b2c4b;border-radius:22px;padding:16px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+        .card-title{font-size:18px;font-weight:800;color:#fff;margin-bottom:12px}
+        .flash{border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:14px}
+        .flash.success{background:rgba(47,191,143,.12);border:1px solid rgba(47,191,143,.32);color:#67e3b5}
+        .flash.error{background:rgba(255,107,129,.12);border:1px solid rgba(255,107,129,.32);color:#ff96a6}
+        .table-wrap{overflow:auto;border-radius:16px;border:1px solid #233555;background:#071124;min-height:458px}
+        table{width:100%;border-collapse:collapse;font-size:13px}
+        thead tr{background:#1b2940}
+        thead th{padding:12px 10px;text-align:center;font-size:13px;font-weight:700;color:#ecf2ff;border-right:1px solid rgba(255,255,255,.08);white-space:nowrap}
+        tbody tr{border-bottom:1px solid #1b2a47;cursor:pointer;transition:.15s ease}
+        tbody tr:hover{background:rgba(125,116,255,.08)}
+        tbody tr.selected{background:rgba(125,116,255,.14)}
+        tbody td{padding:10px 10px;text-align:center;border-right:1px solid rgba(255,255,255,.08);color:#f2f6ff}
+        .empty-state{text-align:center;padding:40px;color:var(--muted);font-style:italic}
+        .badge{display:inline-flex;align-items:center;justify-content:center;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+        .badge-valid{color:#44d39b;background:rgba(47,191,143,.12)}
+        .badge-cours{color:#66b8ff;background:rgba(102,184,255,.12)}
+        .badge-expire{color:#ff8ea1;background:rgba(255,107,129,.12)}
+        .field-group{margin-bottom:12px}
+        .field-label{display:block;font-size:13px;font-weight:600;color:#eef2ff;margin-bottom:6px}
+        .input,.select,.textarea{width:100%;background:var(--input);border:1px solid var(--input-border);color:#fff;border-radius:12px;padding:10px 14px;outline:none;font-size:14px}
+        .textarea{resize:vertical;min-height:72px}
+        .hint{display:block;margin-top:8px;min-height:18px;color:#ff92a4;font-size:13px}
+        .btn-row,.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+        .btn{display:inline-flex;align-items:center;justify-content:center;border:none;border-radius:14px;padding:10px 16px;font-size:14px;font-weight:700;cursor:pointer;color:#fff}
+        .btn-primary,.btn-warning,.btn-ghost,.btn-teal{background:linear-gradient(135deg,var(--purple2),var(--purple))}
+        .btn-danger{background:linear-gradient(135deg,#8d8cff,#8570ff)}
+        .btn-icon-danger{background:transparent;border:none;color:#ff9cb0;cursor:pointer;font-size:15px}
+        #calendarModal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:1000}
+        .modal-card{width:420px;background:#0b1830;border:1px solid #2a3b60;border-radius:20px;padding:18px}
+        .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .cal-title{font-size:20px;font-weight:800}
+        .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+        .dow,.day{display:flex;align-items:center;justify-content:center;height:38px;border-radius:10px}
+        .dow{font-size:12px;color:#9fb2d9}
+        .day{background:#16223d;cursor:pointer}
+        .day.today{outline:2px solid #6aa2ff}
+        .day.selected{background:linear-gradient(135deg,var(--purple2),var(--purple))}
+        @media (max-width:1180px){.layout{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<header class="topbar">
+    <a href="#" class="brand">
+        <img src="{{ asset('image/competences/logo.png') }}" alt="SkillSwap">
+        <span>SkillSwap</span>
+    </a>
+    <div class="spacer"></div>
+    <nav class="top-nav">
+        <a href="{{ path('app_accueil') }}" class="nav-link">Accueil</a>
+        <a href="{{ path('app_profil') }}" class="nav-link">Profil</a>
+        <a href="#" class="nav-link">Offres</a>
+    </nav>
+</header>
+
+<main class="page">
+    <h1 class="page-title">Vos Compétences</h1>
+
+    {% for msg in app.flashes('success') %}
+        <div class="flash success">✓ {{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('error') %}
+        <div class="flash error">✗ {{ msg }}</div>
+    {% endfor %}
+
+    <div class="layout">
+        <div class="card">
+            <div class="table-wrap">
+                <table id="comp-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Niveau</th>
+                        <th>Type</th>
+                        <th>Catégorie</th>
+                        <th>Certification</th>
+                        <th>Expérience</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i, comp in competences %}
+                        <tr
+                            data-id="{{ comp.id }}"
+                            data-type="{{ comp.type }}"
+                            data-category="{{ comp.category }}"
+                            data-description="{{ comp.description }}"
+                            data-niveau="{{ comp.niveau }}"
+                            data-annees="{{ comp.anneesExperience }}"
+                            data-certification="{{ comp.certification }}"
+                            data-statut="{{ comp.statut }}"
+                            onclick="selectRow(this)"
+                        >
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ comp.email }}</td>
+                            <td>{{ comp.niveau }}</td>
+                            <td>{{ comp.type }}</td>
+                            <td>{{ comp.category }}</td>
+                            <td>{{ comp.certification ?: '—' }}</td>
+                            <td>{{ comp.anneesExperience }}</td>
+                            <td>
+                                {% if comp.statut == 'Validée' %}
+                                    <span class="badge badge-valid">Validée</span>
+                                {% elseif comp.statut == 'En cours' %}
+                                    <span class="badge badge-cours">En cours</span>
+                                {% else %}
+                                    <span class="badge badge-expire">Expirée</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ path('competence_front_delete', {id: comp.id}) }}" onsubmit="return confirm('Supprimer cette compétence ?');">
+                                    <button type="submit" class="btn-icon-danger">✕</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="empty-state">Aucune compétence enregistrée.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="action-row">
+                <button type="button" class="btn btn-teal" onclick="openCalendar()">Calendrier</button>
+                <a href="{{ path('competence_front_chatbot') }}" class="btn btn-teal">Chatbot</a>
+            </div>
+        </div>
+
+       <div class="card">
+    <div class="card-title" id="form-title">
+        {{ editing ? 'Modifier votre compétence' : 'Ajouter votre compétence' }}
+    </div>
+
+    {{ form_start(form, {
+        'attr': {'id': 'competenceForm'},
+        'action': editing ? path('competence_front_edit', {'id': editing.id}) : path('competence_front_index'),
+        'method': 'POST'
+    }) }}
+
+    <div class="field-group">
+        <label class="field-label">Type</label>
+        {{ form_widget(form.type, {attr: {class: 'input', placeholder: 'Ex: Java'}}) }}
+    </div>
+
+    <div class="field-group">
+        <label class="field-label">Catégorie</label>
+        {{ form_widget(form.category, {attr: {class: 'input', placeholder: 'Ex: IT'}}) }}
+    </div>
+
+    <div class="field-group">
+        <label class="field-label">Description</label>
+        {{ form_widget(form.description, {attr: {class: 'textarea', placeholder: 'Description...', rows: 3}}) }}
+    </div>
+
+    <div class="field-group">
+        <label class="field-label">Niveau</label>
+        {{ form_widget(form.niveau, {attr: {class: 'select'}}) }}
+    </div>
+
+    <div class="field-group">
+        <label class="field-label">Années d'expérience</label>
+        {{ form_widget(form.anneesExperience, {attr: {class: 'input', min: 0, max: 60}}) }}
+    </div>
+
+    <div class="field-group">
+        <label class="field-label">Certification</label>
+        {{ form_widget(form.certification, {attr: {class: 'input', placeholder: 'Ex: Oracle, AWS...'}}) }}
+    </div>
+
+    {% if error %}
+        <span class="hint">{{ error }}</span>
+    {% endif %}
+
+    <div class="btn-row">
+        <button type="submit" class="btn btn-primary">
+            {{ editing ? 'Modifier' : 'Ajouter' }}
+        </button>
+        <button type="button" class="btn btn-warning" onclick="submitEdit()">Modifier</button>
+        <button type="button" class="btn btn-danger" onclick="submitDelete()">Supprimer</button>
+        <button type="button" class="btn btn-ghost" onclick="resetForm()">Réinitialiser</button>
+    </div>
+
+    {{ form_end(form) }}
+</div>
+</main>
+
+<div id="calendarModal">
+    <div class="modal-card">
+        <div class="cal-header">
+            <button class="btn btn-ghost" type="button" onclick="changeMonth(-1)">◀</button>
+            <div class="cal-title" id="calTitle"></div>
+            <button class="btn btn-ghost" type="button" onclick="changeMonth(1)">▶</button>
+        </div>
+        <div class="cal-grid" id="calendarGrid"></div>
+        <div class="btn-row" style="justify-content:flex-end;margin-top:14px;">
+            <button class="btn btn-ghost" type="button" onclick="closeCalendar()">Fermer</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedId = {{ editing ? editing.id : 'null' }};
+
+function selectRow(tr) {
+    document.querySelectorAll('#comp-table tbody tr').forEach(r => r.classList.remove('selected'));
+    tr.classList.add('selected');
+
+    selectedId = tr.dataset.id;
+
+    document.getElementById('competenceForm').querySelector('[id$="_type"]').value = tr.dataset.type || '';
+    document.getElementById('competenceForm').querySelector('[id$="_category"]').value = tr.dataset.category || '';
+    document.getElementById('competenceForm').querySelector('[id$="_description"]').value = tr.dataset.description || '';
+    document.getElementById('competenceForm').querySelector('[id$="_niveau"]').value = tr.dataset.niveau || 'Débutant';
+    document.getElementById('competenceForm').querySelector('[id$="_anneesExperience"]').value = tr.dataset.annees || '0';
+    document.getElementById('competenceForm').querySelector('[id$="_certification"]').value = tr.dataset.certification || '';
+}
+
+function submitEdit() {
+    if (!selectedId) {
+        alert('Sélectionne une ligne.');
+        return;
+    }
+    const form = document.getElementById('competenceForm');
+    form.action = '/front/competences/edit/' + selectedId;
+    form.submit();
+}
+
+function submitDelete() {
+    if (!selectedId) {
+        alert('Sélectionne une ligne.');
+        return;
+    }
+    if (!confirm('Supprimer cette compétence ?')) return;
+
+    const form = document.createElement('form');
+    form.method = 'post';
+    form.action = '/front/competences/delete/' + selectedId;
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function resetForm() {
+    selectedId = null;
+    document.querySelectorAll('#comp-table tbody tr').forEach(r => r.classList.remove('selected'));
+    document.getElementById('competenceForm').reset();
+
+    const niveau = document.getElementById('competenceForm').querySelector('[id$="_niveau"]');
+    const annees = document.getElementById('competenceForm').querySelector('[id$="_anneesExperience"]');
+
+    if (niveau) niveau.value = 'Débutant';
+    if (annees) annees.value = '0';
+}
+</script>
+</body>
+</html>

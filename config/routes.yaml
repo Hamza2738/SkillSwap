@@ -3,3 +3,9 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+competence_controllers:
+    resource:
+        path: ../src/Controller/competence/
+        namespace: App\Controller\competence
+    type: attribute

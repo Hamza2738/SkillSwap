@@ -1,0 +1,365 @@
+{# templates/Competences/front/ChatBoat.html.twig #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap — Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #0b0e14;
+            --surface: #131720;
+            --card:    #181e2b;
+            --border:  #252d3f;
+            --accent:  #4f8ef7;
+            --accent2: #a78bfa;
+            --text:    #e2e8f0;
+            --muted:   #64748b;
+            --bot-bg:  #1a2236;
+            --user-bg: #1e3a5f;
+            --radius:  12px;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .bot-avatar {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .header-title {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-sub { font-size: 0.75rem; color: var(--muted); }
+        .spacer { flex: 1; }
+        .btn-back {
+            background: var(--border);
+            border: none;
+            color: var(--text);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .2s;
+        }
+        .btn-back:hover { background: #2e3a52; }
+
+        /* ── CHAT AREA ── */
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+        }
+        #messages::-webkit-scrollbar { width: 4px; }
+        #messages::-webkit-scrollbar-track { background: transparent; }
+        #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* ── BUBBLES ── */
+        .bubble-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            animation: fadeUp .25s ease both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .bubble-row.user { flex-direction: row-reverse; }
+
+        .avatar-sm {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .avatar-bot { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+        .avatar-user { background: #2d4a6e; }
+
+        .bubble {
+            max-width: 72%;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            line-height: 1.55;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .bubble-bot {
+            background: var(--bot-bg);
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+        .bubble-user {
+            background: var(--user-bg);
+            border: 1px solid #2a4870;
+            border-bottom-right-radius: 4px;
+            color: #cde0ff;
+        }
+        .bubble-time {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 4px;
+            text-align: right;
+        }
+        .bubble-user + .bubble-time,
+        .bubble-bot + .bubble-time { text-align: left; }
+
+        /* ── INPUT ROW ── */
+        .input-row {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        #tfMessage {
+            flex: 1;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            padding: 10px 18px;
+            outline: none;
+            transition: border .2s;
+        }
+        #tfMessage:focus { border-color: var(--accent); }
+        #tfMessage::placeholder { color: var(--muted); }
+
+        .btn {
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: opacity .2s, transform .1s;
+            font-size: 16px;
+        }
+        .btn:hover { opacity: .85; transform: scale(1.06); }
+        .btn.secondary {
+            background: var(--border);
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* ── TYPING INDICATOR ── */
+        .typing-indicator {
+            display: flex; gap: 4px; padding: 10px 14px; align-items: center;
+            background: var(--bot-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+        .dot {
+            width: 7px; height: 7px;
+            background: var(--muted);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+        .dot:nth-child(2) { animation-delay: .2s; }
+        .dot:nth-child(3) { animation-delay: .4s; }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%            { transform: translateY(-6px); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+    <div class="bot-avatar">🤖</div>
+    <div>
+        <div class="header-title">Assistant SkillSwap</div>
+        <div class="header-sub">Conseiller professionnel IA</div>
+    </div>
+    <div class="spacer"></div>
+    <a href="{{ path('competence_front_index') }}" class="btn-back">← Retour</a>
+</header>
+
+<!-- ── MESSAGES ── -->
+<div id="messages">
+    <!-- Welcome message injected by JS -->
+</div>
+
+<!-- ── INPUT ── -->
+<div class="input-row">
+    <input id="tfMessage" type="text" placeholder="Écris ton message… (Entrée pour envoyer)" autocomplete="off"/>
+    <button class="btn" id="sendBtn" title="Envoyer">➤</button>
+    <button class="btn secondary" id="clearBtn" title="Vider">🗑</button>
+</div>
+
+<script>
+    // ── CONFIG ──────────────────────────────────────────────────────────────────
+    const SEND_URL = '{{ path('competence_front_chatbot_send') }}';
+
+    const messagesEl = document.getElementById('messages');
+    const tfMessage  = document.getElementById('tfMessage');
+    const sendBtn    = document.getElementById('sendBtn');
+    const clearBtn   = document.getElementById('clearBtn');
+
+    // ── UTILS ───────────────────────────────────────────────────────────────────
+    function now() {
+        return new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'});
+    }
+
+    function scrollBottom() {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function addMessage(text, isUser) {
+        const row = document.createElement('div');
+        row.className = 'bubble-row' + (isUser ? ' user' : '');
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar-sm ' + (isUser ? 'avatar-user' : 'avatar-bot');
+        avatar.textContent = isUser ? '👤' : '🤖';
+
+        const inner = document.createElement('div');
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble ' + (isUser ? 'bubble-user' : 'bubble-bot');
+        bubble.textContent = text;
+
+        const time = document.createElement('div');
+        time.className = 'bubble-time';
+        time.textContent = now();
+
+        inner.appendChild(bubble);
+        inner.appendChild(time);
+
+        row.appendChild(avatar);
+        row.appendChild(inner);
+
+        messagesEl.appendChild(row);
+        scrollBottom();
+        return row;
+    }
+
+    function showTyping() {
+        const row = document.createElement('div');
+        row.className = 'bubble-row';
+        row.id = 'typing';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar-sm avatar-bot';
+        avatar.textContent = '🤖';
+
+        const ind = document.createElement('div');
+        ind.className = 'typing-indicator';
+        ind.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+
+        row.appendChild(avatar);
+        row.appendChild(ind);
+        messagesEl.appendChild(row);
+        scrollBottom();
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('typing');
+        if (t) t.remove();
+    }
+
+    // ── SEND ────────────────────────────────────────────────────────────────────
+    async function onSend() {
+        const text = tfMessage.value.trim();
+        if (!text) return;
+
+        tfMessage.value = '';
+        addMessage(text, true);
+        showTyping();
+        sendBtn.disabled = true;
+
+        try {
+            const res = await fetch(SEND_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+            removeTyping();
+            addMessage(data.reply || '…', false);
+        } catch (e) {
+            removeTyping();
+            addMessage('Erreur de connexion au serveur.', false);
+        } finally {
+            sendBtn.disabled = false;
+            tfMessage.focus();
+        }
+    }
+
+    // ── EVENTS ──────────────────────────────────────────────────────────────────
+    sendBtn.addEventListener('click', onSend);
+
+    tfMessage.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            onSend();
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        messagesEl.innerHTML = '';
+        addMessage('Ok, on repart à zéro. Quel est ton besoin professionnel ?', false);
+    });
+
+    // ── WELCOME ─────────────────────────────────────────────────────────────────
+    addMessage(`Bienvenue sur SkillSwap 👋
+
+Je suis là pour vous accompagner dans vos questions professionnelles.
+
+Vous pouvez me consulter concernant :
+• CV et préparation aux entretiens
+• Gestion du stress et organisation
+• Gestion des conflits
+• Orientation et évolution de carrière
+• Compétences requises par domaine
+
+Exemple : "compétences industrie"`, false);
+</script>
+
+</body>
+</html>
