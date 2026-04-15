@@ -1,4 +1,6 @@
 ### Symfony ###
+.env.test
+.env.dev
 .env
 .env.local
 .env.dev.local
