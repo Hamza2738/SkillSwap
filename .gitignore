@@ -1,10 +1,32 @@
+### Symfony ###
+.env
+.env.local
+.env.dev.local
+.env.test.local
+.env.prod.local
 
-###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
-/config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
+
+### PHPUnit ###
+.phpunit.result.cache
+
+### Front ###
+/node_modules/
+
+### IDE ###
+/.vscode/
+/.idea/
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Uploads ###
+/public/uploads/utilisateur/cover/
+/public/uploads/utilisateur/profil/
+/public/files/
+/public/image/
+
+### Logs ###
+*.log
