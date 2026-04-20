@@ -32,8 +32,53 @@
 }
 .assistant-launch-wrap {
     margin-top: 14px;
+}.status-link {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    transition: opacity .18s ease, color .18s ease;
 }
 
+.status-link:focus {
+    outline: none;
+    box-shadow: none;
+}
+.form-flashes {
+    margin-top: 12px;
+}
+
+.form-flashes .flash {
+    margin-bottom: 10px;
+}
+
+.status-link-strong {
+    color: #00cfff;
+    opacity: .98;
+    cursor: pointer;
+}
+
+.status-link-strong:hover {
+    color: #32d8ff;
+    text-decoration: underline;
+}
+
+.status-link-soft {
+    color: #0d7fb8;
+    opacity: .72;
+    cursor: default;
+}
+
+.status-link.is-disabled,
+.status-link:disabled {
+    pointer-events: none;
+    text-decoration: none;
+}
 .assistant-launch-btn {
     width: 100%;
     border: 1px solid #2f4773;
@@ -123,6 +168,52 @@
     display: flex;
     justify-content: flex-end;
     padding: 0 20px 18px;
+    .status-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 82px;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .18s ease;
+    text-decoration: none;
+}
+
+.status-link:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+
+.status-link-valid {
+    color: #44d39b;
+    background: rgba(47,191,143,.10);
+    border-color: rgba(47,191,143,.30);
+}
+
+.status-link-expired {
+    color: #ff8ea1;
+    background: rgba(255,107,129,.10);
+    border-color: rgba(255,107,129,.30);
+}
+
+.status-link-pending {
+    color: #66b8ff;
+    background: rgba(102,184,255,.10);
+    border-color: rgba(102,184,255,.24);
+}
+
+.status-link.is-disabled,
+.status-link:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
 }
 .assistant-launch-btn:hover {
     transform: translateY(-1px);
@@ -306,12 +397,6 @@ a {
     opacity: 1;
 }
 
-.page {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 26px 18px 40px;
-}
-
 .page-title {
     font-size: 56px;
     font-weight: 800;
@@ -322,10 +407,18 @@ a {
 
 .layout {
     display: grid;
-     grid-template-columns: 70% 34%;
+     grid-template-columns: 80% 35%;
     gap: 18px;
     align-items: start;
 }
+
+.page {
+    max-width: 1300px;
+    margin-left: 200px;  /* ajuste ici */
+    margin-right: auto;
+    padding: 26px 18px 40px;
+} 
+
 @media (max-width: 1180px) {
     .layout {
         grid-template-columns: 1fr;
@@ -348,22 +441,20 @@ a {
 }
 
 .flash {
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-bottom: 12px;
-    font-size: 14px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #8fa3c7;
 }
 
-.flash-success {
-    background: rgba(47,191,143,.12);
-    border: 1px solid rgba(47,191,143,.32);
-    color: #67e3b5;
-}
-
+.flash-success,
 .flash-error {
-    background: rgba(255,107,129,.12);
-    border: 1px solid rgba(255,107,129,.32);
-    color: #ff96a6;
+    background: transparent;
+    border: none;
+    color: #8fa3c7;
 }
 
 .search-bar {
@@ -436,11 +527,10 @@ label {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
-
 .table-wrap {
     overflow: auto;
-    border-radius: 16px;
-    border: 1px solid #233555;
+    border-radius: 0;
+    border: 1px solid #31476e;
     background: #071124;
     min-height: 445px;
 }
@@ -450,13 +540,12 @@ table {
     border-collapse: collapse;
     font-size: 13px;
 }
-
 thead tr {
-    background: #1b2940;
+    background: #1a2740;
 }
 
 thead th {
-    padding: 12px 10px;
+    padding: 14px 10px;
     text-align: center;
     font-size: 13px;
     font-weight: 700;
@@ -470,17 +559,36 @@ thead th:last-child {
 }
 
 tbody tr {
-    border-bottom: 1px solid #1b2a47;
+    border-bottom: 1px solid #2a3a5f;
     transition: .15s ease;
     cursor: pointer;
 }
 
-tbody tr:hover {
-    background: rgba(125,116,255,.08);
+/* Lignes alternées comme dans la capture */
+tbody tr:nth-child(odd) {
+    background: #0a1830;   /* bleu très foncé */
 }
 
+tbody tr:nth-child(even) {
+    background: #101f3d;   /* bleu/violet foncé */
+}
+
+/* Hover */
+tbody tr:hover {
+    background: #1a2b52 !important;
+}
+
+/* Ligne sélectionnée */
 tbody tr.selected {
-    background: rgba(125,116,255,.14);
+    background: #243768 !important;
+}
+
+/* Cellules */
+tbody td {
+    padding: 10px 10px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,.08);
+    color: #f2f6ff;
 }
 
 tbody td {
@@ -568,15 +676,24 @@ tbody td:last-child {
     background: rgba(102,184,255,.12);
     border-color: rgba(102,184,255,.25);
 }
-
-.btn-row,
-.action-bar {
+.btn-row {
     display: flex;
+    align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
     margin-top: 14px;
+    width: 100%;
 }
 
+.btn-row .btn {
+    flex: 1 1 0;
+    min-width: 0;
+    width: 0;
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 16px;
+    justify-content: center;
+    text-align: center;
+}
 .btn {
     display: inline-flex;
     align-items: center;
@@ -637,6 +754,7 @@ tbody td:last-child {
 .btn-sm {
     background: linear-gradient(135deg, var(--purple-2), var(--purple));
 }
+
 .search-right {
     display: flex;
     align-items: center;
@@ -756,12 +874,6 @@ tbody td:last-child {
         <span class="count-pill">{{ competences|length }} entrée{{ competences|length > 1 ? 's' : '' }}</span>
     </div>
 
-    {% for msg in app.flashes('success') %}
-        <div class="flash flash-success">✓ {{ msg }}</div>
-    {% endfor %}
-    {% for msg in app.flashes('error') %}
-        <div class="flash flash-error">✗ {{ msg }}</div>
-    {% endfor %}
 
     <div class="layout">
         <div class="card">
@@ -825,16 +937,37 @@ tbody td:last-child {
                             data-email="{{ c.email }}">
                             <td>{{ c.id }}</td>
                             <td>{{ c.email }}</td>
-                            <td>
-                                {% set s = c.statut|lower %}
-                                {% if s == 'validée' or s == 'validee' %}
-                                    <span class="badge badge-active">{{ c.statut }}</span>
-                                {% elseif s == 'expirée' or s == 'expiree' %}
-                                    <span class="badge badge-inactive">{{ c.statut }}</span>
-                                {% else %}
-                                    <span class="badge badge-pending">{{ c.statut }}</span>
-                                {% endif %}
-                            </td>
+                     <td>
+                            {% set s = c.statut|lower %}
+
+                            {% if s == 'validée' or s == 'validee' %}
+                                <button
+                                    type="button"
+                                    class="status-link status-link-strong"
+                                    onclick="sendStatusMail(this, {{ c.id }}, '{{ c.email|e('js') }}', '{{ c.statut|e('js') }}')"
+                                >
+                                    {{ c.statut }}
+                                </button>
+
+                            {% elseif s == 'expirée' or s == 'expiree' %}
+                                <button
+                                    type="button"
+                                    class="status-link status-link-strong"
+                                    onclick="sendStatusMail(this, {{ c.id }}, '{{ c.email|e('js') }}', '{{ c.statut|e('js') }}')"
+                                >
+                                    {{ c.statut }}
+                                </button>
+
+                            {% else %}
+                                <button
+                                    type="button"
+                                    class="status-link status-link-soft is-disabled"
+                                    disabled
+                                >
+                                    {{ c.statut }}
+                                </button>
+                            {% endif %}
+                        </td>
                             <td>{{ c.niveau }}</td>
                             <td>{{ c.type }}</td>
                             <td>{{ c.category }}</td>
@@ -856,18 +989,15 @@ tbody td:last-child {
 
 <div class="action-bar">
     <a href="{{ path('competence_export_pdf') }}" class="btn btn-ghost">Télécharger PDF</a>
-    <a href="{{ path('competence_calendar') }}" class="btn btn-ghost">Calendrier</a>
+    
    <button type="button" class="btn btn-ghost" onclick="openDashboardModal()">Dashboard</button>
-    <a href="{{ path('competence_historique') }}" class="btn btn-ghost">Historique</a>
+   <button type="button" class="btn btn-ghost" onclick="openHistoriqueModal()">Historique</button>
 </div>
         </div>
 
         <div class="card">
             <div class="card-title" id="formTitle">Changer la liste</div>
 
-            <div class="selected-strip" id="selectedStrip">
-                📌 <span id="selectedLabel">Aucune ligne sélectionnée</span>
-            </div>
 
             {{ form_start(form, {
                 'attr': {'id': 'competenceForm', 'novalidate': 'novalidate', 'autocomplete': 'off'},
@@ -935,13 +1065,22 @@ tbody td:last-child {
                 <button type="button" onclick="doDelete()" class="btn btn-delete">Supprimer</button>
                 <button type="button" onclick="resetForm()" class="btn btn-reset">Réinitialiser</button>
             </div>
+            
           <div class="assistant-launch-wrap">
     <button type="button" class="assistant-launch-btn" onclick="toggleAssistantWindow()">
         💬 Assistant SkillSwap
     </button>
 </div>
 
+        <div class="form-flashes">
+    {% for msg in app.flashes('success') %}
+        <div class="flash flash-success">✓ {{ msg }}</div>
+    {% endfor %}
 
+    {% for msg in app.flashes('error') %}
+        <div class="flash flash-error">✗ {{ msg }}</div>
+    {% endfor %}
+</div>
             {{ form_end(form) }}
 
             <p class="hint">Astuce : clique sur une ligne pour remplir le formulaire.</p>
@@ -984,6 +1123,80 @@ tbody td:last-child {
 
         <div class="dashboard-modal-footer">
             <button type="button" class="btn btn-ghost" onclick="closeDashboardModal()">Fermer</button>
+        </div>
+    </div>
+</div>
+<div id="historiqueModal" class="dashboard-modal">
+    <div class="dashboard-box" style="width:min(1180px,96vw);">
+        <div class="dashboard-modal-header">
+            <div>
+                <div class="dashboard-modal-title">Historique Compétences</div>
+                <div class="dashboard-modal-subtitle">Recherche, filtre date, suppression multiple et export PDF</div>
+            </div>
+            <button type="button" class="dashboard-close" onclick="closeHistoriqueModal()">✕</button>
+        </div>
+
+        <div class="dashboard-modal-body">
+            <div class="card" style="background:#071124;border:none;padding:0;">
+               <div class="search-bar" style="padding:0 0 14px 0;">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <label for="histSearch" style="font-size:13px;color:#eaf0ff;">Recherche :</label>
+
+        <select id="histAttr" style="width:160px;">
+            <option value="all">Tous</option>
+            <option value="statusChange">Action</option>
+            <option value="dateModification">Date</option>
+            <option value="email">Email</option>
+            <option value="type">Type</option>
+            <option value="category">Catégorie</option>
+            <option value="niveau">Niveau</option>
+            <option value="anneesExperience">Expérience</option>
+            <option value="statut">Statut</option>
+            <option value="certification">Certification</option>
+            <option value="description">Description</option>
+        </select>
+
+        <input type="text" id="histSearch" placeholder="Rechercher..." style="width:220px;">
+
+        <button type="button" class="btn btn-ghost" onclick="resetHistoriqueFilters()">Réinitialiser</button>
+    </div>
+</div>
+
+                <div class="table-wrap" style="min-height:420px;">
+                    <table id="historiqueTable">
+                        <thead>
+                            <tr>
+                                <th style="width:40px;">
+                                    <input type="checkbox" id="histSelectAll">
+                                </th>
+                                <th>Action</th>
+                                <th>Date</th>
+                                <th>Email</th>
+                                <th>Catégorie</th>
+                                <th>Type</th>
+                                <th>Niveau</th>
+                                <th>Exp.</th>
+                                <th>Statut</th>
+                                <th>Certification</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historiqueTbody"></tbody>
+                    </table>
+                </div>
+
+                <div class="action-bar">
+                    <button type="button" class="btn btn-ghost" onclick="loadHistorique()">Rafraîchir</button>
+                    <a href="{{ path('competence_historique_export_pdf') }}" class="btn btn-ghost">Télécharger PDF</a>
+                    <button type="button" class="btn btn-delete" onclick="deleteSelectedHistorique()">Supprimer</button>
+                </div>
+
+                <p class="hint" id="historiqueHint"></p>
+            </div>
+        </div>
+
+        <div class="dashboard-modal-footer">
+            <button type="button" class="btn btn-ghost" onclick="closeHistoriqueModal()">Fermer</button>
         </div>
     </div>
 </div>
@@ -1267,9 +1480,175 @@ function toggleAssistantMinimize() {
 
 
 
+let historiqueRows = [];
 
+function openHistoriqueModal() {
+    const modal = document.getElementById('historiqueModal');
+    modal.classList.add('open');
+    loadHistorique();
+}
 
+function closeHistoriqueModal() {
+    document.getElementById('historiqueModal').classList.remove('open');
+}
 
+async function loadHistorique() {
+    const tbody = document.getElementById('historiqueTbody');
+    const hint = document.getElementById('historiqueHint');
+    tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Chargement...</td></tr>';
+
+    try {
+        const res = await fetch('{{ path("competence_historique_data") }}');
+        const data = await res.json();
+        historiqueRows = data.items || [];
+        renderHistoriqueRows();
+        hint.textContent = '';
+    } catch (e) {
+        console.error(e);
+        tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Erreur de chargement.</td></tr>';
+        hint.textContent = 'Erreur lors du chargement de l’historique.';
+    }
+}
+
+function renderHistoriqueRows() {
+    const tbody = document.getElementById('historiqueTbody');
+    const attr = document.getElementById('histAttr').value;
+    const q = document.getElementById('histSearch').value.toLowerCase().trim();
+
+    const filtered = historiqueRows.filter(row => {
+        if (!q) return true;
+
+        const annees = String(row.anneesExperience ?? '');
+        const fields = {
+            statusChange: row.statusChange ?? '',
+            dateModification: row.dateModification ?? '',
+            email: row.email ?? '',
+            type: row.type ?? '',
+            category: row.category ?? '',
+            niveau: row.niveau ?? '',
+            anneesExperience: annees,
+            statut: row.statut ?? '',
+            certification: row.certification ?? '',
+            description: row.description ?? '',
+        };
+
+        if (attr === 'all') {
+            return Object.values(fields).some(v => String(v).toLowerCase().includes(q));
+        }
+
+        return String(fields[attr] ?? '').toLowerCase().includes(q);
+    });
+
+    if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="11" class="empty-state">Aucun historique trouvé.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = filtered.map(row => `
+        <tr>
+            <td><input type="checkbox" class="hist-check" value="${row.id}"></td>
+            <td>${escapeHtml(row.statusChange ?? '')}</td>
+            <td>${formatDate(row.dateModification)}</td>
+            <td>${escapeHtml(row.email ?? '')}</td>
+            <td>${escapeHtml(row.category ?? '')}</td>
+            <td>${escapeHtml(row.type ?? '')}</td>
+            <td>${escapeHtml(row.niveau ?? '')}</td>
+            <td>${escapeHtml(String(row.anneesExperience ?? ''))}</td>
+            <td>${escapeHtml(row.statut ?? '')}</td>
+            <td>${escapeHtml(row.certification ?? '')}</td>
+            <td title="${escapeHtml(row.description ?? '')}">
+                ${escapeHtml(shortText(row.description ?? '', 40))}
+            </td>
+        </tr>
+    `).join('');
+}
+async function sendStatusMail(button, id, email, statut) {
+    if (!id || !button) return;
+
+    try {
+        const response = await fetch(
+            '{{ path("competence_send_mail", {"id": "__ID__"}) }}'.replace('__ID__', id),
+            {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            console.error(data.message || "Erreur lors de l'envoi du mail.");
+            return;
+        }
+
+        button.classList.remove('status-link-strong');
+        button.classList.add('status-link-soft', 'is-disabled');
+        button.disabled = true;
+        button.onclick = null;
+    } catch (e) {
+        console.error("Erreur de connexion lors de l'envoi du mail.");
+    }
+}
+
+function deleteSelectedHistorique() {
+    const ids = Array.from(document.querySelectorAll('.hist-check:checked')).map(el => parseInt(el.value, 10));
+    if (!ids.length) {
+        document.getElementById('historiqueHint').textContent = 'Veuillez sélectionner au moins une ligne.';
+        return;
+    }
+
+    if (!confirm(`Supprimer ${ids.length} ligne(s) sélectionnée(s) ?`)) {
+        return;
+    }
+
+    fetch('{{ path("competence_historique_delete_multiple") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ ids })
+    })
+    .then(r => r.json())
+    .then(() => loadHistorique())
+    .catch(() => {
+        document.getElementById('historiqueHint').textContent = 'Erreur suppression.';
+    });
+}
+
+function resetHistoriqueFilters() {
+    document.getElementById('histAttr').value = 'all';
+    document.getElementById('histSearch').value = '';
+    renderHistoriqueRows();
+}
+
+function formatDate(v) {
+    if (!v) return '';
+    const d = new Date(v.replace(' ', 'T'));
+    if (isNaN(d)) return v;
+    return d.toLocaleString('fr-FR');
+}
+
+function shortText(s, max) {
+    return s.length > max ? s.slice(0, max) + '…' : s;
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('histAttr').addEventListener('change', renderHistoriqueRows);
+    document.getElementById('histSearch').addEventListener('input', renderHistoriqueRows);
+
+    document.getElementById('histSelectAll').addEventListener('change', function () {
+        document.querySelectorAll('.hist-check').forEach(cb => cb.checked = this.checked);
+    });
+});
 
 
 

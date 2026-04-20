@@ -20,6 +20,212 @@
         .brand span{color:#fff;font-size:15px;font-weight:700}
         .spacer{flex:1}
         .top-nav{display:flex;gap:18px}
+       
+
+
+.assistant-launch-wrap {
+    margin-top: 14px;
+}
+
+.assistant-launch-btn {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid #2f4773;
+    background: linear-gradient(135deg, #132342, #1a2d54);
+    color: #eef4ff;
+    border-radius: 16px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s ease;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+.assistant-launch-btn:hover {
+    transform: translateY(-1px);
+    border-color: #5f82d1;
+    background: linear-gradient(135deg, #17305b, #213b6c);
+}
+
+.assistant-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ff3b4d;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    box-shadow: 0 0 0 3px rgba(255,255,255,.04);
+}
+
+.assistant-badge.hidden {
+    display: none;
+}
+
+.assistant-window {
+    position: fixed;
+    right: 26px;
+    bottom: 26px;
+    width: 360px;
+    height: 500px;
+    background: #0a152d;
+    border: 1px solid #233555;
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(0,0,0,.35);
+    display: none;
+    flex-direction: column;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.assistant-window.open {
+    display: flex;
+}
+
+.assistant-window-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid #223454;
+    background: #0c1830;
+}
+
+.assistant-window-subtitle {
+    font-size: 12px;
+    color: #8fa3c7;
+    margin-top: 2px;
+}
+
+.assistant-window-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.assistant-minimize,
+.assistant-close {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: .2s ease;
+}
+
+.assistant-minimize:hover,
+.assistant-close:hover {
+    background: rgba(255,255,255,.08);
+}
+
+.assistant-window.minimized {
+    height: auto;
+}
+
+.assistant-window.minimized .assistant-window-messages,
+.assistant-window.minimized .assistant-window-input {
+    display: none;
+}
+
+.assistant-window-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #091223;
+}
+
+.assistant-window-input {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid #223454;
+    background: #0c1830;
+}
+
+.assistant-window-input input {
+    flex: 1;
+    background: #16233d;
+    border: 1px solid #31476e;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 12px;
+    outline: none;
+    font-size: 13px;
+}
+
+.assistant-window-input input:focus {
+    border-color: #7d74ff;
+    box-shadow: 0 0 0 3px rgba(125,116,255,.16);
+}
+
+.chat-msg-row {
+    display: flex;
+}
+
+.chat-msg-row.user {
+    justify-content: flex-end;
+}
+
+.chat-msg-row.bot {
+    justify-content: flex-start;
+}
+
+.chat-bubble {
+    max-width: 80%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.chat-bubble.user {
+    background: #21406a;
+    color: #e8f1ff;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.bot {
+    background: #13203a;
+    color: #d9e4ff;
+    border: 1px solid #24375a;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-typing {
+    font-style: italic;
+    color: #8fa3c7;
+}
+
+
+
+
+
+
+
+
+
         .nav-link{font-size:13px;color:#eef2ff;opacity:.9}
         .page{max-width:1280px;width:100%;margin:0 auto;padding:26px 18px 36px}
         .page-title{font-size:56px;font-weight:800;letter-spacing:-2px;color:#fff4ec;margin-bottom:20px}
@@ -150,10 +356,7 @@
                 </table>
             </div>
 
-            <div class="action-row">
-                <button type="button" class="btn btn-teal" onclick="openCalendar()">Calendrier</button>
-                <a href="{{ path('competence_front_chatbot') }}" class="btn btn-teal">Chatbot</a>
-            </div>
+       
         </div>
 
        <div class="card">
@@ -209,8 +412,33 @@
         <button type="button" class="btn btn-danger" onclick="submitDelete()">Supprimer</button>
         <button type="button" class="btn btn-ghost" onclick="resetForm()">Réinitialiser</button>
     </div>
+   <div class="assistant-launch-wrap">
+    <button type="button" class="assistant-launch-btn" onclick="toggleAssistantWindow()" id="assistantLaunchBtn">
+        <span>💬 Assistant SkillSwap</span>
+        <span class="assistant-badge" id="assistantBadge">1</span>
+    </button>
+</div>
 
     {{ form_end(form) }}
+</div><div id="assistantWindow" class="assistant-window">
+    <div class="assistant-window-header">
+        <div>
+            <strong>Assistant SkillSwap</strong>
+            <div class="assistant-window-subtitle">Idées pour votre profil</div>
+        </div>
+
+        <div class="assistant-window-actions">
+            <button type="button" class="assistant-minimize" onclick="toggleAssistantMinimize()">—</button>
+            <button type="button" class="assistant-close" onclick="closeAssistantWindow()">✕</button>
+        </div>
+    </div>
+
+    <div class="assistant-window-messages" id="chatMessages"></div>
+
+    <div class="assistant-window-input">
+        <input type="text" id="chatInput" placeholder="Ex: donne-moi une idée">
+        <button type="button" class="btn btn-ghost" onclick="sendChatMessage()">Envoyer</button>
+    </div>
 </div>
 </main>
 
@@ -227,9 +455,9 @@
         </div>
     </div>
 </div>
-
 <script>
 let selectedId = {{ editing ? editing.id : 'null' }};
+let assistantIntroLoaded = false;
 
 function selectRow(tr) {
     document.querySelectorAll('#comp-table tbody tr').forEach(r => r.classList.remove('selected'));
@@ -280,6 +508,159 @@ function resetForm() {
     if (niveau) niveau.value = 'Débutant';
     if (annees) annees.value = '0';
 }
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text ?? '';
+    return div.innerHTML;
+}
+
+function formatAssistantMessage(text) {
+    const safe = escapeHtml(text);
+
+    return safe.replace(
+        /(\/front\/competences\/cv\/pdf)/g,
+        '<a href="$1" target="_blank" style="color:#8ab4ff;text-decoration:underline;">Télécharger le CV PDF</a>'
+    );
+}
+
+function addChatMessage(role, text) {
+    const box = document.getElementById('chatMessages');
+    const row = document.createElement('div');
+    row.className = 'chat-msg-row ' + role;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble ' + role;
+
+    if (role === 'bot') {
+        bubble.innerHTML = formatAssistantMessage(text);
+    } else {
+        bubble.textContent = text;
+    }
+
+    row.appendChild(bubble);
+    box.appendChild(row);
+    box.scrollTop = box.scrollHeight;
+}
+
+function addChatUserMessage(text) {
+    addChatMessage('user', text);
+}
+
+function addChatBotMessage(text) {
+    addChatMessage('bot', text);
+}
+
+function addChatTyping() {
+    const box = document.getElementById('chatMessages');
+    const row = document.createElement('div');
+    row.className = 'chat-msg-row bot';
+    row.id = 'chatTypingRow';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble bot chat-typing';
+    bubble.textContent = "Je réfléchis...";
+
+    row.appendChild(bubble);
+    box.appendChild(row);
+    box.scrollTop = box.scrollHeight;
+}
+
+function removeChatTyping() {
+    const el = document.getElementById('chatTypingRow');
+    if (el) el.remove();
+}
+
+async function loadAssistantIntro() {
+    if (assistantIntroLoaded) return;
+
+    addChatBotMessage("Bonjour, comment ça va ? J’ai quelques idées pour votre profil. Si vous voulez ☺️");
+    assistantIntroLoaded = true;
+
+    const badge = document.getElementById('assistantBadge');
+    if (badge) badge.classList.add('hidden');
+}
+
+async function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    addChatUserMessage(text);
+    addChatTyping();
+
+    try {
+        const response = await fetch('{{ path("competence_front_chatbot_send") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+        removeChatTyping();
+
+        if (!response.ok) {
+            addChatBotMessage(data.reply || "Je n’ai pas compris. Réessayez.");
+            return;
+        }
+
+        addChatBotMessage(data.reply || "Je n’ai pas de réponse pour le moment.");
+    } catch (e) {
+        removeChatTyping();
+        addChatBotMessage("Erreur de connexion avec le serveur.");
+    }
+}
+
+function toggleAssistantWindow() {
+    const win = document.getElementById('assistantWindow');
+    if (!win) return;
+
+    const isOpening = !win.classList.contains('open');
+
+    if (isOpening) {
+        win.classList.add('open');
+        win.classList.remove('minimized');
+
+        const chatMessages = document.getElementById('chatMessages');
+        if (chatMessages && chatMessages.innerHTML.trim() === '') {
+            loadAssistantIntro();
+        }
+        return;
+    }
+
+    win.classList.remove('open');
+    win.classList.remove('minimized');
+}
+
+function closeAssistantWindow() {
+    const win = document.getElementById('assistantWindow');
+    if (!win) return;
+
+    win.classList.remove('open');
+    win.classList.remove('minimized');
+}
+
+function toggleAssistantMinimize() {
+    const win = document.getElementById('assistantWindow');
+    if (!win || !win.classList.contains('open')) return;
+
+    win.classList.toggle('minimized');
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+    }
+});
 </script>
+
 </body>
 </html>

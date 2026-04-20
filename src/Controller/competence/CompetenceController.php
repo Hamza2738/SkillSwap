@@ -245,13 +245,7 @@ public function edit(
         );
     }
 
-    #[Route('/calendar', name: 'competence_calendar', methods: ['GET'])]
-    public function calendar(): Response
-    {
-        return $this->render('Competences/back/calendar.html.twig', [
-            'competences' => $this->service->getAll(),
-        ]);
-    }
+   
 
     #[Route('/dashboard', name: 'competence_dashboard', methods: ['GET'])]
     public function dashboard(): Response
@@ -331,22 +325,38 @@ public function chatbot(
         return $this->redirectToRoute('competence_historique');
     }
 
-    #[Route('/send-mail/{id}', name: 'competence_send_mail', methods: ['POST'])]
-    public function sendMail(int $id): Response
-    {
-        $competence = $this->service->find($id);
-        if (!$competence) {
-            $this->addFlash('error', 'Compétence introuvable.');
-            return $this->redirectToRoute('competence_list');
+  #[Route('/send-mail/{id}', name: 'competence_send_mail', methods: ['POST'])]
+public function sendMail(Request $request, int $id): Response
+{
+    $competence = $this->service->find($id);
+
+    if (!$competence) {
+        if ($request->isXmlHttpRequest()) {
+            return new JsonResponse(['message' => 'Compétence introuvable.'], 404);
         }
 
-        $result = $this->sendStatusMailIfNeeded($competence);
-        if ($result) {
-            $this->addFlash('success', $result);
-        }
-
+        $this->addFlash('error', 'Compétence introuvable.');
         return $this->redirectToRoute('competence_list');
     }
+
+    $result = $this->sendStatusMailIfNeeded($competence);
+
+    if ($request->isXmlHttpRequest()) {
+        if ($result) {
+            return new JsonResponse(['message' => $result]);
+        }
+
+        return new JsonResponse(['message' => 'Aucun mail envoyé pour ce statut.'], 400);
+    }
+
+    if ($result) {
+        $this->addFlash('success', $result);
+    } else {
+        $this->addFlash('error', 'Aucun mail envoyé pour ce statut.');
+    }
+
+    return $this->redirectToRoute('competence_list');
+}
 
     private function validateMetier(Competence $c): ?string
     {
@@ -410,7 +420,7 @@ private function normalizeStatus(string $value): string
 }
     private function sendStatusMailIfNeeded(Competence $competence): ?string
     {
-        $statut = $this->normalizeStr($competence->getStatut() ?? '');
+        $statut = $this->normalizeStatus((string) $competence->getStatut());
         $email  = trim($competence->getEmail() ?? '');
         $type   = trim($competence->getType() ?? '') ?: 'votre domaine';
 
@@ -481,10 +491,21 @@ private function normalizeStatus(string $value): string
     return $stats;
 }
 
-    private function normalizeStr(string $s): string
-    {
-        $s = mb_strtolower(trim($s));
-        $s = transliterator_transliterate('Any-Latin; Latin-ASCII', $s);
-        return $s;
-    }
+  private function normalizeStr(string $s): string
+{
+    $s = trim(mb_strtolower($s, 'UTF-8'));
+
+    $replace = [
+        'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
+        'ç' => 'c',
+        'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+        'ñ' => 'n',
+        'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+        'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+        'ý' => 'y', 'ÿ' => 'y',
+    ];
+
+    return strtr($s, $replace);
+}
 }

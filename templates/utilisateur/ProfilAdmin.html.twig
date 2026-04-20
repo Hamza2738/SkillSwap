@@ -497,27 +497,29 @@ a {
             {% endfor %}
 
             <form method="post" action="{{ path('app_admin_profil_update') }}" enctype="multipart/form-data" id="adminProfileForm">
-                <div class="cover-box"
-                     style="{% if profil.photoCouverture %}background-image:url('{{ asset(profil.photoCouverture|trim('/') ) }}');{% endif %}">
-                    <div class="cover-overlay-soft"></div>
+               <div class="cover-box"
+     style="{% if profil.photoCouverture %}background-image:url('{{ path('app_admin_profil_image', {id: profil.idUtilisateur, type: 'couverture'}) }}');{% endif %}">                    <div class="cover-overlay-soft"></div>
                     <label for="photoCoverInput" class="cover-click-zone"></label>
                     <label for="photoCoverInput" class="cover-btn">Changer couverture</label>
                     <input type="file" name="photo_couverture" id="photoCoverInput" accept="image/*" hidden>
                 </div>
 
                 <div class="profile-header">
-                    <div class="avatar-box">
-                        {% if profil.photoProfil %}
-                            <img src="{{ asset(profil.photoProfil|trim('/') ) }}" class="avatar-img" alt="Photo profil">
-                        {% else %}
-                            <div class="avatar-placeholder">
-                                {{ (profil.prenom ?: 'A')|slice(0,1)|upper }}
-                            </div>
-                        {% endif %}
+                  <div class="avatar-box">
+    <img
+        src="{% if profil.photoProfil %}{{ path('app_admin_profil_image', {id: profil.idUtilisateur, type: 'profil'}) }}{% endif %}"
+        class="avatar-img"
+        alt="Photo profil"
+        style="{% if not profil.photoProfil %}display:none;{% endif %}"
+    >
 
-                        <label for="photoProfilInput" class="avatar-overlay">Changer</label>
-                        <input type="file" name="photo_profil" id="photoProfilInput" accept="image/*" hidden>
-                    </div>
+    <div class="avatar-placeholder" {% if profil.photoProfil %}style="display:none;"{% endif %}>
+        {{ (profil.prenom ?: 'A')|slice(0,1)|upper }}
+    </div>
+
+    <label for="photoProfilInput" class="avatar-overlay">Changer</label>
+    <input type="file" name="photo_profil" id="photoProfilInput" accept="image/*" hidden>
+</div>
 
                     <div class="profile-identity">
                         <h2>Mon Profil</h2>
@@ -577,20 +579,7 @@ a {
                 {% endif %}
             </div>
 
-            <div class="section-block">
-                <div class="section-head">Utilisateurs récents</div>
-                {% for user in recentUsers %}
-                    <div class="user-card">
-                        <h4>{{ user.nom }} {{ user.prenom }}</h4>
-                        <p>{{ user.email }}</p>
-                        <p>Rôle : {{ user.role ?: 'user' }}</p>
-                    </div>
-                {% else %}
-                    <div class="project-card">
-                        <p class="empty">Aucun utilisateur trouvé.</p>
-                    </div>
-                {% endfor %}
-            </div>
+           
 
             <div class="bottom-actions">
                 <button type="submit" form="adminProfileForm" class="save-btn">Enregistrer</button>
@@ -613,7 +602,7 @@ a {
                 {% for contact in contacts %}
                     <div class="contact-row">
                         {% if contact.photoProfil %}
-                            <img src="{{ asset(contact.photoProfil|trim('/') ) }}" class="contact-avatar" alt="">
+                         <img src="{{ path('app_admin_profil_image', {id: contact.idUtilisateur, type: 'profil'}) }}" class="contact-avatar" alt="">
                         {% else %}
                             <div class="contact-avatar"></div>
                         {% endif %}
@@ -632,6 +621,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const photoProfilInput = document.getElementById('photoProfilInput');
     const photoCoverInput = document.getElementById('photoCoverInput');
     const avatarImg = document.querySelector('.avatar-img');
+    const avatarPlaceholder = document.querySelector('.avatar-placeholder');
 
     if (photoProfilInput) {
         photoProfilInput.addEventListener('change', function () {
@@ -640,6 +630,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (avatarImg) {
                 avatarImg.src = URL.createObjectURL(file);
+                avatarImg.style.display = 'block';
+            }
+
+            if (avatarPlaceholder) {
+                avatarPlaceholder.style.display = 'none';
             }
 
             form.submit();
