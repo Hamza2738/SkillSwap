@@ -1,0 +1,272 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SkillSwap — Offres Premium{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/offres/front/style.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="of-front-page">
+
+    <header class="front-topbar">
+        <div class="front-brand">
+            <img src="{{ asset('image/logo.png') }}" alt="Logo">
+            <span>SkillSwap</span>
+        </div>
+
+        <nav class="front-nav">
+            <a href="#" onclick="openGeminiChat(); return false;">✨ Chat Gemini</a>
+            <a href="{{ path('app_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <div class="front-layout">
+
+        <aside class="front-sidebar">
+            <div class="sidebar-title">📦&nbsp; Mes abonnements</div>
+
+            <div class="sidebar-scroll">
+                {% if abonnements is empty %}
+                    <p class="empty-sub">Aucun abonnement actif.</p>
+                {% else %}
+                    {% for ab in abonnements %}
+                        <div class="sub-card">
+                            <div>📋 Offre : {{ ab.matriculeOffre }}</div>
+                            <div>📧 Email : {{ ab.mailAcheteur }}</div>
+                            <div>💰 Prix payé : {{ ab.prixPaye }} TND</div>
+                            <div>💳 Paiement : {{ ab.modePaiement }}</div>
+                            <div>🧾 Référence : {{ ab.referencePaiement }}</div>
+                            <div>📅 Abonnement : {{ ab.dateAbonnement ? ab.dateAbonnement|date('d/m/Y H:i') : '—' }}</div>
+                            <div>⏳ Expiration : {{ ab.dateExpiration ? ab.dateExpiration|date('d/m/Y H:i') : '—' }}</div>
+                            <div>✅ Statut : {{ ab.statutLabel }}</div>
+                            <div>🟢 Actif : {{ ab.abonnementLabel }}</div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </aside>
+
+        <main class="front-content">
+
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="front-alert front-alert-{{ label }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            <div class="offers-grid">
+                {% for offre in offres %}
+                    <article class="offer-card">
+
+                        <div class="offer-head">
+                            <div class="offer-icon">{{ offre.typeIcon }}</div>
+
+                            <div>
+                                <h2>{{ offre.titre }}</h2>
+                                <p>{{ offre.matricule }}</p>
+                            </div>
+                        </div>
+
+                        <span class="type-badge">{{ offre.typeOffre|upper }}</span>
+
+                        <div class="separator"></div>
+
+                        <div class="offer-info">
+                            <p>💰 <span>Prix :</span> {{ offre.prix and offre.prix != '0.00' ? offre.prix ~ ' TND' : 'Gratuit' }}</p>
+                            <p>⏱ <span>Durée :</span> {{ offre.duree }} jours</p>
+                            <p>📍 <span>Lieu :</span> {{ offre.localisation ?: '—' }}</p>
+                            <p>📅 <span>Limite :</span> {{ offre.dateLimite ? offre.dateLimite|date('d/m/Y') : '—' }}</p>
+                        </div>
+
+                        {% if offre.tags %}
+                            <p class="tags">🏷 {{ offre.tags }}</p>
+                        {% endif %}
+
+                        <p class="offer-desc">
+                            {{ offre.description|length > 100 ? offre.description|slice(0, 100) ~ '…' : offre.description }}
+                        </p>
+
+                        <div class="social-row">
+    {% set idOffre = offre.idOffre %}
+    {% set isLiked = likedByUser[idOffre]|default(false) %}
+    {% set nbLikes = likesCount[idOffre]|default(0) %}
+
+    <form method="post" action="{{ path('app_front_offres') }}" class="like-form">
+        <input type="hidden" name="action" value="like">
+        <input type="hidden" name="id_offre" value="{{ idOffre }}">
+
+        <button type="submit" class="like-btn {{ isLiked ? 'liked' : '' }}">
+            {{ isLiked ? '❤️' : '🤍' }}
+        </button>
+    </form>
+
+    <span class="like-count">{{ nbLikes }}</span>
+
+    <button type="button" class="comment-btn" onclick="openCommentsModal('{{ idOffre }}')">
+        💬 Commenter
+    </button>
+</div>
+                        {% if dejaCandidat[offre.idOffre] is defined %}
+                            <button class="subscribe-btn disabled" disabled>✔ Déjà souscrit</button>
+                        {% else %}
+                            <button class="subscribe-btn" onclick="openPostulerModal('{{ offre.idOffre }}')">
+                                ✅ Postuler / S'abonner
+                            </button>
+                        {% endif %}
+
+                    </article>
+
+                    <dialog class="modal" id="postuler-{{ offre.idOffre }}">
+    <form 
+        method="get" 
+        action="{{ path('app_offre_banque', {'id': offre.idOffre}) }}" 
+        class="modal-box"
+    >
+                            <input type="hidden" name="id_offre" value="{{ offre.idOffre }}">
+
+                            <h2>📋 {{ offre.titre }}</h2>
+
+                            <div class="resume-box">
+                                <p>🔑 Matricule : <strong>{{ offre.matricule }}</strong></p>
+                                <p>💰 Prix : <strong>{{ offre.prix and offre.prix != '0.00' ? offre.prix ~ ' TND' : 'Gratuit' }}</strong></p>
+                                <p>⏱ Durée : <strong>{{ offre.duree }} jours</strong></p>
+                                <p>📍 Lieu : <strong>{{ offre.localisation ?: '—' }}</strong></p>
+                            </div>
+
+                            <label>Mode de paiement</label>
+                            <select name="mode_paiement">
+                                <option value="carte">carte</option>
+                                <option value="virement">virement</option>
+                                <option value="paypal">paypal</option>
+                                <option value="gratuit">gratuit</option>
+                            </select>
+
+                            <label>Message / Motivation</label>
+                            <textarea name="message" placeholder="Décrivez votre motivation..."></textarea>
+
+                            <label>CV PDF</label>
+
+<div class="cv-row">
+    <label class="pdf-button" for="cv-{{ offre.idOffre }}">PDF</label>
+
+    <input 
+        id="cv-{{ offre.idOffre }}" 
+        class="cv-hidden-input" 
+        type="file" 
+        name="cv" 
+        accept="application/pdf"
+    >
+
+    <span id="cv-file-name-{{ offre.idOffre }}" class="cv-file-name">
+        Aucun fichier choisi
+    </span>
+</div>
+
+                            <label>Lettre de motivation</label>
+                            <textarea name="lettre_motivation" placeholder="Votre lettre de motivation..."></textarea>
+
+                           <button type="submit" class="confirm-btn">
+    ✅ Confirmer la souscription
+</button>
+                            <button type="button" class="close-btn" onclick="closePostulerModal('{{ offre.idOffre }}')">Fermer</button>
+                        </form>
+                    </dialog>
+
+                    <dialog class="modal" id="comments-{{ offre.idOffre }}">
+                        <div class="modal-box">
+                            <h2>💬 Commentaires — {{ offre.titre }}</h2>
+
+                            <div class="comments-list">
+                               {% for comment in commentairesParOffre[offre.idOffre]|default([]) %}
+                                    <div class="comment-bubble">
+                                        <div class="comment-meta">
+                                            <strong>👤 Utilisateur #{{ comment.idUtilisateur }}</strong>
+                                            <span>{{ comment.dateCommentaire ? comment.dateCommentaire|date('d/m/Y H:i') : '—' }}</span>
+                                        </div>
+                                        <p>{{ comment.contenu }}</p>
+                                    </div>
+                                {% else %}
+                                    <p class="no-comments">Aucun commentaire pour le moment.</p>
+                                {% endfor %}
+                            </div>
+
+                            <form method="post">
+                                <input type="hidden" name="id_offre" value="{{ offre.idOffre }}">
+
+                                <label>Laisser un commentaire :</label>
+                                <textarea name="contenu" placeholder="Écrivez votre commentaire ici..."></textarea>
+
+                                <button class="confirm-btn" name="action" value="commenter">📤 Publier</button>
+                                <button type="button" class="close-btn" onclick="closeCommentsModal('{{ offre.idOffre }}')">Fermer</button>
+                            </form>
+                        </div>
+                    </dialog>
+                {% else %}
+                    <p class="empty-offers">Aucune offre disponible.</p>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
+
+    <div class="gemini-chat" id="gemini-chat">
+        <div class="gemini-head">
+            <strong>✨ Assistant IA SkillSwap</strong>
+            <button onclick="closeGeminiChat()">✕</button>
+        </div>
+
+        <div class="gemini-body">
+            <div class="bot-msg">
+                Bonjour ! Je suis votre assistant IA SkillSwap. Je peux vous aider à trouver des offres ou comprendre les abonnements.
+            </div>
+        </div>
+
+        <div class="gemini-input">
+            <input placeholder="Posez votre question...">
+            <button>➤</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openPostulerModal(id) {
+    document.getElementById('postuler-' + id).showModal();
+}
+
+function closePostulerModal(id) {
+    document.getElementById('postuler-' + id).close();
+}
+
+function openCommentsModal(id) {
+    document.getElementById('comments-' + id).showModal();
+}
+
+function closeCommentsModal(id) {
+    document.getElementById('comments-' + id).close();
+}
+
+function openGeminiChat() {
+    document.getElementById('gemini-chat').classList.add('show');
+}
+
+function closeGeminiChat() {
+    document.getElementById('gemini-chat').classList.remove('show');
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cv-hidden-input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            const fileNameSpan = document.getElementById('cv-file-name-' + this.id.replace('cv-', ''));
+
+            if (fileNameSpan) {
+                fileNameSpan.textContent = this.files.length > 0
+                    ? this.files[0].name
+                    : 'Aucun fichier choisi';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

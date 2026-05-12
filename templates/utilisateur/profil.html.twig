@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
 *,
@@ -14,46 +14,145 @@
 }
 
 :root {
-    --bg: #050d1f;
-    --surface: #07132b;
-    --surface-2: #0b1833;
-    --line: #1b2b52;
-    --input: #1a2745;
-    --text: #f3f7ff;
-    --muted: #95a3c7;
-    --blue: #4e7bff;
-    --blue-2: #7f5cff;
-    --danger: #8f6bff;
+    --bg-main: #050b18;
+    --bg-top: #0b1324;
+    --bg-sidebar: #081226;
+    --bg-input: #1b263b;
+    --border: #26354f;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --blue: #6c8cff;
+    --purple: #7c5cff;
+    --green: #22c55e;
+    --red: #ef4444;
+    --gold: #facc15;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
-    background: var(--bg);
+    background: var(--bg-main);
     color: var(--text);
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 13px;
 }
 
 a {
-    text-decoration: none;
     color: inherit;
+    text-decoration: none;
+}
+/* ================= SEARCH DROPDOWN ================= */
+
+.search-box {
+    position: relative;
+    width: 100%;
 }
 
-.topbar {
-    height: 58px;
-    background: #071126;
-    border-bottom: 1px solid #132446;
+.search-results {
+    position: absolute;
+    top: 46px;
+    left: 0;
+    right: 0;
+    background: #0b1324;
+    border: 1px solid #26354f;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .45);
+    padding: 7px;
+    z-index: 10000;
+    display: none;
+}
+
+.search-results.is-open {
+    display: block;
+}
+
+.search-result-item {
+    width: 100%;
+    min-height: 74px;
+    border-radius: 10px;
+    background: #081226;
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 0 18px;
+    gap: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+.search-result-item:hover {
+    background: #111c33;
+}
+
+.search-result-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #243252;
+    flex-shrink: 0;
+}
+
+.search-result-placeholder {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.search-result-info {
+    min-width: 0;
+}
+
+.search-result-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 3px;
+}
+
+.search-result-meta {
+    color: #cbd5e1;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-empty {
+    color: #94a3b8;
+    font-size: 13px;
+    padding: 12px;
+}
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar {
+    height: 64px;
+    background: var(--bg-top);
+    border-bottom: 1px solid #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 0 22px;
 }
 
 .brand {
-    min-width: 120px;
-    font-weight: 700;
-    font-size: 14px;
+    min-width: 130px;
     color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
 }
 
 .search-wrap {
@@ -64,146 +163,191 @@ a {
 
 .search-form {
     width: 100%;
-    max-width: 420px;
+    max-width: 430px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .search-input {
     width: 100%;
-    height: 34px;
+    height: 38px;
     border-radius: 14px;
-    border: 1px solid #6f63ff;
-    background: #1a223d;
-    color: #fff;
-    padding: 0 14px;
+    border: 1px solid #40516d;
+    background: #182235;
+    color: #e5e7eb;
+    padding: 0 16px;
     outline: none;
     font-size: 13px;
+}
+
+.search-input::placeholder {
+    color: #64748b;
+}
+
+.search-input:focus {
+    border-color: #6c8cff;
+    box-shadow: 0 0 0 2px rgba(108, 140, 255, .15);
 }
 
 .search-btn {
     background: transparent;
     border: none;
-    color: white;
+    color: #cbd5e1;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 16px;
 }
 
 .top-actions {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 24px;
 }
 
 .top-link {
+    color: #f8fafc;
     font-size: 12px;
-    color: #f2f5ff;
-    opacity: .92;
+    font-weight: 500;
     white-space: nowrap;
+    opacity: .95;
 }
 
 .top-link:hover {
-    color: #a9b9ff;
+    color: #9db3ff;
 }
 
 .premium-btn {
-    border: 2px solid #d8a700;
-    color: #ffd659;
-    background: transparent;
-    border-radius: 14px;
+    border: 2px solid #eab308;
+    color: #ffd84d;
+    border-radius: 16px;
+    padding: 7px 14px;
     font-size: 12px;
-    font-weight: 700;
-    padding: 8px 12px;
+    font-weight: 800;
     line-height: 1.1;
     text-align: center;
+    background: transparent;
 }
+
+.badge-reseau {
+    background: #ef4444;
+    color: white;
+    border-radius: 999px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+/* ================= LAYOUT ================= */
 
 .layout {
     display: grid;
-    grid-template-columns: 260px 1fr 220px;
-    min-height: calc(100vh - 58px);
+    grid-template-columns: 300px 1fr 270px;
+    min-height: calc(100vh - 64px);
+    background: var(--bg-main);
 }
 
 .sidebar-left,
 .sidebar-right {
-    background: #061127;
-    border-right: 1px solid #122343;
+    background: var(--bg-sidebar);
+}
+
+.sidebar-left {
+    border-right: 1px solid #101b31;
 }
 
 .sidebar-right {
-    border-right: none;
-    border-left: 1px solid #122343;
+    border-left: 4px solid #4f83ff;
 }
 
+/* ================= SIDEBAR LEFT ================= */
+
 .side-title {
-    font-size: 14px;
-    font-weight: 700;
+    padding: 10px 16px 8px;
     color: #ffffff;
-    padding: 16px 14px 10px;
+    font-size: 14px;
+    font-weight: 800;
 }
 
 .side-section {
-    padding: 0 14px 14px;
+    padding: 0 16px 18px;
 }
 
 .side-item {
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 .side-item strong {
     display: block;
-    color: #77a3ff;
+    color: #6c8cff;
     font-size: 13px;
+    font-weight: 800;
     margin-bottom: 8px;
 }
 
-.side-item p {
-    margin: 0;
-    color: #6f83ac;
+.activity-empty {
+    color: #607089;
     font-size: 12px;
 }
 
-.contacts-list {
-    padding: 0 10px 12px;
-}
-
-.contact-row {
+.activity-block {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 4px;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.contact-avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #243252;
+.activity-card {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #334155;
 }
 
-.contact-name {
-    font-size: 13px;
-    color: white;
+.activity-card p {
+    margin: 2px 0;
+    color: #e5e7eb;
+    font-size: 12px;
+    line-height: 1.35;
 }
+
+.activity-title {
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.activity-status.ok {
+    color: #22c55e;
+    font-weight: 700;
+}
+
+.activity-status.no {
+    color: #ef4444;
+    font-weight: 700;
+}
+
+.activity-status.wait {
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+/* ================= MAIN ================= */
 
 .main {
-    padding: 22px 24px 28px;
-    background: #020b1b;
+    background: #050b18;
+    padding: 26px 28px 80px;
 }
 
 .profile-shell {
-    max-width: 910px;
+    max-width: 1040px;
     margin: 0 auto;
 }
 
+/* ================= COVER ================= */
+
 .cover-box {
-    height: 225px;
-    border-radius: 0;
+    height: 255px;
+    width: 100%;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #112446, #223d74);
+    background: linear-gradient(135deg, #0f2744, #1e3a5f);
     background-size: cover;
     background-position: center;
 }
@@ -211,17 +355,17 @@ a {
 .cover-overlay-soft {
     position: absolute;
     inset: 0;
-    background: rgba(0, 10, 30, 0.18);
+    background: rgba(0, 10, 30, .12);
 }
 
 .cover-btn {
     position: absolute;
-    right: 18px;
-    bottom: 18px;
-    font-size: 13px;
-    color: white;
-    cursor: pointer;
+    right: 24px;
+    bottom: 22px;
     z-index: 3;
+    color: #ffffff;
+    font-size: 13px;
+    cursor: pointer;
 }
 
 .cover-click-zone {
@@ -231,24 +375,26 @@ a {
     cursor: pointer;
 }
 
+/* ================= PROFILE HEADER ================= */
+
 .profile-header {
     display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    margin-top: 8px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #1a2947;
+    align-items: center;
+    gap: 18px;
+    padding: 0 0 22px;
+    border-bottom: 1px solid #26354f;
 }
 
 .avatar-box {
-    width: 105px;
-    height: 105px;
+    width: 145px;
+    height: 145px;
     border-radius: 50%;
     overflow: hidden;
     position: relative;
     margin-top: -6px;
-    cursor: pointer;
     flex-shrink: 0;
+    cursor: pointer;
+    background: #1e293b;
 }
 
 .avatar-img {
@@ -260,27 +406,26 @@ a {
 .avatar-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #4d7bff, #7d60ff);
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 34px;
-    font-weight: 700;
+    font-size: 46px;
+    font-weight: 800;
 }
 
 .avatar-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,.45);
-    color: #2fb3ff;
-    font-weight: 700;
+    background: rgba(0,0,0,.48);
+    color: #38bdf8;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-weight: 800;
     opacity: 0;
     transition: .2s ease;
-    font-size: 14px;
 }
 
 .avatar-box:hover .avatar-overlay {
@@ -288,33 +433,109 @@ a {
 }
 
 .profile-identity {
-    padding-top: 24px;
+    padding-top: 4px;
 }
 
 .profile-identity h2 {
-    margin: 0 0 8px;
-    font-size: 20px;
-    font-weight: 600;
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffffff;
 }
 
 .meta-line {
-    font-size: 14px;
+    margin: 5px 0;
     color: #ffffff;
-    margin-bottom: 6px;
+    font-size: 13px;
 }
 
 .meta-line span {
-    color: #c4d1f1;
+    color: #ffffff;
 }
 
+/* ================= NETWORK ACTIONS ================= */
+.network-actions {
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.connect-btn {
+    border: none;
+    background: transparent;
+    color: #0ea5e9;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.connect-btn:hover {
+    color: #38bdf8;
+}
+
+.pending-btn {
+    border: none;
+    background: transparent;
+    color: #f59e0b;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.accept-btn {
+    border: none;
+    background: transparent;
+    color: #22c55e;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.refuse-btn,
+.remove-btn {
+    border: none;
+    background: transparent;
+    color: #ef4444;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.chat-btn {
+    border: none;
+    background: transparent;
+    color: #0ea5e9;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+/* ================= FORM ================= */
+
 .form-block {
-    padding-top: 18px;
+    padding-top: 6px;
 }
 
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 14px;
 }
 
 .field {
@@ -328,115 +549,653 @@ a {
 }
 
 .label {
+    color: #cbd5e1;
     font-size: 13px;
-    color: #e5eeff;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .input,
 .textarea {
     width: 100%;
-    border: 1px solid #2b3d62;
-    background: #192744;
-    color: white;
-    border-radius: 12px;
-    padding: 10px 14px;
+    border: 1px solid #334155;
+    background: #1b263b;
+    color: #ffffff;
+    border-radius: 13px;
+    padding: 12px 16px;
     outline: none;
-    font-size: 14px;
+    font-size: 13px;
+}
+
+.input:focus,
+.textarea:focus {
+    border-color: #6c8cff;
+    box-shadow: 0 0 0 2px rgba(108, 140, 255, .14);
 }
 
 .textarea {
-    min-height: 90px;
+    min-height: 72px;
     resize: vertical;
 }
 
+/* ================= SKILLS ================= */
+
 .section-block {
-    margin-top: 18px;
+    margin-top: 22px;
 }
 
 .section-head {
+    color: #cbd5e1;
     font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: #f2f6ff;
+    font-weight: 800;
+    margin-bottom: 12px;
 }
 
-.skill-card,
-.project-card {
-    background: #0f1a33;
-    border: 1px solid #24365a;
-    border-radius: 14px;
-    padding: 14px;
-    margin-bottom: 10px;
+.project-card,
+.skill-card {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: 12px;
 }
 
-.skill-card h4,
-.project-card h4 {
-    margin: 0 0 8px;
-    font-size: 15px;
-}
-
-.skill-card p,
-.project-card p {
-    margin: 4px 0;
+.project-card p,
+.skill-card p {
+    margin: 6px 0;
+    color: #dbeafe;
     font-size: 13px;
-    color: #bfd0f3;
 }
 
 .nav-mini {
-    text-align: center;
-    margin-top: 12px;
-    color: #98a8cb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    color: #94a3b8;
     font-size: 13px;
+    margin-top: 24px;
 }
 
+.mini-arrow {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* ================= BUTTONS BOTTOM ================= */
 .bottom-actions {
+    grid-column: 1 / -1;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
     gap: 12px;
-    margin-top: 20px;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 4px;
+    padding-top: 0;
 }
-
 .save-btn,
 .delete-btn {
     border: none;
-    border-radius: 12px;
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 700;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 13px;
+    font-weight: 800;
     color: white;
     cursor: pointer;
 }
 
 .save-btn {
-    background: linear-gradient(135deg, #6da3ff, #7f66ff);
+    background: linear-gradient(135deg, #6c8cff, #7c5cff);
 }
 
 .delete-btn {
-    background: linear-gradient(135deg, #8b7dff, #9b6dff);
+    background: linear-gradient(135deg, #7c5cff, #8b5cf6);
 }
+
+/* ================= FLASH ================= */
 
 .flash {
     border-radius: 12px;
     padding: 12px 14px;
     margin-bottom: 14px;
-    font-size: 14px;
+    font-size: 13px;
 }
+
 .flash-success {
-    background: rgba(52,211,153,.12);
-    border: 1px solid rgba(52,211,153,.35);
+    background: rgba(34,197,94,.12);
+    border: 1px solid rgba(34,197,94,.35);
     color: #4ade80;
 }
+
 .flash-error {
-    background: rgba(248,113,113,.12);
-    border: 1px solid rgba(248,113,113,.35);
+    background: rgba(239,68,68,.12);
+    border: 1px solid rgba(239,68,68,.35);
     color: #f87171;
 }
 
-.empty {
-    color: #90a0c3;
+/* ================= SIDEBAR RIGHT CONTACTS ================= */
+
+.contacts-list {
+    padding: 8px 12px 12px;
+}
+
+.contact-row {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    transition: .15s ease;
+    position: relative;
+}
+
+.contact-row:hover {
+    background: rgba(255,255,255,.05);
+}
+
+.contact-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #243252;
+    flex-shrink: 0;
+}
+
+.avatar-mini-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
+    color: white;
+    font-weight: 800;
+}
+
+.contact-name {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.msg-badge {
+    margin-left: auto;
+    background: #3b82f6;
+    color: white;
+    border-radius: 999px;
+    padding: 2px 7px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.contact-row.has-online::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    border: 2px solid #081226;
+    position: absolute;
+    left: 33px;
+    bottom: 7px;
+}
+
+/* ================= INVITATIONS ================= */
+
+.invitations-box {
+    border-top: 1px solid #122343;
+    padding-top: 8px;
+    margin-top: 10px;
+}
+
+.invitation-card {
+    background: #111b31;
+    border: 1px solid #26354f;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 8px 12px;
+}
+
+.invitation-card strong {
+    display: block;
+    color: #ffffff;
     font-size: 13px;
 }
+
+.invitation-card small {
+    display: block;
+    color: #94a3b8;
+    font-size: 11px;
+    margin-top: 3px;
+}
+
+.invitation-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.empty {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* ================= MINI CHAT POPUP ================= */
+
+.mini-chat {
+    position: fixed;
+    right: 16px;
+    bottom: 0;
+    width: 355px;
+    height: 510px;
+    background: #17152b;
+    border: 1px solid #2d294d;
+    box-shadow: 0 18px 45px rgba(0,0,0,.55);
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+}
+
+.mini-chat.is-open {
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-chat-header {
+    height: 62px;
+    background: #18162f;
+    border-bottom: 1px solid #2d294d;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+}
+
+.mini-chat-avatar-wrap {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+}
+
+.mini-chat-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #2d2a4d;
+}
+
+.mini-chat-avatar-placeholder {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
+    color: white;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.mini-chat-avatar-wrap::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border: 2px solid #18162f;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+}
+
+.mini-chat-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.mini-chat-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mini-chat-status {
+    color: #22c55e;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.mini-chat-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.skill-form-block {
+    margin-top: 22px;
+}
+
+.skill-form-block .input,
+.skill-form-block .textarea {
+    background: #1b263b;
+    border: 1px solid #334155;
+    color: #ffffff;
+}
+
+.skill-form-block .input[readonly],
+.skill-form-block .textarea[readonly] {
+    cursor: default;
+}
+
+.skill-description {
+    min-height: 70px;
+}
+
+.skill-nav {
+    margin-top: 22px;
+    margin-bottom: 26px;
+}
+.mini-chat-icon,
+.mini-chat-close,
+.mini-chat-min {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: #2b2947;
+    color: #d8d5ff;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* ================= RESEAUX MODAL ================= */
+
+.reseau-open-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.reseau-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .25);
+    z-index: 9998;
+    display: none;
+}
+
+.reseau-modal-overlay.is-open {
+    display: block;
+}
+
+.reseau-modal {
+    position: fixed;
+    top: 55px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 560px;
+    min-height: 420px;
+    max-height: 520px;
+    background: #0b1324;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, .65);
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+}
+
+.reseau-modal.is-open {
+    display: flex;
+    flex-direction: column;
+}
+
+.reseau-modal-titlebar {
+    height: 38px;
+    background: #f3f4f6;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.reseau-modal-title-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.reseau-window-icon {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #94a3b8;
+    background: linear-gradient(135deg, #dbeafe, #ffffff);
+}
+
+.reseau-window-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reseau-window-btn {
+    border: none;
+    background: transparent;
+    color: #111827;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+}
+
+.reseau-window-btn:hover {
+    background: rgba(0, 0, 0, .08);
+}
+
+.reseau-modal-body {
+    flex: 1;
+    padding: 22px 24px;
+    background: #0b1324;
+    overflow-y: auto;
+}
+
+.reseau-invitation-card {
+    width: 100%;
+    background: #1b263b;
+    border: 1px solid #25344d;
+    border-radius: 9px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.reseau-avatar {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #334155;
+    flex-shrink: 0;
+}
+
+.reseau-avatar-placeholder {
+    width: 43px;
+    height: 43px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.reseau-info {
+    min-width: 0;
+    flex: 1;
+}
+.contact-row {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    transition: .15s ease;
+    position: relative;
+    user-select: none;
+}
+
+.contact-row:hover {
+    background: rgba(255,255,255,.07);
+}
+
+.contact-row:focus {
+    outline: 1px solid #6c8cff;
+    background: rgba(255,255,255,.06);
+}
+
+.contact-avatar,
+.contact-name {
+    pointer-events: none;
+}
+
+
+.reseau-name {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.reseau-email {
+    color: #94a3b8;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reseau-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.reseau-accept-btn,
+.reseau-refuse-btn {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 16px;
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.reseau-accept-btn {
+    background: #22c55e;
+}
+
+.reseau-accept-btn:hover {
+    background: #16a34a;
+}
+
+.reseau-refuse-btn {
+    background: #ef4444;
+}
+
+.reseau-refuse-btn:hover {
+    background: #dc2626;
+}
+
+.reseau-empty {
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+    padding-top: 120px;
+}
+
+@media (max-width: 700px) {
+    .reseau-modal {
+        width: calc(100vw - 24px);
+        top: 30px;
+    }
+
+    .reseau-invitation-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reseau-actions {
+        width: 100%;
+    }
+
+    .reseau-accept-btn,
+    .reseau-refuse-btn {
+        flex: 1;
+    }
+}
+
+.mini-chat-icon {
+    background: transparent;
+    color: #6b5d93;
+}
+
+.mini-chat-close:hover,
+.mini-chat-min:hover {
+    background: #3a365d;
+}
+
+.mini-chat-body {
+    flex: 1;
+    background: #17152b;
+    overflow: hidden;
+}
+
+.mini-chat-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #17152b;
+}
+
+.mini-chat.minimized {
+    height: 62px;
+}
+
+.mini-chat.minimized .mini-chat-body {
+    display: none;
+}
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 1200px) {
     .layout {
@@ -447,6 +1206,18 @@ a {
     .sidebar-right {
         display: none;
     }
+
+    .bottom-actions {
+        position: static;
+        margin-top: 18px;
+        justify-content: flex-end;
+    }
+
+    .mini-chat {
+        right: 10px;
+        width: calc(100vw - 20px);
+        max-width: 355px;
+    }
 }
 </style>
 {% endblock %}
@@ -456,19 +1227,41 @@ a {
     <div class="brand">Profil</div>
 
     <div class="search-wrap">
-        <form method="get" action="{{ path('app_profil') }}" class="search-form">
-            <input type="text" name="q" class="search-input" placeholder="Rechercher un utilisateur..." value="{{ search }}">
-            <button class="search-btn" type="submit">⌕</button>
-        </form>
-    </div>
+    <form method="get" action="{{ path('app_profil') }}" class="search-form" id="userSearchForm" autocomplete="off">
+        <div class="search-box">
+           <input
+    type="text"
+    name="q"
+    class="search-input"
+    id="userSearchInput"
+    placeholder="Rechercher un utilisateur..."
+    value="{{ search|default('') }}"
+    data-search-url="{{ path('app_profil_search_users') }}"
+    data-home-url="{{ path('app_profil') }}"
+>
 
+            <div class="search-results" id="userSearchResults"></div>
+        </div>
+
+        <button class="search-btn" type="submit">⌕</button>
+    </form>
+</div>
     <div class="top-actions">
-        <a href="#" class="top-link">👥 Réseaux</a>
-        <a href="#" class="top-link">Les Rendez-Vous</a>
-        <a href="{{ path('competence_front_index') }}" class="top-link">compétences</a>
-        <a href="#" class="top-link">Suivre les tâches</a>
+       <button type="button" class="top-link reseau-open-btn" id="openReseauModal">
+    👥 Réseaux
+    {% if invitationsCount|default(0) > 0 %}
+        <span class="badge-reseau">{{ invitationsCount }}</span>
+    {% endif %}
+</button>
+
+        <a href="{{ path('app_front_postulations') }}" class="top-link">Les Rendez-Vous</a>
+        <a href="{{ path('competence_front_index') }}" class="top-link">Suivre compétence</a>
+        <a href="{{ path('app_front_suivi_tache') }}" class="top-link">Suivre les tâches</a>
         <a href="{{ path('app_logout') }}" class="top-link">Déconnexion</a>
-        <a href="#" class="premium-btn">Essayez Premium<br>pour 0 USD</a>
+
+        <a href="{{ path('app_front_offres') }}" class="premium-btn">
+            Essayez Premium<br>pour 0 USD
+        </a>
     </div>
 </header>
 
@@ -478,35 +1271,93 @@ a {
 
         <div class="side-section">
             <div class="side-item">
-                <strong>📘 Mes tâches de projet</strong>
-                <p>Aucune tâche.</p>
+                <strong>▣ Mes tâches de projet</strong>
+
+                {% if taches|default([]) is empty %}
+                    <p class="activity-empty">Aucune tâche.</p>
+                {% else %}
+                    <div class="activity-block">
+                        {% for tache in taches %}
+                            <div class="activity-card">
+                                <p>— Projet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ tache.projet.titre is defined ? tache.projet.titre : '—' }}</p>
+                                <p>— Tâche&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ tache.titre ?: '—' }}</p>
+                                <p>— Statut&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ tache.statut ?: '—' }}</p>
+                                <p>— Priorité&nbsp;&nbsp;&nbsp;&nbsp;: {{ tache.priorite ?: '—' }}</p>
+                                <p>— Échéance&nbsp;&nbsp;&nbsp;: {{ tache.echeance ? tache.echeance|date('d/m/Y') : '—' }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="side-item">
-                <strong>📅 Mes rendez-vous</strong>
-                <p>Aucun rendez-vous.</p>
+                <strong>▣ Mes rendez-vous</strong>
+
+                {% if rendezVous|default([]) is empty %}
+                    <p class="activity-empty">Aucun rendez-vous.</p>
+                {% else %}
+                    <div class="activity-block">
+                        {% for rdv in rendezVous %}
+                            <div class="activity-card">
+                                <p>— Titre&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ rdv.titre ?: '—' }}</p>
+                                <p>— Type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ rdv.type ?: '—' }}</p>
+                                <p>— Compétence&nbsp;&nbsp;: {{ rdv.competence ?: '—' }}</p>
+                                <p>— Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ rdv.dateRendezVous ? rdv.dateRendezVous|date('d/m/Y H:i') : '—' }}</p>
+                                <p>— Places&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ rdv.nombrePlaces is defined ? rdv.nombrePlaces : '—' }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
 
             <div class="side-item">
-                <strong>📨 Mes postulations</strong>
-                <p>Aucune postulation.</p>
+                <strong>☞ Mes postulations</strong>
+
+                {% if postulations|default([]) is empty %}
+                    <p class="activity-empty">Aucune postulation.</p>
+                {% else %}
+                    <div class="activity-block">
+                        {% for postulation in postulations %}
+                            <div class="activity-card">
+                                <p>— RDV&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ postulation.titre ?: '—' }}</p>
+
+                                <p>
+                                    — Statut&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                                    {% if postulation.status == 'accepte' %}
+                                        <span class="activity-status ok">Accepté</span>
+                                    {% elseif postulation.status == 'refuse' %}
+                                        <span class="activity-status no">Refusé</span>
+                                    {% else %}
+                                        <span class="activity-status wait">En attente</span>
+                                    {% endif %}
+                                </p>
+
+                                <p>— Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: {{ postulation.datePostulation ? postulation.datePostulation|date('d/m/Y H:i') : '—' }}</p>
+                                <p>
+                                    — Message&nbsp;&nbsp;&nbsp;&nbsp;:
+                                    {{ postulation.message ? postulation.message|slice(0, 35) ~ (postulation.message|length > 35 ? '…' : '') : '—' }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div>
         </div>
     </aside>
 
     <main class="main">
         <div class="profile-shell">
+           {% for msg in app.flashes('success') %}
+    <div class="flash flash-success">✓ {{ msg }}</div>
+{% endfor %}
 
-            {% for msg in app.flashes('success') %}
-                <div class="flash flash-success">✓ {{ msg }}</div>
-            {% endfor %}
-            {% for msg in app.flashes('error') %}
-                <div class="flash flash-error">✗ {{ msg }}</div>
-            {% endfor %}
-
+{% for msg in app.flashes('error') %}
+    <div class="flash flash-error">✗ {{ msg }}</div>
+{% endfor %}
             <form method="post" action="{{ path('app_profil_update') }}" enctype="multipart/form-data" id="profileForm">
-                <div class="cover-box"
-                     style="{% if profil.photoCouverture %}background-image:url('{{ asset(profil.photoCouverture|trim('/') ) }}');{% endif %}">
+                <div
+                    class="cover-box"
+                    style="{% if profil.photoCouverture %}background-image:url('{{ path('app_profil_image', {id: profil.idUtilisateur, type: 'couverture'}) }}');{% endif %}"                >
                     <div class="cover-overlay-soft"></div>
 
                     {% if not is_visiting %}
@@ -519,12 +1370,16 @@ a {
                 <div class="profile-header">
                     <div class="avatar-box">
                         {% if profil.photoProfil %}
-                            <img src="{{ asset(profil.photoProfil|trim('/') ) }}" class="avatar-img" alt="Photo profil">
-                        {% else %}
-                            <div class="avatar-placeholder">
-                                {{ (profil.prenom ?: 'U')|slice(0,1)|upper }}
-                            </div>
-                        {% endif %}
+    <img
+        src="{{ path('app_profil_image', {id: profil.idUtilisateur, type: 'profil'}) }}"
+        class="avatar-img"
+        alt="Photo profil"
+    >
+{% else %}
+    <div class="avatar-placeholder">
+        {{ (profil.prenom ?: 'U')|slice(0,1)|upper }}
+    </div>
+{% endif %}
 
                         {% if not is_visiting %}
                             <label for="photoProfilInput" class="avatar-overlay">Changer</label>
@@ -533,9 +1388,56 @@ a {
                     </div>
 
                     <div class="profile-identity">
-                        <h2>Mon Profil</h2>
+                        <h2>
+                            {% if is_visiting %}
+                                {{ profil.nom }} {{ profil.prenom }}
+                            {% else %}
+                                Mon Profil
+                            {% endif %}
+                        </h2>
+
                         <div class="meta-line">Email : <span>{{ profil.email }}</span></div>
                         <div class="meta-line">Rôle : <span>{{ profil.role }}</span></div>
+
+                      {% if is_visiting %}
+    <div class="network-actions">
+        {% if relationStatut|default(null) is null %}
+            <button type="submit" form="reseauInviteForm" class="connect-btn">
+                ➕ Se connecter
+            </button>
+
+        {% elseif relationStatut == 'en_attente' and estMoiDemandeur|default(false) %}
+            <button type="submit" form="reseauRetirerForm" class="pending-btn">
+                ⏳ Invitation envoyée - Annuler
+            </button>
+
+        {% elseif relationStatut == 'en_attente' and not estMoiDemandeur|default(false) %}
+            <button type="submit" form="reseauAccepterForm" class="accept-btn">
+                ✓ Accepter
+            </button>
+
+            <button type="submit" form="reseauRefuserForm" class="refuse-btn">
+                ✕ Refuser
+            </button>
+
+        {% elseif relationStatut == 'accepte' %}
+            <button
+                type="button"
+                class="chat-btn js-open-mini-chat"
+                data-chat-url="{{ path('app_conversation_show', {id: profil.idUtilisateur}) }}"
+                data-chat-name="{{ profil.nom }} {{ profil.prenom }}"
+                data-chat-avatar="{{ profil.photoProfil ? path('app_profil_image', {id: profil.idUtilisateur, type: 'profil'}) : '' }}"
+                data-chat-initial="{{ (profil.prenom ?: 'U')|slice(0,1)|upper }}"
+            >
+                💬 Message
+            </button>
+
+            <button type="submit" form="reseauRetirerForm" class="remove-btn">
+                Retirer
+            </button>
+        {% endif %}
+    </div>
+{% endif %}
                     </div>
                 </div>
 
@@ -564,7 +1466,7 @@ a {
 
                             <div class="field">
                                 <label class="label">Invitations</label>
-                                <input type="text" class="input" value="{{ invitationsCount }}" readonly>
+                                <input type="text" class="input" value="{{ invitationsCount|default(0) }}" readonly>
                             </div>
 
                             <div class="field full">
@@ -572,104 +1474,560 @@ a {
                                 <textarea name="bio" class="textarea">{{ user.bio }}</textarea>
                             </div>
                         </div>
+
                     </div>
                 {% endif %}
             </form>
 
+{% if is_visiting %}
+    {% if relationStatut|default(null) is null %}
+        <form
+            id="reseauInviteForm"
+            method="post"
+            action="{{ path('app_reseau_inviter', {id: profil.idUtilisateur}) }}"
+            style="display:none;"
+        ></form>
+    {% endif %}
+
+    {% if relationStatut == 'en_attente' and estMoiDemandeur|default(false) %}
+        <form
+            id="reseauRetirerForm"
+            method="post"
+            action="{{ path('app_reseau_retirer', {id: profil.idUtilisateur}) }}"
+            style="display:none;"
+        ></form>
+    {% endif %}
+
+    {% if relationStatut == 'en_attente' and not estMoiDemandeur|default(false) %}
+        <form
+            id="reseauAccepterForm"
+            method="post"
+            action="{{ path('app_reseau_accepter', {id: relation.id}) }}"
+            style="display:none;"
+        ></form>
+
+        <form
+            id="reseauRefuserForm"
+            method="post"
+            action="{{ path('app_reseau_refuser', {id: relation.id}) }}"
+            style="display:none;"
+        ></form>
+    {% endif %}
+
+    {% if relationStatut == 'accepte' %}
+        <form
+            id="reseauRetirerForm"
+            method="post"
+            action="{{ path('app_reseau_retirer', {id: profil.idUtilisateur}) }}"
+            style="display:none;"
+        ></form>
+    {% endif %}
+{% endif %}
             <div class="section-block">
-                <div class="section-head">Compétences</div>
-                {% if competences is empty %}
-                    <div class="project-card">
-                        <p class="empty">Aucune compétence disponible.</p>
-                    </div>
-                {% else %}
-                    {% for c in competences %}
-                        <div class="skill-card">
-                            <h4>{{ c.type ?: '—' }}</h4>
-                            <p><strong>Catégorie :</strong> {{ c.category ?: '—' }}</p>
-                            <p><strong>Niveau :</strong> {{ c.niveau ?: '—' }}</p>
-                            <p><strong>Expérience :</strong> {{ c.anneesExperience ?: 0 }} an(s)</p>
-                            <p><strong>Certification :</strong> {{ c.certification ?: '—' }}</p>
-                            <p><strong>Description :</strong> {{ c.description ?: '—' }}</p>
+    {% if competences|default([]) is empty %}
+        <div class="project-card">
+            <p class="empty">Aucune compétence disponible.</p>
+        </div>
+        <div class="nav-mini">◀ &nbsp; Aucune compétence &nbsp; ▶</div>
+    {% else %}
+        <div id="skillViewer">
+            {% for c in competences %}
+                <div class="skill-slide" data-index="{{ loop.index0 }}" style="{{ loop.first ? '' : 'display:none;' }}">
+                    <div class="form-block skill-form-block">
+                        <div class="form-grid">
+
+                            <div class="field">
+                                <label class="label">Type</label>
+                                <input type="text" class="input" value="{{ c.type ?: '—' }}" readonly>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Catégorie</label>
+                                <input type="text" class="input" value="{{ c.category ?: '—' }}" readonly>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Niveau</label>
+                                <input type="text" class="input" value="{{ c.niveau ?: '—' }}" readonly>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Années d'expérience</label>
+                                <input type="text" class="input" value="{{ c.anneesExperience ?: 0 }}" readonly>
+                            </div>
+
+                            <div class="field full">
+                                <label class="label">Certification</label>
+                                <input type="text" class="input" value="{{ c.certification ?: '—' }}" readonly>
+                            </div>
+
+                            <div class="field full">
+                                <label class="label">Description</label>
+                                <textarea class="textarea skill-description" readonly>{{ c.description ?: '—' }}</textarea>
+                            </div>
+                            <div class="bottom-actions">
+    <button type="submit" form="profileForm" class="save-btn">Enregistrer</button>
+
+    <form method="post" action="{{ path('app_profil_delete') }}" onsubmit="return confirm('Supprimer le compte ?');">
+        <button type="submit" class="delete-btn">Supprimer compte</button>
+    </form>
+</div>
+
                         </div>
-                    {% endfor %}
-                {% endif %}
-            </div>
-
-            <div class="nav-mini">◀ &nbsp; Aucun projet &nbsp; ▶</div>
-
-            {% if not is_visiting %}
-                <div class="bottom-actions">
-                    <button type="submit" form="profileForm" class="save-btn">Enregistrer</button>
-                    <form method="post" action="{{ path('app_profil_delete') }}" onsubmit="return confirm('Supprimer votre compte ?');">
-                        <button type="submit" class="delete-btn">Supprimer compte</button>
-                    </form>
+                    </div>
                 </div>
-            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="nav-mini skill-nav">
+            <button type="button" class="mini-arrow" onclick="changeSkill(-1)">◀</button>
+            <span id="skillCounter">Compétence 1 / {{ competences|length }}</span>
+            <button type="button" class="mini-arrow" onclick="changeSkill(1)">▶</button>
+        </div>
+    {% endif %}
+</div>
         </div>
     </main>
 
-    <aside class="sidebar-right">
-        <div class="side-title">Contacts</div>
-        <div class="contacts-list">
-            {% if contacts is empty %}
-                <div class="contact-row">
-                    <div class="contact-avatar"></div>
-                    <div class="contact-name">Aucun contact</div>
+  <aside class="sidebar-right">
+    <div class="side-title">Contacts</div>
+
+    <div class="contacts-list">
+        {% if contacts|default([]) is empty %}
+            <div class="contact-row">
+                <div class="contact-avatar"></div>
+                <div class="contact-name">Aucun contact</div>
+            </div>
+        {% else %}
+            {% for item in contacts %}
+                {% set contact = item.user is defined ? item.user : item %}
+                {% set nonLus = item.nonLus is defined ? item.nonLus : 0 %}
+                {% set avatarUrl = contact.photoProfil ? path('app_profil_image', {id: contact.idUtilisateur, type: 'profil'}) : '' %}
+                {% set initial = (contact.prenom ?: 'U')|slice(0,1)|upper %}
+
+                <div
+                    class="contact-row has-online js-open-mini-chat"
+                    role="button"
+                    tabindex="0"
+                    data-chat-url="{{ path('app_conversation_show', {id: contact.idUtilisateur}) }}"
+                    data-chat-name="{{ contact.nom }} {{ contact.prenom }}"
+                    data-chat-avatar="{{ avatarUrl }}"
+                    data-chat-initial="{{ initial }}"
+                >
+                    {% if contact.photoProfil %}
+                        <img
+                            src="{{ path('app_profil_image', {id: contact.idUtilisateur, type: 'profil'}) }}"
+                            class="contact-avatar"
+                            alt="Photo"
+                        >
+                    {% else %}
+                        <div class="contact-avatar avatar-mini-placeholder">
+                            {{ initial }}
+                        </div>
+                    {% endif %}
+
+                    <div class="contact-name">{{ contact.nom }} {{ contact.prenom }}</div>
+
+                    {% if nonLus > 0 %}
+                        <span class="msg-badge">{{ nonLus }}</span>
+                    {% endif %}
                 </div>
-            {% else %}
-                {% for contact in contacts %}
-                    <div class="contact-row">
-                        {% if contact.photoProfil %}
-                            <img src="{{ asset(contact.photoProfil|trim('/') ) }}" class="contact-avatar" alt="">
-                        {% else %}
-                            <div class="contact-avatar"></div>
-                        {% endif %}
-                        <div class="contact-name">{{ contact.nom }} {{ contact.prenom }}</div>
-                    </div>
-                {% endfor %}
-            {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</aside>
+</div>
+<div class="reseau-modal-overlay" id="reseauModalOverlay"></div>
+
+<div class="reseau-modal" id="reseauModal">
+    <div class="reseau-modal-titlebar">
+        <div class="reseau-modal-title-left">
+            <span class="reseau-window-icon"></span>
+            <span>Invitations reçues</span>
         </div>
-    </aside>
+
+        <div class="reseau-window-actions">
+            <button type="button" class="reseau-window-btn" id="minimizeReseauModal">−</button>
+            <button type="button" class="reseau-window-btn" id="closeReseauModal">×</button>
+        </div>
+    </div>
+
+    <div class="reseau-modal-body">
+        {% if invitations|default([]) is empty %}
+            <div class="reseau-empty">Aucune invitation.</div>
+        {% else %}
+            {% for invitation in invitations %}
+                {% set demandeur = invitation.demandeur %}
+                {% set initial = (demandeur.prenom ?: demandeur.nom ?: 'U')|slice(0,1)|upper %}
+
+                <div class="reseau-invitation-card">
+                    {% if demandeur.photoProfil %}
+                        <img
+                            src="{{ path('app_profil_image', {id: demandeur.idUtilisateur, type: 'profil'}) }}"
+                            class="reseau-avatar"
+                            alt="Photo"
+                        >
+                    {% else %}
+                        <div class="reseau-avatar-placeholder">{{ initial }}</div>
+                    {% endif %}
+
+                    <div class="reseau-info">
+                        <div class="reseau-name">{{ demandeur.nom }} {{ demandeur.prenom }}</div>
+                        <div class="reseau-email">{{ demandeur.email }}</div>
+                    </div>
+
+                    <div class="reseau-actions">
+                        <form method="post" action="{{ path('app_reseau_accepter', {id: invitation.id}) }}">
+                            <button type="submit" class="reseau-accept-btn">✓ Accepter</button>
+                        </form>
+
+                        <form method="post" action="{{ path('app_reseau_refuser', {id: invitation.id}) }}">
+                            <button type="submit" class="reseau-refuse-btn">✕ Refuser</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="mini-chat" id="miniChat">
+    <div class="mini-chat-header">
+        <div class="mini-chat-avatar-wrap">
+            <img src="" alt="Avatar" class="mini-chat-avatar" id="miniChatAvatar">
+            <div class="mini-chat-avatar-placeholder" id="miniChatAvatarPlaceholder">U</div>
+        </div>
+
+        <div class="mini-chat-info">
+            <div class="mini-chat-name" id="miniChatName">Conversation</div>
+            <div class="mini-chat-status">En ligne</div>
+        </div>
+
+        <div class="mini-chat-actions">
+            <button type="button" class="mini-chat-icon">📞</button>
+            <button type="button" class="mini-chat-icon">📹</button>
+            <button type="button" class="mini-chat-min" id="miniChatMin">—</button>
+            <button type="button" class="mini-chat-close" id="miniChatClose">×</button>
+        </div>
+    </div>
+
+    <div class="mini-chat-body">
+        <iframe src="" class="mini-chat-frame" id="miniChatFrame"></iframe>
+    </div>
 </div>
 
 {% if not is_visiting %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('profileForm');
-    const coverBox = document.querySelector('.cover-box');
-    const photoProfilInput = document.getElementById('photoProfilInput');
-    const photoCoverInput = document.getElementById('photoCoverInput');
-    const avatarImg = document.querySelector('.avatar-img');
+    const miniChat = document.getElementById('miniChat');
+    const miniChatFrame = document.getElementById('miniChatFrame');
+    const miniChatName = document.getElementById('miniChatName');
+    const miniChatAvatar = document.getElementById('miniChatAvatar');
+    const miniChatAvatarPlaceholder = document.getElementById('miniChatAvatarPlaceholder');
+    const miniChatClose = document.getElementById('miniChatClose');
+    const miniChatMin = document.getElementById('miniChatMin');
 
-    if (photoProfilInput) {
-        photoProfilInput.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            if (!file) return;
+    function openMiniChat(row) {
+        if (!row || !miniChat || !miniChatFrame) return;
 
-            if (avatarImg) {
-                avatarImg.src = URL.createObjectURL(file);
-            }
+        const url = row.dataset.chatUrl;
+        const name = row.dataset.chatName;
+        const avatar = row.dataset.chatAvatar;
+        const initial = row.dataset.chatInitial || 'U';
 
-            form.submit();
+        if (!url) {
+            console.error('URL conversation manquante sur le contact');
+            return;
+        }
+
+        miniChatName.textContent = name || 'Conversation';
+
+        if (avatar) {
+            miniChatAvatar.src = avatar;
+            miniChatAvatar.style.display = 'block';
+            miniChatAvatarPlaceholder.style.display = 'none';
+        } else {
+            miniChatAvatar.src = '';
+            miniChatAvatar.style.display = 'none';
+            miniChatAvatarPlaceholder.textContent = initial;
+            miniChatAvatarPlaceholder.style.display = 'flex';
+        }
+
+        miniChatFrame.src = url + '?mini=1';
+        miniChat.classList.add('is-open');
+        miniChat.classList.remove('minimized');
+    }
+
+    document.addEventListener('click', function (event) {
+        const row = event.target.closest('.js-open-mini-chat');
+        if (!row) return;
+
+        event.preventDefault();
+        openMiniChat(row);
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Enter') return;
+
+        const row = event.target.closest('.js-open-mini-chat');
+        if (!row) return;
+
+        event.preventDefault();
+        openMiniChat(row);
+    });
+
+    if (miniChatClose) {
+        miniChatClose.addEventListener('click', function () {
+            miniChat.classList.remove('is-open');
+            miniChatFrame.src = '';
         });
     }
 
-    if (photoCoverInput) {
-        photoCoverInput.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            if (!file) return;
-
-            if (coverBox) {
-                coverBox.style.backgroundImage = 'url(' + URL.createObjectURL(file) + ')';
-                coverBox.style.backgroundSize = 'cover';
-                coverBox.style.backgroundPosition = 'center';
-            }
-
-            form.submit();
+    if (miniChatMin) {
+        miniChatMin.addEventListener('click', function () {
+            miniChat.classList.toggle('minimized');
         });
     }
 });
 </script>
 {% endif %}
+
+<script>
+let currentSkillIndex = 0;
+
+function changeSkill(direction) {
+    const slides = document.querySelectorAll('.skill-slide');
+    const counter = document.getElementById('skillCounter');
+
+    if (!slides.length) return;
+
+    slides[currentSkillIndex].style.display = 'none';
+
+    currentSkillIndex += direction;
+
+    if (currentSkillIndex < 0) {
+        currentSkillIndex = slides.length - 1;
+    }
+
+    if (currentSkillIndex >= slides.length) {
+        currentSkillIndex = 0;
+    }
+
+    slides[currentSkillIndex].style.display = 'block';
+
+    if (counter) {
+        counter.textContent = 'Compétence ' + (currentSkillIndex + 1) + ' / ' + slides.length;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const miniChat = document.getElementById('miniChat');
+    const miniChatFrame = document.getElementById('miniChatFrame');
+    const miniChatName = document.getElementById('miniChatName');
+    const miniChatAvatar = document.getElementById('miniChatAvatar');
+    const miniChatAvatarPlaceholder = document.getElementById('miniChatAvatarPlaceholder');
+    const miniChatClose = document.getElementById('miniChatClose');
+    const miniChatMin = document.getElementById('miniChatMin');
+
+    document.querySelectorAll('.js-open-mini-chat').forEach(function (row) {
+        row.addEventListener('click', function () {
+            const url = this.dataset.chatUrl;
+            const name = this.dataset.chatName;
+            const avatar = this.dataset.chatAvatar;
+            const initial = this.dataset.chatInitial || 'U';
+
+            if (!miniChat || !miniChatFrame) return;
+
+            miniChatName.textContent = name || 'Conversation';
+
+            if (avatar) {
+                miniChatAvatar.src = avatar;
+                miniChatAvatar.style.display = 'block';
+                miniChatAvatarPlaceholder.style.display = 'none';
+            } else {
+                miniChatAvatar.src = '';
+                miniChatAvatar.style.display = 'none';
+                miniChatAvatarPlaceholder.textContent = initial;
+                miniChatAvatarPlaceholder.style.display = 'flex';
+            }
+
+            miniChatFrame.src = url + '?mini=1';
+            miniChat.classList.add('is-open');
+            miniChat.classList.remove('minimized');
+        });
+    });
+
+    if (miniChatClose) {
+        miniChatClose.addEventListener('click', function () {
+            miniChat.classList.remove('is-open');
+            miniChatFrame.src = '';
+        });
+    }
+
+    if (miniChatMin) {
+        miniChatMin.addEventListener('click', function () {
+            miniChat.classList.toggle('minimized');
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const openBtn = document.getElementById('openReseauModal');
+    const modal = document.getElementById('reseauModal');
+    const overlay = document.getElementById('reseauModalOverlay');
+    const closeBtn = document.getElementById('closeReseauModal');
+    const minimizeBtn = document.getElementById('minimizeReseauModal');
+
+    function openReseauModal() {
+        if (!modal || !overlay) return;
+        modal.classList.add('is-open');
+        overlay.classList.add('is-open');
+    }
+
+    function closeReseauModal() {
+        if (!modal || !overlay) return;
+        modal.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+    }
+
+    if (openBtn) {
+        openBtn.addEventListener('click', openReseauModal);
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeReseauModal);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', closeReseauModal);
+    }
+
+    if (minimizeBtn) {
+        minimizeBtn.addEventListener('click', closeReseauModal);
+    }
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeReseauModal();
+        }
+    });
+});
+
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const userSearchInput = document.getElementById('userSearchInput');
+    const userSearchResults = document.getElementById('userSearchResults');
+    let searchTimer = null;
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function closeSearchResults() {
+        if (!userSearchResults) return;
+        userSearchResults.classList.remove('is-open');
+        userSearchResults.innerHTML = '';
+    }
+
+    function renderSearchResults(users) {
+        if (!userSearchResults) return;
+
+        userSearchResults.innerHTML = '';
+
+        if (!users.length) {
+            userSearchResults.innerHTML = '<div class="search-result-empty">Aucun utilisateur trouvé.</div>';
+            userSearchResults.classList.add('is-open');
+            return;
+        }
+
+        users.forEach(function (user) {
+            const item = document.createElement('div');
+            item.className = 'search-result-item';
+            item.dataset.url = user.profileUrl;
+
+            const initial = ((user.prenom || user.nom || 'U').charAt(0)).toUpperCase();
+
+            const avatar = user.photoUrl
+                ? '<img src="' + user.photoUrl + '" class="search-result-avatar" alt="Photo">'
+                : '<div class="search-result-placeholder">' + initial + '</div>';
+
+            item.innerHTML =
+                avatar +
+                '<div class="search-result-info">' +
+                    '<div class="search-result-name">' +
+                        escapeHtml((user.nom || '') + ' ' + (user.prenom || '')) +
+                    '</div>' +
+                    '<div class="search-result-meta">' +
+                        escapeHtml((user.role || 'utilisateur') + ' · ' + (user.email || '')) +
+                    '</div>' +
+                '</div>';
+
+            item.addEventListener('mousedown', function (event) {
+                event.preventDefault();
+                window.location.href = this.dataset.url;
+            });
+
+            userSearchResults.appendChild(item);
+        });
+
+        userSearchResults.classList.add('is-open');
+    }
+
+    if (userSearchInput && userSearchResults) {
+        userSearchInput.addEventListener('input', function () {
+            const q = this.value.trim();
+            const url = this.dataset.searchUrl;
+
+            clearTimeout(searchTimer);
+
+           if (q.length < 1) {
+    closeSearchResults();
+
+    const homeUrl = this.dataset.homeUrl || '/profil';
+
+    if (window.location.search.includes('q=')) {
+        window.location.href = homeUrl;
+    }
+
+    return;
+}
+
+            searchTimer = setTimeout(function () {
+                fetch(url + '?q=' + encodeURIComponent(q), {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (users) {
+                        renderSearchResults(users);
+                    })
+                    .catch(function () {
+                        closeSearchResults();
+                    });
+            }, 120);
+        });
+
+        userSearchInput.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeSearchResults();
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('.search-box')) {
+                closeSearchResults();
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

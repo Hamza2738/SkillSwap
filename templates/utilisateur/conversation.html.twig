@@ -1,0 +1,564 @@
+{% set isMini = app.request.query.get('mini') == '1' %}
+
+{% if not isMini %}
+    {% extends 'base.html.twig' %}
+{% endif %}
+
+{% block title %}Conversation · SkillSwap{% endblock %}
+
+{% block stylesheets %}
+<style>
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    background: #020915;
+    color: white;
+    font-family: Inter, Arial, sans-serif;
+    overflow: hidden;
+}
+
+.chat-page {
+    width: 100%;
+    height: 100vh;
+    background: #020915;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.normal-back {
+    padding: 14px 16px;
+    color: #93c5fd;
+    font-size: 14px;
+    background: #020915;
+}
+
+/* ================= HEADER NORMAL PAGE ONLY ================= */
+
+.chat-contact-header {
+    height: 70px;
+    background: #1b1830;
+    border-bottom: 1px solid #302b4e;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+    flex-shrink: 0;
+}
+
+.chat-contact-avatar-wrap {
+    width: 42px;
+    height: 42px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.chat-contact-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #243252;
+}
+
+.chat-contact-placeholder {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f83ff, #7c5cff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.chat-contact-avatar-wrap::after {
+    content: "";
+    width: 9px;
+    height: 9px;
+    background: #22c55e;
+    border: 2px solid #1b1830;
+    border-radius: 50%;
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+}
+
+.chat-contact-info {
+    min-width: 0;
+}
+
+.chat-contact-name {
+    font-size: 14px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.chat-contact-status {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #22c55e;
+}
+
+/* ================= MESSAGES AREA ================= */
+
+.messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 18px 16px 14px;
+    background: #020915;
+    border-left: 1px solid #27233f;
+    border-right: 1px solid #27233f;
+}
+
+.message-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.message-row.me {
+    justify-content: flex-end;
+}
+
+.message-row.other {
+    justify-content: flex-start;
+}
+
+.bubble {
+    max-width: 72%;
+    padding: 11px 14px;
+    border-radius: 15px;
+    font-size: 13px;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+.message-row.me .bubble {
+    background: #8b5cf6;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.message-row.other .bubble {
+    background: #202945;
+    color: white;
+    border-bottom-left-radius: 5px;
+}
+
+.msg-time {
+    display: block;
+    margin-top: 5px;
+    font-size: 9px;
+    opacity: .65;
+}
+
+.chat-empty {
+    color: #64748b;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 60px;
+}
+
+/* ================= MEDIA MESSAGES ================= */
+
+.media-bubble {
+    background: transparent !important;
+    padding: 0 !important;
+}
+
+.chat-image {
+    max-width: 210px;
+    max-height: 230px;
+    border-radius: 14px;
+    display: block;
+    object-fit: cover;
+    box-shadow: 0 8px 20px rgba(0,0,0,.35);
+}
+
+.chat-video {
+    width: 220px;
+    max-height: 180px;
+    border-radius: 14px;
+    display: block;
+    background: #111827;
+}
+
+.chat-audio {
+    width: 220px;
+    height: 38px;
+}
+
+.file-card {
+    width: 230px;
+    min-height: 58px;
+    background: #2a2a50;
+    border: 1px solid rgba(167, 139, 250, .35);
+    border-radius: 14px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.file-card:hover {
+    background: #343461;
+}
+
+.file-icon {
+    font-size: 28px;
+}
+.chat-image {
+    width: auto;
+    max-width: 210px;
+    max-height: 230px;
+    border-radius: 14px;
+    display: block;
+    object-fit: cover;
+    background: #111827;
+    border: 1px solid rgba(167, 139, 250, .25);
+    box-shadow: 0 8px 20px rgba(0,0,0,.35);
+}
+
+.file-card strong {
+    display: block;
+    font-size: 12px;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-card small {
+    display: block;
+    color: #a78bfa;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.file-name {
+    margin-top: 5px;
+    color: #c4b5fd;
+    font-size: 11px;
+}
+
+/* ================= MESSAGE INPUT AREA ================= */
+
+.chat-composer {
+    min-height: 62px;
+    background: #24213a;
+    border-top: 1px solid #34304f;
+    padding: 9px 10px 8px;
+    flex-shrink: 0;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+}
+
+.chat-input {
+    flex: 1;
+    height: 38px;
+    border: none;
+    outline: none;
+    border-radius: 999px;
+    background: #36334f;
+    color: white;
+    padding: 0 14px;
+    font-size: 13px;
+}
+
+.chat-input::placeholder {
+    color: #b4b0c9;
+}
+
+.icon-btn,
+.send-btn {
+    border: none;
+    background: transparent;
+    color: #a78bfa;
+    cursor: pointer;
+    font-size: 18px;
+    width: 28px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-btn {
+    color: #c4b5fd;
+    font-size: 20px;
+}
+
+.icon-btn:hover,
+.send-btn:hover {
+    color: #ffffff;
+}
+
+/* ================= EMOJI BAR ================= */
+
+.emoji-bar {
+    display: none;
+    gap: 7px;
+    padding: 0 4px 8px;
+    flex-wrap: wrap;
+    background: #24213a;
+}
+
+.emoji-bar.is-open {
+    display: flex;
+}
+
+.emoji-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 8px;
+    background: #36334f;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.emoji-btn:hover {
+    background: #4b466a;
+}
+
+/* ================= SCROLL STYLE ================= */
+
+.messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages::-webkit-scrollbar-track {
+    background: #020915;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: #4b456d;
+    border-radius: 999px;
+}
+
+@media (max-width: 500px) {
+    .bubble {
+        max-width: 82%;
+    }
+
+    .chat-image,
+    .chat-video,
+    .chat-audio,
+    .file-card {
+        max-width: 200px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="chat-page">
+    {% if not isMini %}
+        <a href="{{ path('app_profil') }}" class="normal-back">← Retour profil</a>
+
+        <div class="chat-contact-header">
+            <div class="chat-contact-avatar-wrap">
+                {% if ami.photoProfil %}
+                    <img
+                        src="{{ path('app_profil_image', {id: ami.idUtilisateur, type: 'profil'}) }}"
+                        class="chat-contact-avatar"
+                        alt="Photo"
+                    >
+                {% else %}
+                    <div class="chat-contact-placeholder">
+                        {{ (ami.prenom ?: 'U')|slice(0,1)|upper }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="chat-contact-info">
+                <div class="chat-contact-name">{{ ami.nom }} {{ ami.prenom }}</div>
+                <div class="chat-contact-status">Contact SkillSwap</div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="messages" id="messagesBox">
+        {% for message in messages %}
+            {% set isMe = message.envoyeur.idUtilisateur == me.idUtilisateur %}
+            {% set type = message.typeMessage ?: 'texte' %}
+
+            <div class="message-row {{ isMe ? 'me' : 'other' }}">
+                <div class="bubble {{ type != 'texte' and type != 'emoji' ? 'media-bubble' : '' }}">
+
+                {% if type == 'image' and message.fichierPath %}
+    <a href="{{ path('app_conversation_media', {id: message.id}) }}" target="_blank">
+        <img
+            src="{{ path('app_conversation_media', {id: message.id}) }}"
+            class="chat-image"
+            alt="{{ message.fichierNom ?: 'image' }}"
+            onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('afterend','<div class=&quot;file-card&quot;>📷 Image introuvable</div>');"
+        >
+    </a>
+
+{% elseif type == 'video' and message.fichierPath %}
+    <video class="chat-video" controls>
+        <source src="{{ path('app_conversation_media', {id: message.id}) }}">
+    </video>
+    <div class="file-name">🎬 {{ message.fichierNom ?: 'Vidéo' }}</div>
+
+{% elseif type == 'vocal' and message.fichierPath %}
+    <audio class="chat-audio" controls>
+        <source src="{{ path('app_conversation_media', {id: message.id}) }}">
+    </audio>
+
+{% elseif type == 'fichier' and message.fichierPath %}
+    <a
+        href="{{ path('app_conversation_media', {id: message.id}) }}"
+        target="_blank"
+        class="file-card"
+    >
+        <span class="file-icon">📎</span>
+        <span>
+            <strong>{{ message.fichierNom ?: 'Fichier' }}</strong>
+            <small>
+                {% if message.fichierTaille %}
+                    {{ (message.fichierTaille / 1024)|number_format(1) }} KB
+                {% else %}
+                    Cliquer pour ouvrir
+                {% endif %}
+            </small>
+        </span>
+    </a>
+
+{% else %}
+    {{ message.contenu }}
+{% endif %}
+
+                    <span class="msg-time">
+                        {{ message.dateEnvoi ? message.dateEnvoi|date('H:i') : '' }}
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <div class="chat-empty">Aucun message. Commencez la conversation.</div>
+        {% endfor %}
+    </div>
+
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        class="chat-composer"
+        action="{{ path('app_conversation_show', {id: ami.idUtilisateur}) }}{% if isMini %}?mini=1{% endif %}"
+    >
+        <div class="emoji-bar" id="emojiBar">
+            <button type="button" class="emoji-btn">😀</button>
+            <button type="button" class="emoji-btn">😂</button>
+            <button type="button" class="emoji-btn">😍</button>
+            <button type="button" class="emoji-btn">👍</button>
+            <button type="button" class="emoji-btn">❤️</button>
+            <button type="button" class="emoji-btn">🔥</button>
+            <button type="button" class="emoji-btn">👏</button>
+            <button type="button" class="emoji-btn">😎</button>
+            <button type="button" class="emoji-btn">🥰</button>
+            <button type="button" class="emoji-btn">😭</button>
+            <button type="button" class="emoji-btn">🙏</button>
+            <button type="button" class="emoji-btn">💪</button>
+        </div>
+
+       <div class="input-row">
+    <button type="button" class="icon-btn" id="btnUploadImage" title="Image">📷</button>
+    <button type="button" class="icon-btn" id="btnUploadFile" title="Fichier">📎</button>
+
+    <input
+        type="file"
+        name="media"
+        id="messageMediaInput"
+        hidden
+    >
+
+    <input
+        type="text"
+        name="contenu"
+        id="messageInput"
+        class="chat-input"
+        placeholder="Aa"
+        autocomplete="off"
+        autofocus
+    >
+
+    <button type="button" class="icon-btn" id="emojiToggle" title="Emoji">☺</button>
+    <button type="submit" class="send-btn" title="Envoyer">➤</button>
+</div>
+    </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const box = document.getElementById('messagesBox');
+    const input = document.getElementById('messageInput');
+    const emojiToggle = document.getElementById('emojiToggle');
+    const emojiBar = document.getElementById('emojiBar');
+
+    const mediaInput = document.getElementById('messageMediaInput');
+    const btnUploadImage = document.getElementById('btnUploadImage');
+    const btnUploadFile = document.getElementById('btnUploadFile');
+
+    if (box) {
+        box.scrollTop = box.scrollHeight;
+    }
+
+    if (input) {
+        input.focus();
+    }
+
+    if (emojiToggle && emojiBar) {
+        emojiToggle.addEventListener('click', function () {
+            emojiBar.classList.toggle('is-open');
+        });
+    }
+
+    document.querySelectorAll('.emoji-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            if (!input) return;
+            input.value += this.textContent;
+            input.focus();
+        });
+    });
+
+    if (btnUploadImage && mediaInput) {
+        btnUploadImage.addEventListener('click', function () {
+            mediaInput.value = '';
+            mediaInput.setAttribute('accept', 'image/png,image/jpeg,image/jpg,image/webp,image/gif');
+            mediaInput.click();
+        });
+    }
+
+    if (btnUploadFile && mediaInput) {
+        btnUploadFile.addEventListener('click', function () {
+            mediaInput.value = '';
+            mediaInput.removeAttribute('accept');
+            mediaInput.click();
+        });
+    }
+
+    if (mediaInput) {
+        mediaInput.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                this.form.submit();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

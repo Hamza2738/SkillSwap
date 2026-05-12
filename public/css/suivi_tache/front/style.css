@@ -1,0 +1,437 @@
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: #070d18;
+    color: #ffffff;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.tf-page {
+    min-height: 100vh;
+    background: #070d18;
+}
+
+/* ================= TOP BAR ================= */
+
+.tf-topbar {
+    height: 78px;
+    background: #0b1220;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+.tf-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 400 !important;
+}
+
+.tf-brand img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.tf-nav {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+}
+
+.tf-nav a {
+    color: #e6edff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.tf-nav a:hover {
+    color: #7b8cff;
+}
+
+/* ================= PAGE ================= */
+
+.tf-wrap {
+    width: 81%;
+    max-width: 1580px;
+    margin: 32px auto 0 auto;
+}
+
+.tf-wrap h1 {
+    font-size: 34px;
+    line-height: 1.1;
+    margin: 0 0 22px 0;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.8px;
+}
+
+/* ================= GRID ================= */
+
+.tf-grid {
+    display: grid;
+    grid-template-columns: 760px 820px;
+    gap: 18px;
+    align-items: start;
+}
+
+/* ================= CARDS ================= */
+
+.tf-card {
+    background: #0b1220;
+    border: 1px solid #22304a;
+    border-radius: 17px;
+    padding: 17px;
+    min-height: 705px;
+    box-shadow: none;
+}
+
+.tf-card h2 {
+    margin: 0 0 14px 0;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+/* ================= TABLE BOX ================= */
+
+.tf-table-box {
+    height: 174px;
+    overflow: auto;
+    border: 1px solid #22304a;
+    border-radius: 14px;
+    background: #0b1220;
+    margin-bottom: 18px;
+    padding: 5px;
+}
+
+.tf-task-table-box {
+    height: 174px;
+}
+
+.tf-table-box::-webkit-scrollbar {
+    height: 7px;
+    width: 7px;
+}
+
+.tf-table-box::-webkit-scrollbar-track {
+    background: #111827;
+    border-radius: 20px;
+}
+
+.tf-table-box::-webkit-scrollbar-thumb {
+    background: #6d5dfc;
+    border-radius: 20px;
+}
+
+/* ================= TABLE ================= */
+
+.tf-table {
+    width: 100%;
+    min-width: 890px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.tf-table thead tr {
+    background: #171f2e;
+}
+
+.tf-table th {
+    height: 38px;
+    padding: 0 10px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 400 !important;
+    text-align: center;
+    border-bottom: 1px solid #26324a;
+    white-space: nowrap;
+}
+
+.tf-table td {
+    height: 26px;
+    padding: 0 8px;
+    color: #e7edff;
+    font-size: 12px;
+    font-weight: 400;
+    border-bottom: 1px solid #172136;
+    border-right: 1px solid #172136;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.tf-table tbody tr {
+    background: #0c1322;
+    cursor: pointer;
+}
+
+.tf-table tbody tr:nth-child(even) {
+    background: #101827;
+}
+
+.tf-table tbody tr:hover {
+    background: rgba(91, 132, 255, 0.16);
+}
+
+.tf-table tbody tr.selected {
+    background: rgba(91, 77, 160, 0.35);
+}
+
+.tf-empty {
+    text-align: center !important;
+    color: rgba(255, 255, 255, 0.14) !important;
+    height: 210px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+}
+
+/* ================= LARGEURS TABLEAU PROJETS ================= */
+
+.tf-card:first-child .tf-table {
+    min-width: 760px;
+    table-layout: fixed;
+}
+
+.tf-card:first-child .tf-table th:nth-child(1),
+.tf-card:first-child .tf-table td:nth-child(1) {
+    width: 180px;
+}
+
+.tf-card:first-child .tf-table th:nth-child(2),
+.tf-card:first-child .tf-table td:nth-child(2) {
+    width: 150px;
+}
+
+.tf-card:first-child .tf-table th:nth-child(3),
+.tf-card:first-child .tf-table td:nth-child(3) {
+    width: 140px;
+}
+
+.tf-card:first-child .tf-table th:nth-child(4),
+.tf-card:first-child .tf-table td:nth-child(4) {
+    width: 145px;
+}
+
+.tf-card:first-child .tf-table th:nth-child(5),
+.tf-card:first-child .tf-table td:nth-child(5) {
+    width: 145px;
+}
+
+/* ================= LARGEURS TABLEAU TACHES ================= */
+
+.tf-card:nth-child(2) .tf-table {
+    min-width: 820px;
+    table-layout: fixed;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(1),
+.tf-card:nth-child(2) .tf-table td:nth-child(1) {
+    width: 190px;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(2),
+.tf-card:nth-child(2) .tf-table td:nth-child(2) {
+    width: 150px;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(3),
+.tf-card:nth-child(2) .tf-table td:nth-child(3) {
+    width: 140px;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(4),
+.tf-card:nth-child(2) .tf-table td:nth-child(4) {
+    width: 130px;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(5),
+.tf-card:nth-child(2) .tf-table td:nth-child(5) {
+    width: 140px;
+}
+
+.tf-card:nth-child(2) .tf-table th:nth-child(6),
+.tf-card:nth-child(2) .tf-table td:nth-child(6) {
+    width: 130px;
+}
+
+/* ================= FORM ================= */
+
+.tf-form-title {
+    margin-top: 0 !important;
+}
+
+.tf-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tf-form label {
+    color: #dfe7ff;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.tf-form input,
+.tf-form textarea,
+.tf-form select {
+    width: 100%;
+    background: #171f2e;
+    border: 1px solid #2a354b;
+    border-radius: 12px;
+    color: #ffffff;
+    outline: none;
+    padding: 0 12px;
+    font-size: 13px;
+}
+
+.tf-form input,
+.tf-form select {
+    height: 36px;
+}
+
+.tf-form textarea {
+    height: 52px;
+    resize: none;
+    padding-top: 10px;
+}
+
+.tf-form-row {
+    display: grid;
+    grid-template-columns: 1fr 190px 190px;
+    gap: 40px;
+    align-items: end;
+}
+
+.tf-form-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tf-form-row select {
+    width: 180px;
+    height: 32px;
+}
+
+/* Evaluation si elle est hors row */
+.tf-form > select[name="evaluation"] {
+    width: 180px;
+    height: 32px;
+}
+
+/* Date */
+.tf-form input[type="date"] {
+    width: 180px;
+    height: 36px;
+}
+
+/* ================= BUTTONS ================= */
+
+.tf-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
+}
+
+.tf-btn {
+    border: none;
+    border-radius: 12px;
+    min-width: 72px;
+    height: 38px;
+    padding: 0 14px;
+    background: linear-gradient(135deg, #5aa6ff, #7b61ff);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tf-btn.secondary {
+    background: linear-gradient(135deg, #2e5b92, #443b91);
+}
+
+.tf-btn.danger {
+    background: linear-gradient(135deg, #334f82, #423780);
+}
+
+.tf-btn.purple {
+    background: linear-gradient(135deg, #7b61ff, #9f7aea);
+    color: white;
+    border: none;
+}
+
+.tf-btn.purple:hover {
+    opacity: 0.9;
+}
+
+.tf-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+/* ================= HINT ================= */
+
+.tf-hint {
+    color: rgba(255, 255, 255, 0.18);
+    font-size: 12px;
+    margin: 12px 0 14px 0;
+}
+
+/* ================= ALERTS ================= */
+
+.tf-alert {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.tf-alert-success {
+    background: rgba(0, 200, 120, 0.15);
+    color: #42e69b;
+}
+
+.tf-alert-danger,
+.tf-alert-error {
+    background: rgba(255, 75, 75, 0.15);
+    color: #ff7777;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1500px) {
+    .tf-wrap {
+        width: 94%;
+    }
+
+    .tf-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tf-card {
+        min-height: auto;
+    }
+}

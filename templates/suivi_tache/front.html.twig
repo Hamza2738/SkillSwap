@@ -1,0 +1,533 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Projets et Tâches{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #070d18;
+        color: #f8fafc;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .rv-page {
+        min-height: 100vh;
+        background: #070d18;
+    }
+
+    .rv-topbar {
+        height: 58px;
+        background: #0d1422;
+        border-bottom: 1px solid #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+    }
+
+    .rv-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .rv-logo-img {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+    }
+
+    .rv-nav {
+        display: flex;
+        align-items: center;
+        gap: 35px;
+    }
+
+    .rv-nav a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .rv-container {
+        width: 86%;
+        max-width: 1550px;
+        margin: 0 auto;
+        padding: 30px 0 40px;
+    }
+
+    .rv-container h1 {
+        margin: 0 0 22px;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+    }
+
+    .rv-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        align-items: start;
+    }
+
+    .rv-card {
+        background: #0d1422;
+        border: 1px solid #263449;
+        border-radius: 10px;
+        padding: 16px;
+        min-height: 350px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .rv-card h2 {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .rv-table-box {
+        width: 100%;
+        height: 250px;
+        overflow: auto;
+        border: 1px solid #253449;
+        border-radius: 8px;
+        background: #0b1220;
+    }
+
+    .post-table {
+        height: 250px;
+        margin-bottom: 14px;
+    }
+
+    .rv-table {
+        width: 100%;
+        min-width: 650px;
+        border-collapse: collapse;
+        table-layout: fixed;
+        color: #ffffff;
+        font-size: 12px;
+    }
+
+    .rv-table thead {
+        background: #182231;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .rv-table th {
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 13px 10px;
+        text-align: center;
+        border-bottom: 1px solid #263449;
+        white-space: nowrap;
+    }
+
+    .rv-table td {
+        padding: 13px 10px;
+        text-align: center;
+        border-bottom: 1px solid #182638;
+        border-right: 1px solid #182638;
+        color: #f8fafc;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rv-table th:last-child,
+    .rv-table td:last-child {
+        border-right: none;
+    }
+
+    .rv-table tbody tr {
+        cursor: pointer;
+        background: #0d1422;
+        transition: background 0.2s ease;
+    }
+
+    .rv-table tbody tr:hover {
+        background: #111c2f;
+    }
+
+    .rv-table tbody tr.selected {
+        background: rgba(99, 102, 241, 0.25);
+    }
+
+    .rv-empty {
+        height: 170px;
+        text-align: center !important;
+        vertical-align: middle;
+        color: #64748b !important;
+        font-size: 12px;
+    }
+
+    .rv-hint {
+        margin: 12px 0 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .rv-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rv-form label {
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: -4px;
+    }
+
+    .rv-form input,
+    .rv-form textarea,
+    .rv-form select {
+        width: 100%;
+        background: #172131;
+        border: 1px solid #334155;
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 10px 12px;
+        outline: none;
+        font-size: 12px;
+    }
+
+    .rv-form textarea {
+        resize: none;
+        min-height: 58px;
+    }
+
+    .rv-form input:focus,
+    .rv-form textarea:focus,
+    .rv-form select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
+    }
+
+    .rv-form-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+    .rv-form-row > div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .rv-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+    }
+
+    .rv-btn {
+        min-width: 92px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #334f8f;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+    }
+
+    .rv-btn:hover {
+        opacity: 0.92;
+    }
+
+    .rv-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    .rv-btn.secondary {
+        background: #384b6a;
+    }
+
+    .rv-btn.danger {
+        background: #4b5563;
+    }
+
+    .rv-btn.purple {
+        background: #6d5dfc;
+    }
+
+    .rv-alert {
+        padding: 12px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .rv-alert-success {
+        background: rgba(34, 197, 94, 0.15);
+        color: #86efac;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .rv-alert-error,
+    .rv-alert-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .rv-table-box::-webkit-scrollbar {
+        height: 7px;
+        width: 7px;
+    }
+
+    .rv-table-box::-webkit-scrollbar-track {
+        background: #111827;
+        border-radius: 20px;
+    }
+
+    .rv-table-box::-webkit-scrollbar-thumb {
+        background: #6d5dfc;
+        border-radius: 20px;
+    }
+
+    @media (max-width: 1100px) {
+        .rv-container {
+            width: 94%;
+        }
+
+        .rv-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .rv-form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="rv-page">
+
+    <header class="rv-topbar">
+        <div class="rv-brand">
+            <img class="rv-logo-img" src="{{ asset('image/logo.png') }}" alt="SkillSwap">
+            <span>SkillSwap</span>
+        </div>
+
+        <nav class="rv-nav">
+            <a href="{{ path('app_front_competences') }}">Competence</a>
+            <a href="{{ path('app_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <main class="rv-container">
+
+        <h1>Gestion des Projets et Tâches</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="rv-alert rv-alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="rv-grid">
+
+            <section class="rv-card">
+                <h2>Mes Projets</h2>
+
+                <div class="rv-table-box">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Mail</th>
+                                <th>Titre</th>
+                                <th>Statut</th>
+                                <th>Date début</th>
+                                <th>Date fin</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for projet in projets %}
+                            <tr class="{{ selectedProjet and selectedProjet.id == projet.id ? 'selected' : '' }}"
+                                onclick="window.location.href='{{ path('app_front_suivi_tache', {projet: projet.id}) }}'">
+                                <td>{{ projet.mailUser }}</td>
+                                <td>{{ projet.titre }}</td>
+                                <td>{{ projet.statut }}</td>
+                                <td>{{ projet.dateDebut ? projet.dateDebut|date('Y-m-d') : '' }}</td>
+                                <td>{{ projet.dateFin ? projet.dateFin|date('Y-m-d') : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="rv-empty">Aucun projet trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="rv-hint">Cliquez sur un projet pour afficher ses tâches.</p>
+            </section>
+
+            <section class="rv-card">
+                <h2>
+                    Tâches du Projet
+                    {% if selectedProjet %}
+                        : {{ selectedProjet.titre }}
+                    {% endif %}
+                </h2>
+
+                <div class="rv-table-box post-table">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Mail</th>
+                                <th>Titre</th>
+                                <th>Statut</th>
+                                <th>Priorité</th>
+                                <th>Échéance</th>
+                                <th>Évaluation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% if selectedProjet %}
+                            {% for tache in taches %}
+                                <tr class="{{ selectedTache and selectedTache.id == tache.id ? 'selected' : '' }}"
+                                    onclick="window.location.href='{{ path('app_front_suivi_tache', {projet: selectedProjet.id, tache: tache.id}) }}'">
+                                    <td>{{ tache.mailUser }}</td>
+                                    <td>{{ tache.titre }}</td>
+                                    <td>{{ tache.statut }}</td>
+                                    <td>{{ tache.priorite }}</td>
+                                    <td>{{ tache.echeance ? tache.echeance|date('Y-m-d') : '' }}</td>
+                                    <td>{{ tache.evaluation ?: '-' }}</td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="rv-empty">Aucune tâche trouvée</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="rv-empty">Sélectionnez un projet à gauche</td>
+                            </tr>
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Formulaire Tâche</h2>
+
+                <form method="post" class="rv-form">
+                    <input type="hidden" name="selected_projet" value="{{ selectedProjet ? selectedProjet.id : '' }}">
+                    <input type="hidden" name="tache_id" value="{{ selectedTache ? selectedTache.id : '' }}">
+
+                    <label>Titre</label>
+                    <input name="titre" value="{{ selectedTache ? selectedTache.titre : '' }}" required>
+
+                    <label>Description</label>
+                    <textarea name="description" rows="3">{{ selectedTache ? selectedTache.description : '' }}</textarea>
+
+                    <div class="rv-form-row">
+                        <div>
+                            <label>Statut</label>
+                            <select name="statut" required>
+                                <option value="">Choisir...</option>
+                                <option value="À faire" {{ selectedTache and selectedTache.statut == 'À faire' ? 'selected' : '' }}>À faire</option>
+                                <option value="En cours" {{ selectedTache and selectedTache.statut == 'En cours' ? 'selected' : '' }}>En cours</option>
+                                <option value="Terminée" {{ selectedTache and selectedTache.statut == 'Terminée' ? 'selected' : '' }}>Terminée</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Priorité</label>
+                            <select name="priorite" required>
+                                <option value="">Choisir...</option>
+                                <option value="Basse" {{ selectedTache and selectedTache.priorite == 'Basse' ? 'selected' : '' }}>Basse</option>
+                                <option value="Moyenne" {{ selectedTache and selectedTache.priorite == 'Moyenne' ? 'selected' : '' }}>Moyenne</option>
+                                <option value="Haute" {{ selectedTache and selectedTache.priorite == 'Haute' ? 'selected' : '' }}>Haute</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Évaluation</label>
+                            <select name="evaluation">
+                                <option value="">Choisir...</option>
+                                <option value="Faible" {{ selectedTache and selectedTache.evaluation == 'Faible' ? 'selected' : '' }}>Faible</option>
+                                <option value="Moyenne" {{ selectedTache and selectedTache.evaluation == 'Moyenne' ? 'selected' : '' }}>Moyenne</option>
+                                <option value="Bonne" {{ selectedTache and selectedTache.evaluation == 'Bonne' ? 'selected' : '' }}>Bonne</option>
+                                <option value="Excellente" {{ selectedTache and selectedTache.evaluation == 'Excellente' ? 'selected' : '' }}>Excellente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Échéance</label>
+                    <input type="date"
+                           name="echeance"
+                           value="{{ selectedTache and selectedTache.echeance ? selectedTache.echeance|date('Y-m-d') : '' }}">
+
+                    <div class="rv-actions">
+                        <button class="rv-btn"
+                                name="action"
+                                value="add_tache"
+                                {{ selectedProjet ? '' : 'disabled' }}>
+                            Ajouter
+                        </button>
+
+                        <button class="rv-btn secondary"
+                                name="action"
+                                value="update_tache"
+                                {{ selectedTache ? '' : 'disabled' }}>
+                            Modifier
+                        </button>
+
+                        <button class="rv-btn danger"
+                                name="action"
+                                value="delete_tache"
+                                onclick="return confirm('Supprimer cette tâche ?')"
+                                {{ selectedTache ? '' : 'disabled' }}>
+                            Supprimer
+                        </button>
+
+                        <a class="rv-btn purple"
+                           href="{{ path('app_front_suivi_tache', {projet: selectedProjet ? selectedProjet.id : 0}) }}">
+                            Vider
+                        </a>
+                    </div>
+
+                    <p class="rv-hint">Sélectionnez un projet avant d’ajouter une tâche.</p>
+                </form>
+            </section>
+
+        </div>
+    </main>
+</div>
+{% endblock %}

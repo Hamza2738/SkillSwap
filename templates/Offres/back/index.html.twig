@@ -1,0 +1,535 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Offres{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/offres/back/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+    /* Réduire hauteur tableau candidatures pour afficher les commentaires */
+.candidatures-box {
+    height: 190px !important;
+    max-height: 190px !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+}
+
+/* Garder le header fixe */
+.candidatures-box .of-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Largeur du tableau candidature */
+.candidatures-box .of-table {
+    min-width: 1350px;
+}
+
+/* Réduire un peu les cellules pour gagner espace */
+.candidatures-box .of-table th,
+.candidatures-box .of-table td {
+    padding: 10px 9px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+}
+
+/* Commentaires visibles juste après */
+.comments-box {
+    max-height: 220px !important;
+    overflow-y: auto !important;
+    margin-top: 10px;
+}
+        .flatpickr-calendar {
+            width: 245px !important;
+            min-width: 245px !important;
+            max-width: 245px !important;
+            background: #0b1220 !important;
+            border: 1px solid #22304a !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55) !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            font-size: 11px !important;
+        }
+
+        .flatpickr-wrapper {
+            width: 100% !important;
+        }
+
+        .of-date-picker {
+            width: 100% !important;
+            cursor: pointer !important;
+        }
+
+        .flatpickr-months {
+            height: 34px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #22304a !important;
+        }
+
+        .flatpickr-month {
+            height: 34px !important;
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-current-month {
+            height: 34px !important;
+            padding-top: 6px !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month input.cur-year {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months option {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+        }
+
+        .flatpickr-prev-month,
+        .flatpickr-next-month {
+            top: 3px !important;
+            height: 28px !important;
+            width: 28px !important;
+            padding: 6px !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-prev-month svg,
+        .flatpickr-next-month svg {
+            width: 12px !important;
+            height: 12px !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-prev-month:hover svg,
+        .flatpickr-next-month:hover svg {
+            fill: #7b61ff !important;
+        }
+
+        .flatpickr-weekdays {
+            height: 24px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #172136 !important;
+        }
+
+        span.flatpickr-weekday {
+            background: #0b1220 !important;
+            color: #94a3b8 !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            line-height: 24px !important;
+        }
+
+        .flatpickr-innerContainer,
+        .flatpickr-rContainer,
+        .flatpickr-days,
+        .dayContainer {
+            width: 245px !important;
+            min-width: 245px !important;
+            max-width: 245px !important;
+            background: #0b1220 !important;
+        }
+
+        .dayContainer {
+            padding: 4px 6px 8px 6px !important;
+        }
+
+        .flatpickr-day {
+            width: 31px !important;
+            max-width: 31px !important;
+            height: 27px !important;
+            line-height: 27px !important;
+            margin: 1px !important;
+            background: transparent !important;
+            color: #e5e7eb !important;
+            border: 1px solid transparent !important;
+            border-radius: 4px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+        }
+
+        .flatpickr-day:hover {
+            background: #1e293b !important;
+            color: #ffffff !important;
+            border-color: #334155 !important;
+        }
+
+        .flatpickr-day.today {
+            color: #ffffff !important;
+            border-color: #7b61ff !important;
+        }
+
+        .flatpickr-day.selected,
+        .flatpickr-day.selected:hover,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            border-radius: 3px !important;
+            box-shadow: none !important;
+            font-weight: 900 !important;
+        }
+
+        .flatpickr-day.prevMonthDay,
+        .flatpickr-day.nextMonthDay {
+            color: #475569 !important;
+        }
+
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.flatpickr-disabled:hover {
+            color: #334155 !important;
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+
+        .flatpickr-calendar.arrowTop:before,
+        .flatpickr-calendar.arrowTop:after {
+            border-bottom-color: #0b1220 !important;
+        }
+
+        .flatpickr-calendar.arrowBottom:before,
+        .flatpickr-calendar.arrowBottom:after {
+            border-top-color: #0b1220 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="of-page">
+
+    <header class="of-topbar">
+        <div class="of-brand">
+            <img src="{{ asset('image/logo.png') }}" alt="SkillSwap">
+            <span>SkillSwap</span>
+        </div>
+
+        <div class="of-stats">
+            📊 {{ stats.total }} offres · {{ stats.ouvertes }} ouvertes · ❤️ {{ stats.likes }} · 💬 {{ stats.comments }}
+        </div>
+
+        <nav class="of-nav">
+            <span>👤 Créateur : {{ currentUserEmail ?: '—' }}</span>
+            <a href="{{ path('app_admin_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <main class="of-container">
+
+        <h1>Gestion des Offres et Candidatures</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="of-alert of-alert-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="of-grid">
+
+            <section class="of-card left-card">
+
+                <div class="of-card-head">
+                    <h2>📋 Liste des Offres</h2>
+
+                    <form method="get" class="of-search">
+                        <input name="q" value="{{ search }}" placeholder="Rechercher...">
+
+                        <select name="type" onchange="this.form.submit()">
+                            <option value="Tous" {{ type == 'Tous' ? 'selected' : '' }}>Tous</option>
+                            <option value="emploi" {{ type == 'emploi' ? 'selected' : '' }}>emploi</option>
+                            <option value="projet" {{ type == 'projet' ? 'selected' : '' }}>projet</option>
+                            <option value="tache" {{ type == 'tache' ? 'selected' : '' }}>tache</option>
+                        </select>
+
+                        <button>OK</button>
+                    </form>
+                </div>
+
+                <div class="of-table-box">
+                    <table class="of-table">
+                        <thead>
+                        <tr>
+                            <th>Matricule</th>
+                            <th>Titre</th>
+                            <th>Type</th>
+                            <th>Prix</th>
+                            <th>Statut</th>
+                            <th>Vues</th>
+                            <th>Limite</th>
+                            <th>❤️ Likes</th>
+                            <th>💬 Comm.</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                     {% for item in offres %}
+    {% set offre = item.offre %}
+                            <tr class="{{ selectedOffre and selectedOffre.idOffre == offre.idOffre ? 'selected' : '' }}">
+                                <td>{{ offre.matricule }}</td>
+                                <td>{{ offre.titre }}</td>
+                                <td>{{ offre.typeIcon }} {{ offre.typeOffre }}</td>
+                                <td>{{ offre.prix and offre.prix != '0.00' ? offre.prix ~ ' TND' : 'Gratuit' }}</td>
+                                <td>{{ offre.statut }}</td>
+                                <td>{{ offre.vues }}</td>
+                                <td>{{ offre.dateLimite ? offre.dateLimite|date('d/m/Y') : '—' }}</td>
+                                <td><span class="like">❤️ {{ item.nbLikes }}</span></td>
+                                <td>
+                                    <a class="comment-btn" href="{{ path('app_admin_offres', {offre: offre.idOffre}) }}">
+                                       💬 {{ item.nbCommentaires }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="mini-btn blue" href="{{ path('app_admin_offres', {offre: offre.idOffre}) }}">✏️</a>
+
+                                    <form method="post" class="inline">
+                                        <input type="hidden" name="id_offre" value="{{ offre.idOffre }}">
+                                        <input type="hidden" name="selected_offre" value="{{ offre.idOffre }}">
+                                        <button class="mini-btn red"
+                                                name="action"
+                                                value="delete_offre"
+                                                onclick="return confirm('Supprimer cette offre ?')">
+                                            🗑️
+                                        </button>
+                                    </form>
+
+                                    <a class="mini-btn green" href="{{ path('app_admin_offres', {offre: offre.idOffre}) }}">👥</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="of-empty">Aucune offre trouvée</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>📝 Formulaire Offre</h2>
+
+                <div class="offre-form-scroll">
+                    <form method="post" class="of-form">
+                        <input type="hidden" name="id_offre" value="{{ selectedOffre ? selectedOffre.idOffre : '' }}">
+                        <input type="hidden" name="selected_offre" value="{{ selectedOffre ? selectedOffre.idOffre : '' }}">
+
+                        <p class="matricule">Matricule : {{ selectedOffre ? selectedOffre.matricule : '(auto)' }}</p>
+
+                        <label>Titre *</label>
+                        <input name="titre" value="{{ selectedOffre ? selectedOffre.titre : '' }}" placeholder="Titre de l'offre" required>
+
+                        <label>Description</label>
+                        <textarea name="description" placeholder="Description détaillée...">{{ selectedOffre ? selectedOffre.description : '' }}</textarea>
+
+                        <label>Type *</label>
+                        <select name="type_offre" required>
+                            <option value="">Choisir...</option>
+                            <option value="emploi" {{ selectedOffre and selectedOffre.typeOffre == 'emploi' ? 'selected' : '' }}>emploi</option>
+                            <option value="projet" {{ selectedOffre and selectedOffre.typeOffre == 'projet' ? 'selected' : '' }}>projet</option>
+                            <option value="tache" {{ selectedOffre and selectedOffre.typeOffre == 'tache' ? 'selected' : '' }}>tache</option>
+                        </select>
+
+                        <div class="of-row">
+                            <div>
+                                <label>Prix (TND) *</label>
+                                <input name="prix" value="{{ selectedOffre ? selectedOffre.prix : '' }}" placeholder="0.00">
+                            </div>
+                            <div>
+                                <label>Budget (TND)</label>
+                                <input name="budget" value="{{ selectedOffre ? selectedOffre.budget : '' }}" placeholder="0.00">
+                            </div>
+                        </div>
+
+                        <label>Durée (jours) *</label>
+                        <input name="duree" type="number" value="{{ selectedOffre ? selectedOffre.duree : '' }}" placeholder="30">
+
+                        <label>Statut</label>
+                        <select name="statut">
+                            <option value="ouverte" {{ selectedOffre and selectedOffre.statut == 'ouverte' ? 'selected' : '' }}>ouverte</option>
+                            <option value="fermee" {{ selectedOffre and selectedOffre.statut == 'fermee' ? 'selected' : '' }}>fermee</option>
+                        </select>
+
+                        <label>Localisation</label>
+                        <input name="localisation" value="{{ selectedOffre ? selectedOffre.localisation : '' }}" placeholder="Tunis, Paris...">
+
+                        <div class="of-row">
+                            <div>
+                                <label>Date limite</label>
+                                <input
+                                    type="text"
+                                    class="of-date-picker js-of-datepicker"
+                                    name="date_limite"
+                                    placeholder="jj/mm/aaaa"
+                                    value="{{ selectedOffre and selectedOffre.dateLimite ? selectedOffre.dateLimite|date('Y-m-d') : '' }}"
+                                >
+                            </div>
+                            <div>
+                                <label>Tags (virgule)</label>
+                                <input name="tags" value="{{ selectedOffre ? selectedOffre.tags : '' }}" placeholder="java,remote,senior...">
+                            </div>
+                        </div>
+
+                        <div class="of-actions">
+                            <button class="of-btn" name="action" value="add_offre">➕ Ajouter</button>
+
+                            <button class="of-btn secondary"
+                                    name="action"
+                                    value="update_offre"
+                                    {{ selectedOffre and selectedOffre.idUtilisateur == currentUserId ? '' : 'disabled' }}>
+                                ✏️ Modifier
+                            </button>
+
+                            <a href="{{ path('app_admin_offres') }}" class="of-btn purple">🗑 Vider</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <section class="of-card right-card">
+
+                <h2>👥 Candidatures de l'offre sélectionnée</h2>
+
+                <div class="of-table-box candidatures-box">
+                    <table class="of-table">
+                        <thead>
+                        <tr>
+                            <th>Matricule</th>
+                            <th>Candidat</th>
+                            <th>Email</th>
+                            <th>Titre offre</th>
+                            <th>Prix payé</th>
+                            <th>Paiement</th>
+                            <th>Référence</th>
+                            <th>Abonnement</th>
+                            <th>Expiration</th>
+                            <th>Statut</th>
+                            <th>Actif</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for c in candidatures %}
+                            <tr>
+                                <td>{{ c.matriculeOffre }}</td>
+
+                                <td>
+                                    {% if c.utilisateur %}
+                                        {{ c.utilisateur.nom }} {{ c.utilisateur.prenom }}
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ c.mailAcheteur }}</td>
+                                <td>{{ selectedOffre ? selectedOffre.titre : '' }}</td>
+                                <td>{{ c.prixPaye }} TND</td>
+                                <td>{{ c.modePaiement }}</td>
+                                <td>{{ c.referencePaiement }}</td>
+                                <td>{{ c.dateAbonnement ? c.dateAbonnement|date('d/m/Y H:i') : '—' }}</td>
+                                <td>{{ c.dateExpiration ? c.dateExpiration|date('d/m/Y H:i') : '—' }}</td>
+                                <td>{{ c.statutLabel }}</td>
+                                <td>{{ c.abonnementLabel }}</td>
+                                <td class="actions-cell">
+                                    <form method="post" class="inline">
+                                        <input type="hidden" name="id_candidature" value="{{ c.idCandidature }}">
+                                        <input type="hidden" name="selected_offre" value="{{ selectedOffre ? selectedOffre.idOffre : '' }}">
+                                        <button class="mini-btn ok" name="action" value="accept_candidature">✅</button>
+                                        <button class="mini-btn red" name="action" value="refuse_candidature">❌</button>
+                                    </form>
+
+                                    <form method="post" class="note-form">
+                                        <input type="hidden" name="id_candidature" value="{{ c.idCandidature }}">
+                                        <input type="hidden" name="selected_offre" value="{{ selectedOffre ? selectedOffre.idOffre : '' }}">
+                                        <input name="note_recruteur" placeholder="Note..." value="{{ c.noteRecruteur }}">
+                                        <button class="mini-btn orange" name="action" value="note_candidature">📝</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="12" class="of-empty">👆 Cliquez sur 👥 d'une offre pour voir ses candidatures</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if selectedOffre %}
+                    <h2>💬 Commentaires — {{ selectedOffre.titre }}</h2>
+
+                    <div class="comments-box">
+                        {% for item in commentaires %}
+    {% set comment = item.commentaire %}
+    {% set utilisateur = item.utilisateur %}
+
+    <div class="comment-item">
+        <div class="comment-meta">
+            <strong>
+                👤
+                {% if utilisateur %}
+                    {{ utilisateur.nom }} {{ utilisateur.prenom }}
+                {% else %}
+                    Utilisateur supprimé
+                {% endif %}
+            </strong>
+
+            <span>{{ comment.dateCommentaire ? comment.dateCommentaire|date('d/m/Y H:i') : '—' }}</span>
+
+            <form method="post">
+                <input type="hidden" name="id_commentaire" value="{{ comment.idCommentaire }}">
+                <input type="hidden" name="selected_offre" value="{{ selectedOffre.idOffre }}">
+                <button name="action" value="delete_comment">🗑️</button>
+            </form>
+        </div>
+
+        <p>{{ comment.contenu }}</p>
+    </div>
+{% else %}
+    <p class="empty-comments">Aucun commentaire pour cette offre.</p>
+{% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="legend">
+                    <span>✅ Accepter</span>
+                    <span>❌ Refuser</span>
+                    <span>📝 Note recruteur</span>
+                    <span>❤️ Likes</span>
+                    <span>💬 Comm.</span>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('.js-of-datepicker', {
+        dateFormat: 'Y-m-d',
+        altInput: false,
+        locale: 'fr',
+        allowInput: true,
+        disableMobile: true
+    });
+});
+</script>
+{% endblock %}

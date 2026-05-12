@@ -1,0 +1,539 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Projets et Tâches{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/suivi_tache/back/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+    
+    /* =====================================================
+   SCROLLBAR FORMULAIRES PROJET + TÂCHE
+   même logique que offre-form-scroll
+   ===================================================== */
+
+.projet-form-scroll,
+.tache-form-scroll {
+    max-height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    margin-top: 10px;
+}
+
+/* Scrollbar Chrome / Edge */
+.projet-form-scroll::-webkit-scrollbar,
+.tache-form-scroll::-webkit-scrollbar {
+    width: 7px;
+}
+
+.projet-form-scroll::-webkit-scrollbar-track,
+.tache-form-scroll::-webkit-scrollbar-track {
+    background: #0b1220;
+    border-radius: 10px;
+}
+
+.projet-form-scroll::-webkit-scrollbar-thumb,
+.tache-form-scroll::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+.projet-form-scroll::-webkit-scrollbar-thumb:hover,
+.tache-form-scroll::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
+
+/* Firefox */
+.projet-form-scroll,
+.tache-form-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 #0b1220;
+}
+        /* =====================================================
+           FLATPICKR DARK MINI - SKILLSWAP
+           calendrier petit + sélection carrée
+           ===================================================== */
+
+        .flatpickr-calendar {
+            width: 245px !important;
+            min-width: 245px !important;
+            max-width: 245px !important;
+            background: #0b1220 !important;
+            border: 1px solid #22304a !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55) !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            font-size: 11px !important;
+        }
+
+        .flatpickr-calendar.open {
+            background: #0b1220 !important;
+        }
+
+        .flatpickr-wrapper {
+            width: 100% !important;
+        }
+
+        .st-date-picker {
+            width: 100% !important;
+            cursor: pointer;
+        }
+
+        .flatpickr-months {
+            height: 34px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #22304a !important;
+        }
+
+        .flatpickr-month {
+            height: 34px !important;
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-current-month {
+            height: 34px !important;
+            padding-top: 6px !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months option {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+        }
+
+        .flatpickr-current-month input.cur-year {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-prev-month,
+        .flatpickr-next-month {
+            top: 3px !important;
+            height: 28px !important;
+            width: 28px !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            padding: 6px !important;
+        }
+
+        .flatpickr-prev-month svg,
+        .flatpickr-next-month svg {
+            width: 12px !important;
+            height: 12px !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-prev-month:hover svg,
+        .flatpickr-next-month:hover svg {
+            fill: #7b61ff !important;
+        }
+
+        .flatpickr-weekdays {
+            height: 24px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #172136 !important;
+        }
+
+        span.flatpickr-weekday {
+            background: #0b1220 !important;
+            color: #94a3b8 !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            line-height: 24px !important;
+        }
+
+        .flatpickr-innerContainer,
+        .flatpickr-rContainer,
+        .flatpickr-days,
+        .dayContainer {
+            width: 245px !important;
+            min-width: 245px !important;
+            max-width: 245px !important;
+            background: #0b1220 !important;
+        }
+
+        .dayContainer {
+            padding: 4px 6px 8px 6px !important;
+        }
+
+        .flatpickr-day {
+            width: 31px !important;
+            max-width: 31px !important;
+            height: 27px !important;
+            line-height: 27px !important;
+            margin: 1px !important;
+            background: transparent !important;
+            color: #e5e7eb !important;
+            border: 1px solid transparent !important;
+            border-radius: 4px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+        }
+
+        .flatpickr-day:hover {
+            background: #1e293b !important;
+            color: #ffffff !important;
+            border-color: #334155 !important;
+            border-radius: 4px !important;
+        }
+
+        .flatpickr-day.today {
+            color: #ffffff !important;
+            border-color: #7b61ff !important;
+            border-radius: 4px !important;
+        }
+
+        /* sélection carrée au lieu de cercle */
+        .flatpickr-day.selected,
+        .flatpickr-day.selected:hover,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            border-radius: 3px !important;
+            box-shadow: none !important;
+            font-weight: 900 !important;
+        }
+
+        .flatpickr-day.prevMonthDay,
+        .flatpickr-day.nextMonthDay {
+            color: #475569 !important;
+        }
+
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.flatpickr-disabled:hover {
+            color: #334155 !important;
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+
+        .flatpickr-calendar.arrowTop:before,
+        .flatpickr-calendar.arrowTop:after {
+            border-bottom-color: #0b1220 !important;
+        }
+
+        .flatpickr-calendar.arrowBottom:before,
+        .flatpickr-calendar.arrowBottom:after {
+            border-top-color: #0b1220 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="st-page">
+
+    <header class="st-topbar">
+        <div class="st-brand">
+            <img src="{{ asset('image/logo.png') }}" alt="SkillSwap">
+            <span>SkillSwap</span>
+        </div>
+
+        <nav class="st-nav">
+            <a href="{{ path('app_admin_competences') }}">competence</a>
+            <a href="{{ path('app_admin_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <main class="st-container">
+
+        <h1>Gestion des Projets et Tâches</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="st-alert st-alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="st-grid">
+
+            <section class="st-card">
+                <h2>Mes Projets</h2>
+
+                <div class="st-table-box">
+                    <table class="st-table">
+                        <thead>
+                        <tr>
+                            <th>Mail</th>
+                            <th>Titre</th>
+                            <th>Statut</th>
+                            <th>Date début</th>
+                            <th>Date fin</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for projet in projets %}
+                            <tr class="{{ selectedProjet and selectedProjet.id == projet.id ? 'selected' : '' }}"
+                                onclick="window.location.href='{{ path('app_admin_suivi_tache_gestion', {projet: projet.id}) }}'">
+                                <td>{{ projet.mailUser }}</td>
+                                <td>{{ projet.titre }}</td>
+                                <td>{{ projet.statut }}</td>
+                                <td>{{ projet.dateDebut ? projet.dateDebut|date('Y-m-d') : '' }}</td>
+                                <td>{{ projet.dateFin ? projet.dateFin|date('Y-m-d') : '' }}</td>
+                                <td>{{ projet.description }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="st-empty">Aucun projet trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Formulaire Projet</h2>
+
+               <div class="projet-form-scroll">
+    <form method="post" class="st-form">
+                    <input type="hidden" name="projet_id" value="{{ selectedProjet ? selectedProjet.id : '' }}">
+                    <input type="hidden" name="selected_projet" value="{{ selectedProjet ? selectedProjet.id : '' }}">
+
+                    <label>Titre</label>
+                    <input name="projet_titre" value="{{ selectedProjet ? selectedProjet.titre : '' }}" required>
+
+                    <label>Description</label>
+                    <textarea name="projet_description" rows="3">{{ selectedProjet ? selectedProjet.description : '' }}</textarea>
+
+                    <div class="st-row">
+                        <div>
+                            <label>Date début</label>
+                            <input
+                                type="text"
+                                class="st-date-picker js-datepicker"
+                                name="date_debut"
+                                placeholder="jj/mm/aaaa"
+                                value="{{ selectedProjet and selectedProjet.dateDebut ? selectedProjet.dateDebut|date('Y-m-d') : '' }}"
+                            >
+                        </div>
+
+                        <div>
+                            <label>Date fin</label>
+                            <input
+                                type="text"
+                                class="st-date-picker js-datepicker"
+                                name="date_fin"
+                                placeholder="jj/mm/aaaa"
+                                value="{{ selectedProjet and selectedProjet.dateFin ? selectedProjet.dateFin|date('Y-m-d') : '' }}"
+                            >
+                        </div>
+                    </div>
+
+                    <label>Statut</label>
+                    <select name="projet_statut" required>
+                        <option value="">Choisir...</option>
+                        <option value="En attente" {{ selectedProjet and selectedProjet.statut == 'En attente' ? 'selected' : '' }}>En attente</option>
+                        <option value="En cours" {{ selectedProjet and selectedProjet.statut == 'En cours' ? 'selected' : '' }}>En cours</option>
+                        <option value="Terminé" {{ selectedProjet and selectedProjet.statut == 'Terminé' ? 'selected' : '' }}>Terminé</option>
+                    </select>
+
+                    <div class="st-actions">
+                        <button class="st-btn" name="action" value="add_projet">Ajouter</button>
+
+                        <button class="st-btn secondary"
+                                name="action"
+                                value="update_projet"
+                                {{ selectedProjet and selectedProjet.userId == currentUserId ? '' : 'disabled' }}>
+                            Modifier
+                        </button>
+
+                        <button class="st-btn danger"
+                                name="action"
+                                value="delete_projet"
+                                onclick="return confirm('Supprimer ce projet et toutes ses tâches ?')"
+                                {{ selectedProjet and selectedProjet.userId == currentUserId ? '' : 'disabled' }}>
+                            Supprimer
+                        </button>
+
+                        <a href="{{ path('app_admin_suivi_tache_gestion') }}" class="st-btn purple">Vider</a>
+                    </div>
+                </form>
+                </div>
+            </section>
+
+            <section class="st-card">
+                <h2>Tâches du Projet</h2>
+
+                <div class="st-table-box">
+                    <table class="st-table">
+                        <thead>
+                        <tr>
+                            <th>Mail</th>
+                            <th>Titre</th>
+                            <th>Statut</th>
+                            <th>Priorité</th>
+                            <th>Evaluation</th>
+                            <th>Échéance</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for tache in taches %}
+                            <tr onclick="
+                                document.getElementById('tache_id').value='{{ tache.id }}';
+                                document.getElementById('tache_titre').value='{{ tache.titre|e('js') }}';
+                                document.getElementById('tache_description').value='{{ tache.description|e('js') }}';
+                                document.getElementById('tache_statut').value='{{ tache.statut|e('js') }}';
+                                document.getElementById('priorite').value='{{ tache.priorite|e('js') }}';
+                                document.getElementById('evaluation').value='{{ tache.evaluation|e('js') }}';
+
+                                if (document.getElementById('echeance')._flatpickr) {
+                                    document.getElementById('echeance')._flatpickr.setDate('{{ tache.echeance ? tache.echeance|date('Y-m-d') : '' }}', true);
+                                } else {
+                                    document.getElementById('echeance').value='{{ tache.echeance ? tache.echeance|date('Y-m-d') : '' }}';
+                                }
+                            ">
+                                <td>{{ tache.mailUser }}</td>
+                                <td>{{ tache.titre }}</td>
+                                <td>{{ tache.statut }}</td>
+                                <td>{{ tache.priorite }}</td>
+                                <td>
+                                    {% if tache.evaluation == 'Excellent' %}
+                                        <span class="eval excellent">{{ tache.evaluation }}</span>
+                                    {% elseif tache.evaluation == 'Bravo' %}
+                                        <span class="eval bravo">{{ tache.evaluation }}</span>
+                                    {% elseif tache.evaluation == 'Bien' %}
+                                        <span class="eval bien">{{ tache.evaluation }}</span>
+                                    {% elseif tache.evaluation == 'Moyen' %}
+                                        <span class="eval moyen">{{ tache.evaluation }}</span>
+                                    {% elseif tache.evaluation == 'Faible' %}
+                                        <span class="eval faible">{{ tache.evaluation }}</span>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+                                <td>{{ tache.echeance ? tache.echeance|date('Y-m-d') : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="st-empty">Aucune tâche trouvée</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Formulaire Tâche</h2>
+
+                <form method="post" class="st-form">
+                    <input type="hidden" id="tache_id" name="tache_id">
+                    <input type="hidden" name="selected_projet" value="{{ selectedProjet ? selectedProjet.id : '' }}">
+
+                    <label>Titre</label>
+                    <input id="tache_titre" name="tache_titre" required>
+
+                    <label>Description</label>
+                    <textarea id="tache_description" name="tache_description" rows="3"></textarea>
+
+                    <div class="st-row three">
+                        <div>
+                            <label>Statut</label>
+                            <select id="tache_statut" name="tache_statut" required>
+                                <option value="">Choisir...</option>
+                                <option value="À faire">À faire</option>
+                                <option value="En cours">En cours</option>
+                                <option value="Terminée">Terminée</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Priorité</label>
+                            <select id="priorite" name="priorite" required>
+                                <option value="">Choisir...</option>
+                                <option value="Basse">Basse</option>
+                                <option value="Moyenne">Moyenne</option>
+                                <option value="Haute">Haute</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Evaluation</label>
+                            <select id="evaluation" name="evaluation">
+                                <option value="">Choisir...</option>
+                                <option value="Excellent">Excellent</option>
+                                <option value="Bravo">Bravo</option>
+                                <option value="Bien">Bien</option>
+                                <option value="Moyen">Moyen</option>
+                                <option value="Faible">Faible</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label>Échéance</label>
+                    <input
+                        type="text"
+                        id="echeance"
+                        class="st-date-picker js-datepicker"
+                        name="echeance"
+                        placeholder="jj/mm/aaaa"
+                    >
+
+                    <div class="st-actions">
+                        <button class="st-btn"
+                                name="action"
+                                value="add_tache"
+                                {{ selectedProjet ? '' : 'disabled' }}>
+                            Ajouter Tâche
+                        </button>
+
+                        <button class="st-btn secondary"
+                                name="action"
+                                value="update_tache"
+                                {{ selectedProjet and selectedProjet.userId == currentUserId ? '' : 'disabled' }}>
+                            Modifier
+                        </button>
+
+                        <button class="st-btn danger"
+                                name="action"
+                                value="delete_tache"
+                                onclick="return confirm('Supprimer cette tâche ?')"
+                                {{ selectedProjet and selectedProjet.userId == currentUserId ? '' : 'disabled' }}>
+                            Supprimer
+                        </button>
+
+                        <button type="reset" class="st-btn purple">Vider</button>
+                    </div>
+                </form>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('.js-datepicker', {
+        dateFormat: 'Y-m-d',
+        altInput: false,
+        locale: 'fr',
+        allowInput: true
+    });
+});
+</script>
+
+{% endblock %}

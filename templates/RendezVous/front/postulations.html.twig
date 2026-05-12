@@ -1,0 +1,789 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Rendez-vous et Postulations{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #070d18;
+        color: #f8fafc;
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+    }
+
+    .rv-page {
+        min-height: 100vh;
+        background: #070d18;
+    }
+
+    .rv-topbar {
+        height: 58px;
+        background: #0d1422;
+        border-bottom: 1px solid #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+    }
+
+    .rv-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .rv-logo-img {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+    }
+
+    .rv-nav {
+        display: flex;
+        align-items: center;
+        gap: 35px;
+    }
+
+    .rv-nav a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .rv-container {
+        width: 92%;
+        max-width: 1650px;
+        margin: 0 auto;
+        padding: 30px 0 40px;
+    }
+
+    .rv-container h1 {
+        margin: 0 0 22px;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+    }
+
+    .rv-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+    }
+
+    .rv-card {
+        background: #0d1422;
+        border: 1px solid #263449;
+        border-radius: 10px;
+        padding: 16px;
+        min-height: 350px;
+        min-width: 0;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .rv-card h2 {
+        margin: 0 0 12px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 900;
+    }
+
+    .rv-search {
+        display: grid;
+        grid-template-columns: 150px 1fr 70px;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .rv-search select,
+    .rv-search input {
+        width: 100%;
+        height: 38px;
+        background: #172131;
+        border: 1px solid #334155;
+        color: #ffffff;
+        border-radius: 8px;
+        padding: 0 12px;
+        outline: none;
+        font-size: 12px;
+    }
+
+    .rv-search button {
+        height: 38px;
+        border: none;
+        border-radius: 8px;
+        background: #6d5dfc;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    .rv-table-box {
+        width: 100%;
+        height: 260px;
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        border: 1px solid #253449;
+        border-radius: 8px;
+        background: #0b1220;
+    }
+
+    .post-table {
+        height: 260px;
+        margin-bottom: 14px;
+        overflow-x: auto;
+        overflow-y: auto;
+    }
+
+    .rv-table {
+        width: 100%;
+        min-width: 900px;
+        border-collapse: collapse;
+        table-layout: fixed;
+        color: #ffffff;
+        font-size: 12px;
+    }
+
+    .rv-card:first-child .rv-table {
+        min-width: 980px;
+    }
+
+    .post-table .rv-table {
+        min-width: 1180px;
+    }
+
+    .rv-table thead {
+        background: #182231;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .rv-table th {
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 900;
+        padding: 13px 10px;
+        text-align: center;
+        border-bottom: 1px solid #263449;
+        white-space: nowrap;
+    }
+
+    .rv-table td {
+        padding: 13px 10px;
+        text-align: center;
+        border-bottom: 1px solid #182638;
+        border-right: 1px solid #182638;
+        color: #f8fafc;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rv-table th:last-child,
+    .rv-table td:last-child {
+        border-right: none;
+    }
+
+    .rv-table tbody tr {
+        cursor: pointer;
+        background: #0d1422;
+        transition: background 0.2s ease;
+    }
+
+    .rv-table tbody tr:hover {
+        background: #111c2f;
+    }
+
+    .rv-table tbody tr.selected {
+        background: rgba(99, 102, 241, 0.32);
+    }
+
+    .rv-table a {
+        color: #93c5fd;
+        text-decoration: none;
+        font-weight: 700;
+    }
+
+    .rv-table a:hover {
+        text-decoration: underline;
+    }
+
+    .rv-empty {
+        height: 170px;
+        text-align: center !important;
+        vertical-align: middle;
+        color: #64748b !important;
+        font-size: 12px;
+    }
+
+    .rv-form,
+    .postuler-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .rv-form label,
+    .postuler-box label {
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: -4px;
+    }
+
+    .rv-form input,
+    .rv-form textarea,
+    .rv-form select,
+    .postuler-box textarea {
+        width: 100%;
+        background: #172131;
+        border: 1px solid #334155;
+        color: #ffffff;
+        border-radius: 9px;
+        padding: 10px 12px;
+        outline: none;
+        font-size: 12px;
+    }
+
+    .rv-form textarea,
+    .postuler-box textarea {
+        resize: none;
+        min-height: 58px;
+    }
+
+    .rv-form input:focus,
+    .rv-form textarea:focus,
+    .rv-form select:focus,
+    .postuler-box textarea:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18);
+    }
+
+    .rv-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .rv-form-row > div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .fake-time {
+        display: grid;
+        grid-template-columns: 1fr 14px 1fr;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .fake-time span {
+        color: #ffffff;
+        text-align: center;
+        font-weight: 900;
+    }
+
+    .rv-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .rv-btn {
+        min-width: 92px;
+        height: 36px;
+        border: none;
+        border-radius: 8px;
+        background: #334f8f;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+    }
+
+    .rv-btn:hover {
+        opacity: 0.92;
+    }
+
+    .rv-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
+
+    .rv-btn.secondary {
+        background: #384b6a;
+    }
+
+    .rv-btn.danger {
+        background: #4b5563;
+    }
+
+    .rv-btn.purple {
+        background: #6d5dfc;
+    }
+
+    .inline-form {
+        display: inline-flex;
+        gap: 8px;
+        margin: 0;
+    }
+
+    .link-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 800;
+    }
+
+    .danger-link {
+        color: #fca5a5;
+    }
+
+    .status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 78px;
+        height: 24px;
+        border-radius: 999px;
+        padding: 0 10px;
+        font-size: 11px;
+        font-weight: 800;
+        background: rgba(148, 163, 184, 0.15);
+        color: #cbd5e1;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .status-accepte,
+    .status-accepté,
+    .status-acceptee,
+    .status-acceptée {
+        background: rgba(34, 197, 94, 0.15);
+        color: #86efac;
+        border-color: rgba(34, 197, 94, 0.35);
+    }
+
+    .status-refuse,
+    .status-refusé,
+    .status-refusee,
+    .status-refusée {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .status-en_attente {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fcd34d;
+        border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .cv-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+    }
+
+    .pdf-button {
+        width: 80px;
+        height: 36px;
+        border-radius: 8px;
+        background: #6d5dfc;
+        color: #ffffff !important;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900 !important;
+        cursor: pointer;
+        margin: 0 !important;
+    }
+
+    .cv-row input[type="file"] {
+        color: #cbd5e1;
+        font-size: 12px;
+    }
+
+    .rv-card hr {
+        border: none;
+        border-top: 1px solid #263449;
+        margin: 18px 0;
+    }
+
+    .rv-hint {
+        margin: 12px 0 0;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .rv-alert {
+        padding: 12px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+.cv-hidden-input {
+    display: none;
+}
+
+.cv-file-name {
+    color: #cbd5e1;
+    font-size: 12px;
+}
+    .rv-alert-success {
+        background: rgba(34, 197, 94, 0.15);
+        color: #86efac;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+    }
+
+    .rv-alert-error,
+    .rv-alert-danger {
+        background: rgba(239, 68, 68, 0.15);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+
+    .rv-table-box::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+
+    .rv-table-box::-webkit-scrollbar-track {
+        background: #111827;
+        border-radius: 20px;
+    }
+
+    .rv-table-box::-webkit-scrollbar-thumb {
+        background: #6d5dfc;
+        border-radius: 20px;
+    }
+
+    .rv-table-box::-webkit-scrollbar-thumb:hover {
+        background: #8277ff;
+    }
+
+    @media (max-width: 1200px) {
+        .rv-container {
+            width: 95%;
+        }
+
+        .rv-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .rv-form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .rv-search {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="rv-page">
+
+    <header class="rv-topbar">
+        <div class="rv-brand">
+            <img class="rv-logo-img" src="{{ asset('image/logo.png') }}" alt="SkillSwap">
+            <span>SkillSwap</span>
+        </div>
+
+        <nav class="rv-nav">
+            <a href="{{ path('app_front_competences') }}">Competences</a>
+            <a href="{{ path('app_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <main class="rv-container">
+
+        <h1>Mes Rendez-vous et Postulations</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="rv-alert rv-alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="rv-grid">
+
+            <section class="rv-card">
+                <h2>Tous les Rendez-vous</h2>
+
+                <form method="get" class="rv-search">
+                    <select name="filter">
+                        <option value="Tous" {{ filter == 'Tous' ? 'selected' : '' }}>Tous</option>
+                        <option value="Titre" {{ filter == 'Titre' ? 'selected' : '' }}>Titre</option>
+                        <option value="Competence" {{ filter == 'Competence' or filter == 'Compétence' ? 'selected' : '' }}>Competence</option>
+                        <option value="Type" {{ filter == 'Type' ? 'selected' : '' }}>Type</option>
+                        <option value="Email" {{ filter == 'Email' ? 'selected' : '' }}>Email</option>
+                    </select>
+
+                    <input type="text" name="search" value="{{ search }}" placeholder="Rechercher...">
+                    <button type="submit">OK</button>
+                </form>
+
+                <div class="rv-table-box">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Date RDV</th>
+                                <th>Titre</th>
+                                <th>Nombre de places</th>
+                                <th>Email Organisateur</th>
+                                <th>Type</th>
+                                <th>Competence</th>
+                                <th>Date de creation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for rv in rendezVous %}
+                            <tr class="{{ selectedRv and selectedRv.idRendezVous == rv.idRendezVous ? 'selected' : '' }}"
+                                onclick="window.location.href='{{ path('app_front_postulations', {rv: rv.idRendezVous, filter: filter, search: search}) }}'">
+                                <td>{{ rv.dateRendezVous ? rv.dateRendezVous|date('d/m/Y à H:i') : '' }}</td>
+                                <td>{{ rv.titre }}</td>
+                                <td>{{ rv.nombrePlaces }}</td>
+                                <td>{{ rv.mailUser }}</td>
+                                <td>{{ rv.type }}</td>
+                                <td>{{ rv.competence }}</td>
+                                <td>{{ rv.dateCreationRendezVous ? rv.dateCreationRendezVous|date('d/m/Y à H:i') : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="rv-empty">Aucun rendez-vous trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 style="margin-top: 16px;">Formulaire rendez-vous</h2>
+
+                <form method="post" class="rv-form">
+                    <input type="hidden" name="id_rendez_vous" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+                    <input type="hidden" name="selected_rv" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+
+                    <label>Titre</label>
+                    <input name="titre" value="{{ selectedRv ? selectedRv.titre : '' }}" required>
+
+                    <label>Description</label>
+                    <textarea name="description" rows="3">{{ selectedRv ? selectedRv.description : '' }}</textarea>
+
+                    <label>Competence</label>
+                    <input name="competence" value="{{ selectedRv ? selectedRv.competence : '' }}" required>
+
+                    <div class="rv-form-row">
+                        <div>
+                            <label>Date</label>
+                            <input type="datetime-local"
+                                   name="date_rendez_vous"
+                                   value="{{ selectedRv and selectedRv.dateRendezVous ? selectedRv.dateRendezVous|date('Y-m-d\\TH:i') : '' }}"
+                                   required>
+                        </div>
+
+                        
+                    </div>
+
+                    <label>Nombre de places</label>
+                    <input type="number"
+                           name="nombre_places"
+                           min="1"
+                           value="{{ selectedRv ? selectedRv.nombrePlaces : '' }}"
+                           required>
+
+                    <label>Type</label>
+                    <select name="type" required>
+                        <option value="">Choisir...</option>
+                        <option value="presentiel" {{ selectedRv and selectedRv.type == 'presentiel' ? 'selected' : '' }}>presentiel</option>
+                        <option value="distance" {{ selectedRv and selectedRv.type == 'distance' ? 'selected' : '' }}>distance</option>
+                    </select>
+
+                    <div class="rv-actions">
+                        <button class="rv-btn" name="action" value="add">Ajouter</button>
+
+                        <button class="rv-btn secondary"
+                                name="action"
+                                value="update"
+                                {{ selectedRv ? '' : 'disabled' }}>
+                            Modifier
+                        </button>
+
+                        <button class="rv-btn danger"
+                                name="action"
+                                value="delete"
+                                onclick="return confirm('Supprimer ce rendez-vous ?')"
+                                {{ selectedRv ? '' : 'disabled' }}>
+                            Supprimer
+                        </button>
+
+                        <a class="rv-btn purple" href="{{ path('app_front_postulations') }}">Vider</a>
+                    </div>
+
+                    <p class="rv-hint">Modifier / Supprimer uniquement vos propres rendez-vous.</p>
+                </form>
+            </section>
+
+            <section class="rv-card">
+                <h2>Mes postulations</h2>
+
+                <div class="rv-table-box post-table">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Statut</th>
+                                <th>Date postulation</th>
+                                <th>Nom</th>
+                                <th>Prenom</th>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>CV</th>
+                                <th>Message</th>
+                                <th>Annulation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for post in postulations %}
+                            <tr>
+                                <td>
+                                    <span class="status status-{{ post.status }}">
+                                        {{ post.status }}
+                                    </span>
+                                </td>
+
+                                <td>{{ post.datePostulation ? post.datePostulation|date('d/m/Y à H:i') : '' }}</td>
+                                <td>{{ post.nom }}</td>
+                                <td>{{ post.prenom }}</td>
+                                <td>{{ post.role }}</td>
+                                <td>{{ post.mailUser }}</td>
+
+                                <td>
+                                    {% if post.cv %}
+                                        <a href="{{ asset(post.cv) }}" target="_blank">Télécharger CV</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ post.message }}</td>
+
+                                <td>
+                                    {% if post.idPostulant == currentUserId and post.status == 'en_attente' %}
+                                        <form method="post">
+                                            <input type="hidden" name="id_postulation" value="{{ post.idPostulation }}">
+                                            <input type="hidden" name="selected_rv" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+                                            <button class="link-btn danger-link"
+                                                    name="action"
+                                                    value="annuler_postulation"
+                                                    onclick="return confirm('Annuler cette postulation ?')">
+                                                Annuler
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="9" class="rv-empty">Aucun contenu dans la table</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="rv-actions">
+                    {% if selectedRv and selectedRv.idAdminCreateur == currentUserId %}
+                        {% for post in postulations %}
+                            <form method="post" class="inline-form">
+                                <input type="hidden" name="id_postulation" value="{{ post.idPostulation }}">
+                                <input type="hidden" name="selected_rv" value="{{ selectedRv.idRendezVous }}">
+                                <button class="rv-btn" name="action" value="accept">Accepter</button>
+                                <button class="rv-btn secondary" name="action" value="refuse">Refuser</button>
+                            </form>
+                        {% else %}
+                            <button class="rv-btn" disabled>Accepter</button>
+                            <button class="rv-btn secondary" disabled>Refuser</button>
+                        {% endfor %}
+                    {% else %}
+                        <button class="rv-btn" disabled>Accepter</button>
+                        <button class="rv-btn secondary" disabled>Refuser</button>
+                    {% endif %}
+                </div>
+
+                <p class="rv-hint">Vous pouvez annuler une postulation en attente.</p>
+
+                <hr>
+
+                {% if selectedRv and selectedRv.idAdminCreateur != currentUserId %}
+                    <form method="post" enctype="multipart/form-data" class="postuler-box">
+                        <input type="hidden" name="selected_rv" value="{{ selectedRv.idRendezVous }}">
+
+                        <h2>Postuler a ce rendez-vous</h2>
+
+                       <div class="cv-row">
+    <label class="pdf-button" for="cv">PDF</label>
+    <input id="cv" class="cv-hidden-input" type="file" name="cv" accept="application/pdf" required>
+    <span id="cv-file-name" class="cv-file-name">Aucun fichier choisi</span>
+</div>
+                        <label>Message</label>
+                        <textarea name="message" rows="3" required></textarea>
+
+                        <button class="rv-btn" name="action" value="postuler">Postuler</button>
+                    </form>
+                {% else %}
+                    <p class="rv-hint">Selectionnez un rendez-vous a gauche pour postuler.</p>
+                {% endif %}
+            </section>
+
+        </div>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cvInput = document.getElementById('cv');
+        const cvFileName = document.getElementById('cv-file-name');
+
+        if (cvInput && cvFileName) {
+            cvInput.addEventListener('change', function () {
+                cvFileName.textContent = this.files.length > 0
+                    ? this.files[0].name
+                    : 'Aucun fichier choisi';
+            });
+        }
+    });
+</script>
+{% endblock %}

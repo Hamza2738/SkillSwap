@@ -1,0 +1,732 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Rendez-vous{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/rendezvous/back/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <style>
+       .rv-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 400 !important;
+}
+
+/* Enlever le gras dans le tableau Rendez-vous */
+.rv-card:first-child .rv-table thead th {
+    font-weight: 400 !important;
+    font-size: 12px !important;
+}
+        .rv-brand img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .rv-logo {
+            display: none;
+        }
+
+        .rv-btn.purple {
+            background: linear-gradient(135deg, #7b61ff, #9f7aea);
+            color: white;
+            border: none;
+        }
+
+        .rv-btn.purple:hover {
+            opacity: 0.9;
+        }
+
+        .ia-result-box {
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            background: #0b1220;
+            border: 1px solid #22304a;
+            color: #ffffff;
+        }
+
+        .ia-result-box h2 {
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .ia-result-content {
+            white-space: pre-wrap;
+            font-family: inherit;
+            line-height: 1.7;
+            background: #111827;
+            border: 1px solid #334155;
+            padding: 15px;
+            border-radius: 10px;
+            color: #e5e7eb;
+        }
+
+      .ia-loading {
+    color: #93c5fd;
+    font-weight: 400 !important;
+}
+
+
+/* Corriger affichage colonnes tableau rendez-vous sans changer le style général */
+.rv-card:first-child .rv-table {
+    min-width: 1050px;
+    table-layout: fixed;
+}
+
+.rv-card:first-child .rv-table th,
+.rv-card:first-child .rv-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* Largeur de chaque colonne du tableau rendez-vous */
+.rv-card:first-child .rv-table th:nth-child(1),
+.rv-card:first-child .rv-table td:nth-child(1) {
+    width: 170px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(2),
+.rv-card:first-child .rv-table td:nth-child(2) {
+    width: 130px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(3),
+.rv-card:first-child .rv-table td:nth-child(3) {
+    width: 140px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(4),
+.rv-card:first-child .rv-table td:nth-child(4) {
+    width: 180px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(5),
+.rv-card:first-child .rv-table td:nth-child(5) {
+    width: 120px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(6),
+.rv-card:first-child .rv-table td:nth-child(6) {
+    width: 140px;
+}
+
+.rv-card:first-child .rv-table th:nth-child(7),
+.rv-card:first-child .rv-table td:nth-child(7) {
+    width: 180px;
+}
+
+/* Même style des liens si un jour tu ajoutes des liens dans tableau rendez-vous */
+.rv-card:first-child .rv-table a {
+    color: #7aa2ff;
+    text-decoration: none;
+    font-weight: 400 !important;
+}
+
+.rv-card:first-child .rv-table a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+        /* =====================================================
+           FLATPICKR DARK MINI - RENDEZ-VOUS SKILLSWAP
+           ===================================================== */
+
+        .flatpickr-calendar {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #0b1220 !important;
+            border: 1px solid #22304a !important;
+            color: #ffffff !important;
+            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55) !important;
+            border-radius: 10px !important;
+            overflow: hidden !important;
+            font-size: 11px !important;
+        }
+
+        .flatpickr-calendar.open {
+            background: #0b1220 !important;
+        }
+
+        .flatpickr-wrapper {
+            width: 100% !important;
+        }
+
+        .rv-date-picker {
+            width: 100% !important;
+            cursor: pointer;
+        }
+
+        .flatpickr-months {
+            height: 34px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #22304a !important;
+        }
+
+        .flatpickr-month {
+            height: 34px !important;
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-current-month {
+            height: 34px !important;
+            padding-top: 6px !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months option {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+        }
+
+        .flatpickr-current-month input.cur-year {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            border: none !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+
+        .flatpickr-prev-month,
+        .flatpickr-next-month {
+            top: 3px !important;
+            height: 28px !important;
+            width: 28px !important;
+            color: #ffffff !important;
+            fill: #ffffff !important;
+            padding: 6px !important;
+        }
+
+        .flatpickr-prev-month svg,
+        .flatpickr-next-month svg {
+            width: 12px !important;
+            height: 12px !important;
+            fill: #ffffff !important;
+        }
+
+        .flatpickr-prev-month:hover svg,
+        .flatpickr-next-month:hover svg {
+            fill: #7b61ff !important;
+        }
+
+        .flatpickr-weekdays {
+            height: 24px !important;
+            background: #0b1220 !important;
+            border-bottom: 1px solid #172136 !important;
+        }
+
+        span.flatpickr-weekday {
+            background: #0b1220 !important;
+            color: #94a3b8 !important;
+            font-size: 10px !important;
+            font-weight: 800 !important;
+            line-height: 24px !important;
+        }
+
+        .flatpickr-innerContainer,
+        .flatpickr-rContainer,
+        .flatpickr-days,
+        .dayContainer {
+            width: 250px !important;
+            min-width: 250px !important;
+            max-width: 250px !important;
+            background: #0b1220 !important;
+        }
+
+        .dayContainer {
+            padding: 4px 6px 8px 6px !important;
+        }
+        .post-table .rv-table thead th {
+    font-weight: 400 !important;
+    font-size: 12px !important;
+}
+/* Corriger affichage colonnes postulations sans changer le style général */
+.post-table .rv-table {
+    min-width: 1050px;
+    table-layout: fixed;
+}
+
+.post-table .rv-table th,
+.post-table .rv-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+/* Largeur de chaque colonne */
+.post-table .rv-table th:nth-child(1),
+.post-table .rv-table td:nth-child(1) {
+    width: 100px;
+}
+
+.post-table .rv-table th:nth-child(2),
+.post-table .rv-table td:nth-child(2) {
+    width: 150px;
+}
+
+.post-table .rv-table th:nth-child(3),
+.post-table .rv-table td:nth-child(3) {
+    width: 100px;
+}
+
+.post-table .rv-table th:nth-child(4),
+.post-table .rv-table td:nth-child(4) {
+    width: 100px;
+}
+
+.post-table .rv-table th:nth-child(5),
+.post-table .rv-table td:nth-child(5) {
+    width: 120px;
+}
+
+.post-table .rv-table th:nth-child(6),
+.post-table .rv-table td:nth-child(6) {
+    width: 130px;
+}
+
+.post-table .rv-table th:nth-child(7),
+.post-table .rv-table td:nth-child(7) {
+    width: 130px;
+}
+
+.post-table .rv-table th:nth-child(8),
+.post-table .rv-table td:nth-child(8) {
+    width: 170px;
+}
+
+.post-table .rv-table th:nth-child(9),
+.post-table .rv-table td:nth-child(9) {
+    width: 120px;
+}
+
+.post-table .rv-table th:nth-child(10),
+.post-table .rv-table td:nth-child(10) {
+    width: 120px;
+}
+
+/* Garder les liens propres */
+.post-table .rv-table a {
+    color: #7aa2ff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.post-table .rv-table a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+
+        .flatpickr-day {
+            width: 31px !important;
+            max-width: 31px !important;
+            height: 27px !important;
+            line-height: 27px !important;
+            margin: 1px !important;
+            background: transparent !important;
+            color: #e5e7eb !important;
+            border: 1px solid transparent !important;
+            border-radius: 4px !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+        }
+        
+
+        .flatpickr-day:hover {
+            background: #1e293b !important;
+            color: #ffffff !important;
+            border-color: #334155 !important;
+            border-radius: 4px !important;
+        }
+
+        .flatpickr-day.today {
+            color: #ffffff !important;
+            border-color: #7b61ff !important;
+            border-radius: 4px !important;
+        }
+
+        .flatpickr-day.selected,
+        .flatpickr-day.selected:hover,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange {
+            background: #2563eb !important;
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            border-radius: 3px !important;
+            box-shadow: none !important;
+            font-weight: 900 !important;
+        }
+
+        .flatpickr-day.prevMonthDay,
+        .flatpickr-day.nextMonthDay {
+            color: #475569 !important;
+        }
+
+        .flatpickr-day.flatpickr-disabled,
+        .flatpickr-day.flatpickr-disabled:hover {
+            color: #334155 !important;
+            background: transparent !important;
+            border-color: transparent !important;
+        }
+
+        .flatpickr-time {
+            height: 38px !important;
+            background: #0b1220 !important;
+            border-top: 1px solid #22304a !important;
+        }
+
+        .flatpickr-time input,
+        .flatpickr-time .flatpickr-am-pm {
+            background: #0b1220 !important;
+            color: #ffffff !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+            border: none !important;
+        }
+
+        .flatpickr-time input:hover,
+        .flatpickr-time .flatpickr-am-pm:hover,
+        .flatpickr-time input:focus {
+            background: #1e293b !important;
+        }
+
+        .numInputWrapper span.arrowUp:after {
+            border-bottom-color: #ffffff !important;
+        }
+
+        .numInputWrapper span.arrowDown:after {
+            border-top-color: #ffffff !important;
+        }
+
+        .numInputWrapper span:hover {
+            background: #1e293b !important;
+        }
+
+        .flatpickr-calendar.arrowTop:before,
+        .flatpickr-calendar.arrowTop:after {
+            border-bottom-color: #0b1220 !important;
+        }
+
+        .flatpickr-calendar.arrowBottom:before,
+        .flatpickr-calendar.arrowBottom:after {
+            border-top-color: #0b1220 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="rv-page">
+
+    <header class="rv-topbar">
+        <div class="rv-brand">
+            <img src="{{ asset('image/logo.png') }}" alt="SkillSwap">
+            <span>SkillSwap</span>
+        </div>
+
+        <nav class="rv-nav">
+            <a href="{{ path('app_admin_competences') }}">Suivre Les competence</a>
+            <a href="{{ path('app_admin_profil') }}">Profil</a>
+        </nav>
+    </header>
+
+    <main class="rv-container">
+
+        <h1>Gestion des Rendez-vous&nbsp;&nbsp; Postulations</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="rv-alert rv-alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="rv-grid">
+
+            <section class="rv-card">
+                <h2>Rendez-vous (Admin)</h2>
+
+                <form method="get" class="rv-search">
+                    <select name="filter">
+                        <option value="Tous" {{ filter == 'Tous' ? 'selected' : '' }}>Tous</option>
+                        <option value="Titre" {{ filter == 'Titre' ? 'selected' : '' }}>Titre</option>
+                        <option value="Compétence" {{ filter == 'Compétence' ? 'selected' : '' }}>Compétence</option>
+                        <option value="Type" {{ filter == 'Type' ? 'selected' : '' }}>Type</option>
+                    </select>
+
+                    <input type="text" name="search" value="{{ search }}" placeholder="Rechercher...">
+                    <button type="submit">OK</button>
+                </form>
+
+                <div class="rv-table-box">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Date de Rendez vous</th>
+                                <th>Titre</th>
+                                <th>Nombre de places</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Compétence</th>
+                                <th>Date de Création</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for rv in rendezVous %}
+                            <tr class="{{ selectedRv and selectedRv.idRendezVous == rv.idRendezVous ? 'selected' : '' }}"
+                                onclick="window.location.href='{{ path('app_admin_rendez_vous', {rv: rv.idRendezVous, filter: filter, search: search}) }}'">
+                                <td>{{ rv.dateRendezVous ? rv.dateRendezVous|date('d/m/Y à H:i') : '' }}</td>
+                                <td>{{ rv.titre }}</td>
+                                <td>{{ rv.nombrePlaces }}</td>
+                                <td>{{ rv.mailUser }}</td>
+                                <td>{{ rv.type }}</td>
+                                <td>{{ rv.competence }}</td>
+                                <td>{{ rv.dateCreationRendezVous ? rv.dateCreationRendezVous|date('d/m/Y à H:i') : '' }}</td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="7" class="rv-empty">Aucun rendez-vous trouvé</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Formulaire rendez-vous</h2>
+
+                <form method="post" class="rv-form">
+                    <input type="hidden" name="id_rendez_vous" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+                    <input type="hidden" name="selected_rv" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+
+                    <label>Titre</label>
+                    <input name="titre" value="{{ selectedRv ? selectedRv.titre : '' }}" required>
+
+                    <label>Description</label>
+                    <textarea name="description" rows="3">{{ selectedRv ? selectedRv.description : '' }}</textarea>
+
+                    <label>Compétence</label>
+                    <input name="competence" value="{{ selectedRv ? selectedRv.competence : '' }}" required>
+
+                    <div class="rv-form-row">
+                        <div>
+                            <label>Date</label>
+                            <input
+                                type="text"
+                                class="rv-date-picker js-rv-datepicker"
+                                name="date_rendez_vous"
+                                placeholder="jj/mm/aaaa HH:mm"
+                                value="{{ selectedRv and selectedRv.dateRendezVous ? selectedRv.dateRendezVous|date('Y-m-d\\TH:i') : '' }}"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label>Nombre de places</label>
+                            <input type="number"
+                                   name="nombre_places"
+                                   min="1"
+                                   value="{{ selectedRv ? selectedRv.nombrePlaces : '' }}"
+                                   required>
+                        </div>
+                    </div>
+
+                    <label>Type</label>
+                    <select name="type" required>
+                        <option value="">Choisir...</option>
+                        <option value="presentiel" {{ selectedRv and selectedRv.type == 'presentiel' ? 'selected' : '' }}>presentiel</option>
+                        <option value="distance" {{ selectedRv and selectedRv.type == 'distance' ? 'selected' : '' }}>distance</option>
+                    </select>
+
+                    <div class="rv-actions">
+                        <button class="rv-btn" name="action" value="add">Ajouter</button>
+
+                        <button class="rv-btn secondary"
+                                name="action"
+                                value="update"
+                                {{ selectedRv ? '' : 'disabled' }}>
+                            Modifier
+                        </button>
+
+                        <button class="rv-btn danger"
+                                name="action"
+                                value="delete"
+                                onclick="return confirm('Supprimer ce rendez-vous ?')"
+                                {{ selectedRv ? '' : 'disabled' }}>
+                            Supprimer
+                        </button>
+
+                        <a class="rv-btn purple" href="{{ path('app_admin_rendez_vous') }}">Vider</a>
+                    </div>
+                </form>
+            </section>
+
+            <section class="rv-card">
+                <h2>Postulations du rendez-vous sélectionné</h2>
+
+                <div class="rv-table-box post-table">
+                    <table class="rv-table">
+                        <thead>
+                            <tr>
+                                <th>Statut</th>
+                                <th>Email</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Rôle</th>
+                                <th>CV</th>
+                                <th>Message</th>
+                                <th>Date de postulation</th>
+                                <th>Analyse IA</th>
+                                <th>Annulation</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for post in postulations %}
+                            <tr>
+                                <td>
+                                    <span class="status status-{{ post.status }}">
+                                        {{ post.status }}
+                                    </span>
+                                </td>
+
+                                <td>{{ post.mailUser }}</td>
+                                <td>{{ post.nom }}</td>
+                                <td>{{ post.prenom }}</td>
+                                <td>{{ post.role }}</td>
+
+                                <td>
+                                    {% if post.cv %}
+                                        <a href="{{ asset(post.cv) }}" target="_blank">Télécharger CV</a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ post.message }}</td>
+
+                                <td>{{ post.datePostulation ? post.datePostulation|date('d/m/Y à H:i') : '' }}</td>
+
+                               <td>
+    <a href="javascript:void(0)"
+       onclick="event.stopPropagation(); analyserIa({{ post.idPostulation }});">
+        Analyser IA
+    </a>
+</td>
+
+                                <td>
+                                    <form method="post">
+                                        <input type="hidden" name="id_postulation" value="{{ post.idPostulation }}">
+                                        <input type="hidden" name="selected_rv" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+                                        <button class="link-btn"
+                                                name="action"
+                                                value="delete_postulation"
+                                                onclick="return confirm('Supprimer cette postulation ?')">
+                                            Annulation
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="10" class="rv-empty">Aucun contenu dans la table</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="ia-result-box" class="ia-result-box" style="display:none;">
+                    <h2>Résultat Analyse IA</h2>
+                    <pre id="ia-result-content" class="ia-result-content"></pre>
+                </div>
+
+                <div class="rv-actions">
+                    {% if postulations|length > 0 %}
+                        {% for post in postulations %}
+                            <form method="post" class="inline-form">
+                                <input type="hidden" name="id_postulation" value="{{ post.idPostulation }}">
+                                <input type="hidden" name="selected_rv" value="{{ selectedRv ? selectedRv.idRendezVous : '' }}">
+                                <button class="rv-btn" name="action" value="accept">Accepter {{ post.nom }}</button>
+                                <button class="rv-btn secondary" name="action" value="refuse">Refuser</button>
+                            </form>
+                        {% endfor %}
+                    {% else %}
+                        <button class="rv-btn" disabled>Accepter</button>
+                        <button class="rv-btn secondary" disabled>Refuser</button>
+                    {% endif %}
+                </div>
+
+                <p class="rv-hint">
+                    Tip : sélectionne un rendez-vous à gauche pour voir ses postulations.
+                </p>
+
+                <hr>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    flatpickr('.js-rv-datepicker', {
+        enableTime: true,
+        time_24hr: true,
+        minuteIncrement: 5,
+        dateFormat: 'Y-m-d\\TH:i',
+        altInput: false,
+        locale: 'fr',
+        allowInput: true
+    });
+});
+function analyserIa(idPostulation) {
+    const box = document.getElementById('ia-result-box');
+    const content = document.getElementById('ia-result-content');
+
+    box.style.display = 'block';
+    content.innerHTML = '<span class="ia-loading">Analyse IA en cours...</span>';
+
+    fetch('/admin/rendez-vous/analyse-ia/' + idPostulation)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Erreur HTTP : ' + response.status);
+            }
+            return response.json();
+        })
+        .then(function (data) {
+            if (data.success) {
+                content.textContent = data.analyse;
+            } else {
+                content.textContent = data.message;
+            }
+        })
+        .catch(function (error) {
+            content.textContent = 'Erreur lors de l’analyse IA : ' + error.message;
+        });
+}
+</script>
+{% endblock %}

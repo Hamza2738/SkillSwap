@@ -1,470 +1,417 @@
-/* ================= ROOT ================= */
-.app-root {
-    -fx-background-color: linear-gradient(to bottom right, #0a1628, #071024);
-    -fx-font-family: "Segoe UI", "Poppins", sans-serif;
+* {
+    box-sizing: border-box;
 }
 
-/* ================= TOPBAR ================= */
-.topbar {
-    -fx-background-color: linear-gradient(to right, #0f1c33, #0a1628);
-    -fx-border-color: rgba(255,255,255,0.05);
-    -fx-border-width: 0 0 1 0;
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background: #070d18;
+    color: #ffffff;
+    font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.brand {
-    -fx-text-fill: white;
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
+.rv-page {
+    min-height: 100vh;
+    background: #070d18;
+}
+
+/* ================= TOP BAR ================= */
+
+.rv-topbar {
+    height: 78px;
+    background: #0b1220;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+}
+
+.rv-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.rv-logo {
+    width: 46px;
+    height: 46px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ffffff, #b8c0d8);
+    color: #0b1220;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 24px;
+}
+
+.rv-nav {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+}
+
+.rv-nav a {
+    color: #e6edff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.rv-nav a:hover {
+    color: #7b8cff;
 }
 
 /* ================= PAGE ================= */
-.page {
-    -fx-padding: 30;
+
+.rv-container {
+    width: 81%;
+    max-width: 1580px;
+    margin: 32px auto 0 auto;
 }
 
-.page-title {
-    -fx-text-fill: white;
-    -fx-font-size: 30px;
-    -fx-font-weight: bold;
+.rv-container h1 {
+    font-size: 34px;
+    line-height: 1.1;
+    margin: 0 0 22px 0;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.8px;
+}
+
+.rv-grid {
+    display: grid;
+    grid-template-columns: 760px 820px;
+    gap: 18px;
+    align-items: start;
 }
 
 /* ================= CARDS ================= */
-.card {
-    -fx-background-color: rgba(18, 32, 58, 0.85);
-    -fx-background-radius: 16;
-    -fx-padding: 20;
-    -fx-border-radius: 16;
-    -fx-border-color: rgba(255,255,255,0.06);
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 25, 0.3, 0, 8);
+
+.rv-card {
+    background: #0b1220;
+    border: 1px solid #22304a;
+    border-radius: 17px;
+    padding: 17px;
+    min-height: 705px;
+    box-shadow: none;
 }
 
-.card-title {
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
+.rv-card h2 {
+    margin: 0 0 14px 0;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
 }
 
-/* ================= LABELS ================= */
-.field-label {
-    -fx-text-fill: #a8c1ff;
-    -fx-font-size: 13px;
+/* ================= SEARCH ================= */
+
+.rv-search {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
 }
 
-
-
-/* ================= COMBOBOX ================= */
-.dark-combo {
-    -fx-background-color: #1b2a44;
-    -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+.rv-search button {
+    display: none;
 }
 
-.combo-box .list-cell {
-    -fx-text-fill: white;
+.rv-search select,
+.rv-search input {
+    height: 35px;
+    background: #171f2e;
+    border: 1px solid #2a354b;
+    border-radius: 12px;
+    color: #e9efff;
+    padding: 0 14px;
+    outline: none;
+    font-size: 13px;
 }
 
-/* ================= DATE PICKER ================= */
-.date-picker {
-    -fx-background-color: #1b2a44;
-    -fx-background-radius: 8;
+.rv-search input::placeholder {
+    color: #717b90;
 }
-
-.date-picker .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-}
-
-
 
 /* ================= TABLE ================= */
-.dark-table {
-    -fx-background-color: transparent;
-    -fx-border-color: rgba(255,255,255,0.05);
-    -fx-border-radius: 10;
+
+.rv-table-box {
+    height: 174px;
+    overflow: auto;
+    border: 1px solid #22304a;
+    border-radius: 14px;
+    background: #0b1220;
+    margin-bottom: 18px;
+    padding: 5px;
 }
 
-.table-view {
-    -fx-background-color: transparent;
-    -fx-control-inner-background: #13233f;
-    -fx-table-cell-border-color: rgba(255,255,255,0.05);
-    -fx-padding: 5;
+.post-table {
+    height: 290px;
 }
 
-.table-view .column-header-background {
-    -fx-background-color: #162844;
+.rv-table {
+    width: 100%;
+    min-width: 890px;
+    border-collapse: collapse;
+    table-layout: fixed;
 }
 
-.table-view .column-header,
-.table-view .filler {
-    -fx-size: 40;
-    -fx-border-color: transparent;
+.rv-table thead tr {
+    background: #171f2e;
 }
 
-.table-view .column-header .label {
-    -fx-text-fill: #a8c1ff;
-    -fx-font-weight: bold;
+.rv-table th {
+    height: 38px;
+    padding: 0 10px;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    text-align: center;
+    border-bottom: 1px solid #26324a;
+    white-space: nowrap;
 }
 
-.table-row-cell {
-    -fx-background-color: #13233f;
-    -fx-text-fill: white;
+.rv-table td {
+    height: 26px;
+    padding: 0 8px;
+    color: #e7edff;
+    font-size: 12px;
+    border-bottom: 1px solid #172136;
+    border-right: 1px solid #172136;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
 }
 
-.table-row-cell:filled:selected {
-    -fx-background-color: linear-gradient(to right, #6c63ff33, #5a8dee33);
+.rv-table tbody tr {
+    background: #0c1322;
+    cursor: pointer;
 }
 
-.table-row-cell:hover {
-    -fx-background-color: #1c3358;
+.rv-table tbody tr:nth-child(even) {
+    background: #101827;
 }
 
-/* ================= SEPARATOR ================= */
-.separator .line {
-    -fx-border-color: rgba(255,255,255,0.08);
+.rv-table tbody tr:hover {
+    background: rgba(91, 132, 255, 0.16);
 }
 
-/* ================= SCROLLBAR ================= */
-.scroll-bar:vertical {
-    -fx-background-color: transparent;
+.rv-table tbody tr.selected {
+    background: rgba(91, 77, 160, 0.35);
 }
 
-.scroll-bar .thumb {
-    -fx-background-color: #2a4170;
-    -fx-background-radius: 6;
+.rv-empty {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.14) !important;
+    height: 210px !important;
+    font-size: 12px;
+    font-weight: 500;
 }
 
-.scroll-bar .thumb:hover {
-    -fx-background-color: #3a5aa0;
-}
-/* =========================
-   GLOBAL
-========================= */
-.app-root {
-    -fx-font-family: "Segoe UI", "Inter", "Arial";
-    -fx-background-color: linear-gradient(to bottom right, #0b1220, #070d18);
+/* ================= FORM ================= */
+
+.rv-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-/* page container */
-.page {
-    -fx-padding: 28;
+.rv-form label {
+    color: #dfe7ff;
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 0;
 }
 
-/* =========================
-   TOPBAR
-========================= */
-.topbar {
-    -fx-background-color: rgba(10, 18, 35, 0.90);
-    -fx-border-color: rgba(255, 255, 255, 0.08);
-    -fx-border-width: 0 0 1 0;
+.rv-form input,
+.rv-form textarea,
+.rv-form select {
+    width: 100%;
+    background: #171f2e;
+    border: 1px solid #2a354b;
+    border-radius: 12px;
+    color: #ffffff;
+    outline: none;
+    padding: 0 12px;
+    font-size: 13px;
 }
 
-.brand {
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-font-weight: 700;
+.rv-form input,
+.rv-form select {
+    height: 36px;
 }
 
-/* =========================
-   TITLES
-========================= */
-.page-title {
-    -fx-text-fill: white;
-    -fx-font-size: 34px;
-    -fx-font-weight: 800;
+.rv-form textarea {
+    height: 52px;
+    resize: none;
+    padding-top: 10px;
 }
 
-.card-title {
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: 700;
+.rv-form-row {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 355px;
+    align-items: end;
 }
 
-.field-label {
-    -fx-text-fill: rgba(255,255,255,0.75);
-    -fx-font-size: 12px;
-    -fx-font-weight: 600;
+.rv-form-row div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
-/* =========================
-   CARDS (glass)
-========================= */
-.card {
-    -fx-background-color: rgba(15, 23, 42, 0.70);
-    -fx-background-radius: 18;
-    -fx-border-radius: 18;
-    -fx-border-color: rgba(255, 255, 255, 0.10);
-    -fx-border-width: 1;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 18, 0.20, 0, 6);
-    -fx-padding: 18;
+.rv-form-row input[type="datetime-local"] {
+    width: 180px;
+    height: 25px;
+    padding: 0 8px;
 }
 
-
-
-
-/* ComboBox */
-.combo-box,
-.dark-combo {
-    -fx-background-color: rgba(255,255,255,0.06);
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(255,255,255,0.10);
-    -fx-border-width: 1;
-    -fx-padding: 2 8 2 8;
+.rv-form-row input[type="number"] {
+    width: 180px;
+    height: 36px;
 }
 
-.combo-box .list-cell,
-.dark-combo .list-cell {
-    -fx-text-fill: rgba(255,255,255,0.92);
-    -fx-background-color: transparent;
+/* Type comme petit combo JavaFX */
+.rv-form > select[name="type"] {
+    width: 105px;
+    height: 32px;
+    margin-top: 0;
 }
 
-.combo-box-popup .list-view {
-    -fx-background-color: rgba(15, 23, 42, 0.98);
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(255,255,255,0.10);
+/* ================= BUTTONS ================= */
+
+.rv-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+    flex-wrap: wrap;
 }
 
-.combo-box-popup .list-cell {
-    -fx-text-fill: rgba(255,255,255,0.92);
+.rv-btn {
+    border: none;
+    border-radius: 12px;
+    min-width: 72px;
+    height: 38px;
+    padding: 0 14px;
+    background: linear-gradient(135deg, #5aa6ff, #7b61ff);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 900;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: rgba(122, 92, 255, 0.20);
+.rv-btn.secondary {
+    background: linear-gradient(135deg, #2e5b92, #443b91);
 }
 
-/* DatePicker */
-.date-picker {
-    -fx-background-color: rgba(255,255,255,0.06);
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(255,255,255,0.10);
-    -fx-border-width: 1;
+.rv-btn.danger {
+    background: linear-gradient(135deg, #334f82, #423780);
 }
 
-.date-picker .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: rgba(255,255,255,0.92);
+.rv-btn.purple {
+    background: linear-gradient(135deg, #5aa6ff, #7b61ff);
 }
 
-.date-picker-popup {
-    -fx-background-color: rgba(15, 23, 42, 0.98);
-    -fx-border-color: rgba(255,255,255,0.10);
+.rv-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
 }
 
-/* =========================
-   TABLE (dark)
-========================= */
-.dark-table {
-    -fx-background-color: rgba(15, 23, 42, 0.35);
-    -fx-background-radius: 14;
-    -fx-border-radius: 14;
-    -fx-border-color: rgba(255,255,255,0.10);
-    -fx-border-width: 1;
+.rv-hint {
+    color: rgba(255, 255, 255, 0.18);
+    font-size: 12px;
+    margin: 12px 0 14px 0;
 }
 
-.table-view {
-    -fx-background-color: transparent;
-    -fx-control-inner-background: transparent;
-    -fx-selection-bar: rgba(122, 92, 255, 0.35);
-    -fx-selection-bar-non-focused: rgba(122, 92, 255, 0.22);
+hr {
+    border: none;
+    height: 1px;
+    background: #273149;
+    margin-top: 8px;
 }
 
-.table-view .column-header-background {
-    -fx-background-color: rgba(255,255,255,0.05);
-    -fx-background-radius: 14 14 0 0;
+/* ================= STATUS / LINKS ================= */
+
+.status {
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 11px;
 }
 
-.table-view .column-header,
-.table-view .filler {
-    -fx-background-color: transparent;
-    -fx-border-color: rgba(255,255,255,0.06);
-    -fx-border-width: 0 0 1 0;
+.status-en_attente {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffd45c;
 }
 
-.table-view .column-header .label {
-    -fx-text-fill: rgba(255,255,255,0.85);
-    -fx-font-weight: 800;
+.status-accepte {
+    background: rgba(0, 200, 120, 0.15);
+    color: #42e69b;
 }
 
-.table-row-cell {
-    -fx-background-color: transparent;
-    -fx-border-color: rgba(255,255,255,0.05);
-    -fx-border-width: 0 0 1 0;
+.status-refuse {
+    background: rgba(255, 75, 75, 0.15);
+    color: #ff7777;
 }
 
-.table-row-cell:odd {
-    -fx-background-color: rgba(255,255,255,0.02);
+.link-btn {
+    background: transparent;
+    border: none;
+    color: #6c8cff;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
 }
 
-.table-row-cell:selected {
-    -fx-background-color: rgba(122, 92, 255, 0.25);
+.rv-table a {
+    color: #6c8cff;
+    text-decoration: none;
+    font-weight: 700;
 }
 
-.table-cell {
-    -fx-text-fill: rgba(255,255,255,0.86);
+/* ================= ALERTS ================= */
+
+.rv-alert {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    font-size: 13px;
 }
 
-/* Scrollbars (table + page) */
-.scroll-bar:vertical, .scroll-bar:horizontal {
-    -fx-background-color: transparent;
+.rv-alert-success {
+    background: rgba(0, 200, 120, 0.15);
+    color: #42e69b;
 }
 
-.scroll-bar .track {
-    -fx-background-color: rgba(255,255,255,0.03);
-    -fx-background-radius: 10;
+.rv-alert-danger {
+    background: rgba(255, 75, 75, 0.15);
+    color: #ff7777;
 }
 
-.scroll-bar .thumb {
-    -fx-background-color: rgba(122, 92, 255, 0.35);
-    -fx-background-radius: 10;
-}
+/* ================= RESPONSIVE ================= */
 
-/* =========================
-   SEPARATOR
-========================= */
-.separator *.line {
-    -fx-border-color: rgba(255, 255, 255, 0.08);
-    -fx-border-width: 1;
-}
+@media (max-width: 1500px) {
+    .rv-container {
+        width: 94%;
+    }
 
-/* Texte dans la liste déroulante */
-.dark-combo .list-view .list-cell {
-    -fx-text-fill: white;
-}
+    .rv-grid {
+        grid-template-columns: 1fr;
+    }
 
-/* Optionnel : fond de la liste déroulante */
-.dark-combo .list-view {
-    -fx-background-color: #1E293B;
-}
-.dark-combo .list-view .list-cell:filled:selected,
-.dark-combo .list-view .list-cell:filled:hover {
-    -fx-background-color: #334155;
-}
-
-/* Scroll interne TextArea dark */
-.text-area .scroll-pane { -fx-background-color: transparent; }
-.text-area .viewport { -fx-background-color: transparent; }
-
-/* navbar buttons */
-.nav-btn {
-    -fx-background-color: transparent;
-    -fx-text-fill: rgba(255,255,255,0.72);
-    -fx-padding: 8 12;
-    -fx-background-radius: 10;
-    -fx-cursor: hand;
-}
-.nav-btn:hover {
-    -fx-background-color: rgba(255,255,255,0.06);
-}
-.nav-active {
-    -fx-background-color: rgba(255,255,255,0.10);
-    -fx-text-fill: white;
-}
-/* ====== Buttons (TOUS BLEUS) ====== */
-.btn {
-    -fx-background-radius: 12;
-    -fx-padding: 10 14;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-    -fx-text-fill: white;
-
-    -fx-background-color: linear-gradient(to right, #5aa6ff, #7b61ff);
-}
-
-.btn:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.22);
-}
-
-.btn:pressed {
-    -fx-background-color: linear-gradient(to right, #3f88ff, #5a45ff);
-}
-
-/* Boutons ◀ ▶ */
-.skill-arrow {
-    -fx-background-color: linear-gradient(to right, #5aa6ff, #7b61ff); /* Dégradé bleu */
-    -fx-text-fill: white;   /* Texte blanc */
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-    -fx-padding: 4 8;
-    -fx-cursor: hand;
-}
-
-.skill-arrow:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.22); /* Effet hover */
-    -fx-text-fill: white;
-}
-/* ===== BUTTONS ===== */
-.btn-primary {
-    -fx-background-color: linear-gradient(to right, #4f46e5, #7c3aed);
-    -fx-text-fill: white;
-    -fx-background-radius: 12;
-    -fx-padding: 10 16;
-    -fx-font-weight: 700;
-    -fx-cursor: hand;
-}
-
-.btn-primary:hover {
-    -fx-opacity: 0.92;
-}
-/* ----- Bouton verify (même look que .btn mais collé) ----- */
-.phone-verify {
-    -fx-background-color: linear-gradient(to right, #5aa6ff, #7b61ff);
-    -fx-text-fill: white;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-    -fx-padding: 10 16;
-    -fx-background-radius: 0 12 12 0;
-    -fx-border-radius: 0 12 12 0;
-    -fx-border-color: transparent;
-}
-.phone-verify:hover {
-    -fx-background-color: linear-gradient(to right, #4f99ff, #6f57ff);
-}
-.phone-verify:pressed {
-    -fx-background-color: linear-gradient(to right, #3f88ff, #5a45ff);
-}
-/* Boutons */
-.dialog-pane.dark-dialog-pane .button {
-    -fx-background-color: #111827;
-    -fx-text-fill: white;
-    -fx-background-radius: 12;
-    -fx-padding: 8 18;
-    -fx-cursor: hand;
-}
-
-.dialog-pane.dark-dialog-pane .button:hover {
-    -fx-background-color: #1f2937;
-}
-
-/* Bouton par défaut (souvent OK) */
-.dialog-pane.dark-dialog-pane .button:default {
-    -fx-background-color: #b91c1c;
-}
-
-.dialog-pane.dark-dialog-pane .button:default:hover {
-    -fx-background-color: #dc2626;
-}
-/* ====== Inputs (TextField + TextArea IDENTIQUES) ====== */
-.input {
-    -fx-background-color: rgba(255,255,255,0.05);
-    -fx-text-fill: white;
-    -fx-prompt-text-fill: rgba(255,255,255,0.35);
-
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: rgba(255,255,255,0.10);
-    -fx-border-width: 1;
-
-    -fx-padding: 10 12;
-}
-
-.input:focused {
-    -fx-border-color: rgba(123, 97, 255, 0.9);
-}
-.text-area.input { -fx-background-insets: 0; }
-.text-area.input .content {
-    -fx-background-color: transparent;
-    -fx-background-radius: 12;
+    .rv-card {
+        min-height: auto;
+    }
 }

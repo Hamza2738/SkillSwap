@@ -86,7 +86,8 @@
 
     .hero-bg {
         position: absolute;
-        top: 0; left: 0;
+        top: 0; 
+        left: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -200,6 +201,11 @@
 {% endblock %}
 
 {% block body %}
+
+<audio id="bgMusic" autoplay loop preload="auto">
+    <source src="{{ asset('files/music/music.mp3') }}" type="audio/mpeg">
+</audio>
+
 <div class="app-root">
 
     {# ─── TOPBAR ─── #}
@@ -208,9 +214,9 @@
             <img src="{{ asset('image/logo.png') }}" alt="Logo">
             <span class="brand">SkillSwap</span>
         </div>
+
         <div class="nav-links">
             <a href="{{ path('app_login') }}" class="nav-btn">Connectée</a>
-           
         </div>
     </nav>
 
@@ -221,6 +227,7 @@
             alt="Background"
             class="hero-bg"
         >
+
         <div class="hero-content">
 
             <img
@@ -231,6 +238,7 @@
 
             <div class="hero-card">
                 <h1>Bienvenue sur SkillSwap</h1>
+
                 <p>
                     SkillSwap est une application numérique innovante dédiée à la mise en relation
                     de professionnels souhaitant échanger leurs compétences dans un cadre structuré
@@ -241,6 +249,7 @@
                     compétences, des rendez-vous, des tâches ainsi que des offres et candidatures,
                     garantissant une organisation efficace et un suivi rigoureux des interactions.
                 </p>
+
                 <a href="{{ path('app_login') }}" class="btn">Se connecter</a>
             </div>
 
@@ -258,4 +267,25 @@
     </footer>
 
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const music = document.getElementById('bgMusic');
+
+        if (music) {
+            music.volume = 0.50;
+
+            const playPromise = music.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(function () {
+                    document.addEventListener('click', function playMusicOnce() {
+                        music.play();
+                        document.removeEventListener('click', playMusicOnce);
+                    });
+                });
+            }
+        }
+    });
+</script>
+
 {% endblock %}

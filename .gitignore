@@ -32,3 +32,6 @@ Thumbs.db
 
 ### Logs ###
 *.log
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
