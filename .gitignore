@@ -1,37 +1,33 @@
-### Symfony ###
-.env.test
-.env.dev
+### Symfony secrets ###
 .env
 .env.local
-.env.dev.local
-.env.test.local
-.env.prod.local
+.env.*.local
+/config/secrets/prod/*
+/config/secrets/dev/*
+/config/secrets/test/*
 
-/var/
+### Composer dependencies ###
 /vendor/
 
-### PHPUnit ###
-.phpunit.result.cache
+### Symfony cache/logs ###
+/var/
 
-### Front ###
+### Node dependencies ###
 /node_modules/
+/public/build/
+/assets/vendor/
 
-### IDE ###
-/.vscode/
-/.idea/
+### Uploads utilisateurs sensibles ###
+/public/uploads/
+/public/files/
 
-### OS ###
+### Backups / tests / cache ###
+/src_backup_phpstan/
+/.phpunit.cache/
+/tests/
+
+### IDE / OS ###
+.idea/
+.vscode/
 .DS_Store
 Thumbs.db
-
-### Uploads ###
-/public/uploads/utilisateur/cover/
-/public/uploads/utilisateur/profil/
-/public/files/
-/public/image/
-
-### Logs ###
-*.log
-###> phpstan/phpstan ###
-phpstan.neon
-###< phpstan/phpstan ###

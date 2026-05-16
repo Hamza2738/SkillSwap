@@ -12,12 +12,12 @@
 *::after {
     box-sizing: border-box;
 }
-
 :root {
     --bg-main: #050b18;
     --bg-top: #0b1324;
     --bg-sidebar: #081226;
     --bg-input: #1b263b;
+    --bg-card: #0b1324;
     --border: #26354f;
     --text: #f8fafc;
     --muted: #94a3b8;
@@ -27,7 +27,20 @@
     --red: #ef4444;
     --gold: #facc15;
 }
+/* MODE CLAIR PROCHE DU MODE SOMBRE *//* MODE CLAIR DOUX - PLUS CLAIR MAIS PROCHE DU SOMBRE */
 
+body.light-mode {
+    --bg-main: #1b263b;
+    --bg-top: #24324a;
+    --bg-sidebar: #202d44;
+    --bg-input: #2f3f5c;
+    --bg-card: #263650;
+    --border: #4b5f7f;
+    --text: #f8fafc;
+    --muted: #d6deea;
+    --blue: #8fb0ff;
+    --purple: #aa8cff;
+}
 /* ================= NETWORK ACTIONS ADMIN ================= */
 
 .network-actions {
@@ -713,9 +726,8 @@ textarea {
 }
 
 /* ================= MAIN ================= */
-
 .main {
-    background: #050b18;
+    background: var(--bg-main);
     padding: 26px 28px 80px;
 }
 
@@ -860,21 +872,15 @@ textarea {
 }
 
 .label {
-    color: #cbd5e1;
+    color: var(--muted);
     font-size: 13px;
     font-weight: 800;
 }
-
 .input,
 .textarea {
-    width: 100%;
-    border: 1px solid #334155;
-    background: #1b263b;
-    color: #ffffff;
-    border-radius: 13px;
-    padding: 12px 16px;
-    outline: none;
-    font-size: 13px;
+    background: var(--bg-input);
+    color: var(--text);
+    border: 1px solid var(--border);
 }
 
 .input:focus,
@@ -1167,6 +1173,24 @@ textarea {
     color: white;
     cursor: pointer;
 }
+.theme-toggle-btn {
+    border: 1px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text);
+    border-radius: 14px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s ease;
+    white-space: nowrap;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--blue);
+    color: var(--blue);
+    transform: translateY(-1px);
+}
 
 .save-btn {
     background: linear-gradient(135deg, #6c8cff, #7c5cff);
@@ -1284,6 +1308,98 @@ textarea {
         justify-content: flex-end;
     }
 }
+/* ================= THEME FIX GLOBAL ================= */
+
+body.light-mode,
+body.light-mode html {
+    background: var(--bg-main) !important;
+    color: var(--text) !important;
+}
+
+body.light-mode .topbar,
+body.light-mode .main,
+body.light-mode .layout,
+body.light-mode .sidebar-left,
+body.light-mode .sidebar-right {
+    background: var(--bg-main) !important;
+    color: var(--text) !important;
+}
+
+body.light-mode .topbar {
+    background: var(--bg-top) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body.light-mode .sidebar-left,
+body.light-mode .sidebar-right {
+    background: var(--bg-sidebar) !important;
+}
+
+body.light-mode .brand,
+body.light-mode .top-link,
+body.light-mode .side-title,
+body.light-mode .profile-identity h2,
+body.light-mode .meta-line,
+body.light-mode .meta-line span,
+body.light-mode .contact-name,
+body.light-mode .project-card h4,
+body.light-mode .user-card h4,
+body.light-mode .project-card p,
+body.light-mode .user-card p,
+body.light-mode .activity-card p {
+    color: var(--text) !important;
+}
+
+body.light-mode .search-input,
+body.light-mode .input,
+body.light-mode .textarea,
+body.light-mode .project-form-block .input,
+body.light-mode .project-form-block .textarea {
+    background: var(--bg-input) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border) !important;
+}
+
+body.light-mode .search-input::placeholder {
+    color: var(--muted) !important;
+}
+
+body.light-mode .activity-card {
+    border-bottom: 1px solid var(--border) !important;
+}
+
+body.light-mode .search-results {
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+}
+
+
+
+body.light-mode .search-result-item {
+    background: #2f3f5c !important;
+    border: 1px solid #4b5f7f !important;
+}
+
+body.light-mode .search-result-item:hover {
+    background: #3a4d6e !important;
+}
+
+body.light-mode .search-result-name {
+    color: #ffffff !important;
+}
+
+
+body.light-mode .search-result-meta,
+body.light-mode .search-result-empty,
+body.light-mode .activity-empty,
+body.light-mode .empty,
+body.light-mode .nav-mini {
+    color: var(--muted) !important;
+}body.light-mode .theme-toggle-btn {
+    background: #162033 !important;
+    color: #ffffff !important;
+    border-color: #5b6f91 !important;
+}
 </style>
 {% endblock %}
 
@@ -1313,6 +1429,9 @@ textarea {
 </div>
 
     <div class="top-actions">
+   <button type="button" class="theme-toggle-btn" id="themeToggleBtn">
+    ☀️ Mode clair
+</button>
       <button type="button" class="top-link reseau-open-btn" id="openReseauModal">
     👥 Réseaux
     {% if invitationsCount|default(0) > 0 %}
@@ -2127,7 +2246,42 @@ if (adminSearchInput && adminSearchResults) {
             closeSearchResults();
         }
     });
-}
+}// ================= MODE SOMBRE / MODE CLAIR =================
+
+(function () {
+    function applyTheme(theme) {
+        const btn = document.getElementById('themeToggleBtn');
+
+        if (theme === 'light') {
+            document.body.classList.add('light-mode');
+            if (btn) btn.textContent = '🌙 Mode sombre';
+        } else {
+            document.body.classList.remove('light-mode');
+            if (btn) btn.textContent = '☀️ Mode clair';
+        }
+
+        localStorage.setItem('skillswap_theme', theme);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const btn = document.getElementById('themeToggleBtn');
+        const savedTheme = localStorage.getItem('skillswap_theme') || 'dark';
+
+        applyTheme(savedTheme);
+
+        if (btn) {
+            btn.addEventListener('click', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+                const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+                applyTheme(nextTheme);
+            });
+        }
+    });
+})();
 </script>
 
 
