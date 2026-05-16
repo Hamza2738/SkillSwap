@@ -1,4 +1,4 @@
-# 🚀 SkillSwap — Plateforme symfony 6.4
+# 🚀 SkillSwap — Application javafx
 
 ## 🧩 Fonctionnalités principales
 
@@ -34,12 +34,21 @@ L’application suit une architecture **MVC** :
 📦 SkillSwap Desktop
 
 ┣ 📂 model        → Modèles et classes métiers
+
 ┣ 📂 service      → Logique métier et traitement des données
+
 ┣ 📂 controller   → Contrôleurs JavaFX
+
 ┣ 📂 resources
+
 ┃  ┣ 📂 fxml       → Interfaces utilisateur JavaFX
+
 ┃  ┣ 📂 css        → Styles de l’application
+
 ┃  ┣ 📂 image      → Images et ressources graphiques
+
 ┃  ┗ 📂 files      → Fichiers utilisés par l’application
+
 ┣ 📂 utils        → Configuration, session et outils
+
 ┗ 📄 pom.xml      → Configuration Maven
