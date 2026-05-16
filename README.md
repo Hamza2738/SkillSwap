@@ -1,4 +1,4 @@
-# 🚀 SkillSwap — Plateforme symfony 6.4)
+# 🚀 SkillSwap — Plateforme symfony 6.4
 
 ## 🧩 Fonctionnalités principales
 
