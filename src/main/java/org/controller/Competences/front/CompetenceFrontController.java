@@ -20,9 +20,9 @@ import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 import org.model.Competences.Competence;
 import org.service.Competences.CompetenceService;
+import org.utils.Session;
 
 import java.net.URL;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -58,6 +58,8 @@ public class CompetenceFrontController {
     @FXML private TextField tfAnnees;
     @FXML private TextField tfCertification;
     @FXML private ComboBox<String> cbStatut;
+
+    // ✅ tu peux le garder juste pour afficher/cacher, mais plus de saisie
     @FXML private TextField tfEmail;
 
     @FXML private Label lblError;
@@ -67,14 +69,13 @@ public class CompetenceFrontController {
     // =========================
     private final CompetenceService service = new CompetenceService();
 
-    // ✅ FRONT: affiche uniquement ce que tu ajoutes via ce front (pas toute la DB)
     private final javafx.collections.ObservableList<Competence> data =
             FXCollections.observableArrayList();
 
     // =========================
     // CONST
     // =========================
-    private static final String CSS_PATH = "/view/css/competences/style.css";
+    private static final String CSS_PATH = "/view/css/competences/front/style.css";
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final Locale LOCALE_FR = Locale.FRENCH;
 
@@ -90,11 +91,8 @@ public class CompetenceFrontController {
     private static final Pattern P_SIMPLE =
             Pattern.compile("^[\\p{L}0-9 _-]*$");
 
-    private static final Pattern P_EMAIL =
-            Pattern.compile("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
-
     // =========================
-    // CALENDAR STATE (nécessaire)
+    // CALENDAR STATE
     // =========================
     private LocalDate calendarMonth = LocalDate.now().withDayOfMonth(1);
     private LocalDate selectedDate  = LocalDate.now();
@@ -109,14 +107,49 @@ public class CompetenceFrontController {
         setupTable();
         setupSearchUI();
 
-        // IMPORTANT: le TableView doit utiliser la liste locale
         if (table != null) table.setItems(data);
+
+        Scene scene = table.getScene();
+        if (scene != null) {
+            URL css = getClass().getResource(CSS_PATH);
+            if (css != null) {
+                scene.getStylesheets().add(css.toExternalForm()); // Lier le fichier CSS à la scène
+            }
+        }
+
+        setupExtraFields();
+        setupInputValidation();
+        setupTable();
+        setupSearchUI();
+
+        if (table != null) table.setItems(data);
+
+        // ✅ Email de session (plus de saisie)
+        if (tfEmail != null) {
+            tfEmail.setText(getSessionEmail());
+            tfEmail.setEditable(false);
+
+            // ✅ si tu veux cacher totalement l’input email :
+            tfEmail.setVisible(false);
+            tfEmail.setManaged(false);
+        }
+
+        // ✅ Remplir le tableau automatiquement selon le mail du user connecté
+        try {
+            String email = getSessionEmail();
+            if (email != null && !email.isBlank()) {
+                data.setAll(service.getByEmail(email));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            setError("Erreur chargement compétences: " + e.getMessage());
+        }
 
         setError("");
     }
 
     // =========================
-    // NAV TOPBAR (pour éviter crash FXML)
+    // NAV TOPBAR
     // =========================
     @FXML private void onAccueil() { setError(""); }
     @FXML private void onProfil()  { setError(""); }
@@ -135,13 +168,12 @@ public class CompetenceFrontController {
         if (colEmail != null) colEmail.setCellValueFactory(c -> new SimpleStringProperty(nvl(c.getValue().getEmail())));
         if (colAnnees != null) colAnnees.setCellValueFactory(c -> new ReadOnlyObjectWrapper<>(c.getValue().getAnneesExperience()));
 
-        if (colId != null) {
+        if (colId != null && table != null) {
             colId.setCellValueFactory(c ->
                     new ReadOnlyObjectWrapper<>(table.getItems().indexOf(c.getValue()) + 1)
             );
         }
 
-        // selection -> remplir form
         if (table != null) {
             table.getSelectionModel().selectedItemProperty().addListener((obs, oldV, c) -> {
                 if (c == null) return;
@@ -153,17 +185,12 @@ public class CompetenceFrontController {
                 if (tfAnnees != null) tfAnnees.setText(String.valueOf(c.getAnneesExperience()));
                 if (tfCertification != null) tfCertification.setText(nvl(c.getCertification()));
                 if (cbStatut != null) cbStatut.setValue(normalizeComboValue(cbStatut, nvl(c.getStatut()), "En cours"));
-                if (tfEmail != null) tfEmail.setText(nvl(c.getEmail()));
             });
         }
     }
 
-    // =========================
-    // SEARCH UI (safe)
-    // =========================
     private void setupSearchUI() {
-        // Optionnel côté front (pas obligatoire)
-        // On laisse vide pour éviter d’éventuelles erreurs si FXML contient ces nodes.
+        // Optionnel
     }
 
     // =========================
@@ -175,6 +202,7 @@ public class CompetenceFrontController {
 
         try {
             int annees = parseAnneesOr0();
+            String emailSession = getSessionEmail();
 
             Competence c = new Competence(
                     0,
@@ -185,13 +213,11 @@ public class CompetenceFrontController {
                     annees,
                     tfCertification != null ? tfCertification.getText().trim() : "",
                     cbStatut != null ? cbStatut.getValue() : "En cours",
-                    tfEmail != null ? tfEmail.getText().trim() : ""
+                    emailSession
             );
 
-            // DB -> récupère ID
             int newId = service.addAndReturnId(c);
 
-            // ✅ AJOUT dans TABLE (liste locale)
             Competence inserted = new Competence(
                     newId,
                     c.getCategory(),
@@ -227,6 +253,7 @@ public class CompetenceFrontController {
 
         try {
             int annees = parseAnneesOr0();
+            String emailSession = getSessionEmail(); // ✅ email forcé
 
             Competence updated = new Competence(
                     selected.getId(),
@@ -237,7 +264,7 @@ public class CompetenceFrontController {
                     annees,
                     tfCertification != null ? tfCertification.getText().trim() : selected.getCertification(),
                     cbStatut != null ? cbStatut.getValue() : selected.getStatut(),
-                    tfEmail != null ? tfEmail.getText().trim() : selected.getEmail()
+                    emailSession
             );
 
             service.update(updated);
@@ -283,8 +310,30 @@ public class CompetenceFrontController {
         }
     }
 
+    @FXML
+    void goProfil() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/fxml/utilisateur/profil.fxml"));
+            Scene scene = new Scene(loader.load(), 1920, 1000);
+            scene.getStylesheets().add(getClass().getResource("/view/css/utilisateur/style.css").toExternalForm());
+
+            // ✅ passe le user connecté au profil
+            if (Session.getCurrentUser() != null) {
+                org.controller.utilisateur.ProfilController controller = loader.getController();
+                controller.setUser(Session.getCurrentUser());
+            }
+
+            Stage stage = (Stage) table.getScene().getWindow();
+            stage.setTitle("SkillSwap - Profil");
+            stage.setScene(scene);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // =========================
-    // RESET (si FXML appelle)
+    // RESET
     // =========================
     @FXML
     private void onResetSearch() {
@@ -300,41 +349,36 @@ public class CompetenceFrontController {
         setError("");
     }
 
-    // =========================
-    // DASHBOARD / CHATBOT
-    // =========================
-    @FXML
-    private void onDashboard() {
-        openModal("/view/fxml/Competences/front/Dashboard.fxml", "Dashboard (Front)", 720, 520);
-    }
-
     @FXML
     private void onChatbot() {
-        openModal("/view/fxml/Competences/front/ChatBoat.fxml", "Chatbot (Front)", 520, 640);
-    }
-
-    private void openModal(String fxmlPath, String title, int w, int h) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent r = loader.load();
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/view/fxml/Competences/front/ChatBoat.fxml")
+            );
 
-            Scene scene = new Scene(r, w, h);
-            URL css = getClass().getResource(CSS_PATH);
-            if (css != null) scene.getStylesheets().add(css.toExternalForm());
+            Parent root = loader.load();
+
+            Scene scene = new Scene(root, 520, 640);
+
+            URL css = getClass().getResource("/view/css/competences/back/style.css");
+            if (css != null) {
+                scene.getStylesheets().add(css.toExternalForm());
+            }
 
             Stage stage = new Stage();
-            stage.setTitle(title);
+            stage.setTitle("SkillSwap - Chatbot");
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
             stage.show();
+
         } catch (Exception e) {
-            setError("Erreur ouverture : " + e.getMessage());
+            setError("Erreur ouverture Chatbot : " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     // =========================
-    // CALENDRIER (Front) - même structure que BACK
+    // CALENDRIER
     // =========================
     @FXML
     private void onCalendar() {
@@ -371,7 +415,6 @@ public class CompetenceFrontController {
             calRoot.setPadding(new Insets(16));
             calRoot.setMinWidth(430);
 
-            // CSS classes
             calRoot.getStyleClass().add("cal-root");
             lblTitle.getStyleClass().add("cal-title");
             lblSelected.getStyleClass().add("cal-selected");
@@ -466,7 +509,7 @@ public class CompetenceFrontController {
 
         LocalDate firstDay = monthStart.withDayOfMonth(1);
         int daysInMonth = firstDay.lengthOfMonth();
-        int startOffset = firstDay.getDayOfWeek().getValue() - 1; // 0..6 (lun..dim)
+        int startOffset = firstDay.getDayOfWeek().getValue() - 1;
 
         int row = 1;
         int col = startOffset;
@@ -499,7 +542,7 @@ public class CompetenceFrontController {
     }
 
     // =========================
-    // VALIDATION
+    // VALIDATION (SANS EMAIL)
     // =========================
     private void setupInputValidation() {
         UnaryOperator<TextFormatter.Change> simpleFilter = change -> {
@@ -550,9 +593,8 @@ public class CompetenceFrontController {
         String category = nvl(tfCategory != null ? tfCategory.getText() : "").trim();
         String type = nvl(tfType != null ? tfType.getText() : "").trim();
         String desc = nvl(taDescription != null ? taDescription.getText() : "").trim();
-        String email = nvl(tfEmail != null ? tfEmail.getText() : "").trim();
 
-        if (category.isEmpty() || type.isEmpty() || desc.isEmpty() || email.isEmpty()) {
+        if (category.isEmpty() || type.isEmpty() || desc.isEmpty()) {
             setError("Complétez les champs obligatoires.");
             return false;
         }
@@ -560,11 +602,6 @@ public class CompetenceFrontController {
         int annees = parseAnneesOr0();
         if (annees < ANNEES_MIN || annees > ANNEES_MAX) {
             setError("Années invalides (0..60).");
-            return false;
-        }
-
-        if (!P_EMAIL.matcher(email).matches()) {
-            setError("Email invalide.");
             return false;
         }
 
@@ -591,7 +628,7 @@ public class CompetenceFrontController {
     }
 
     // =========================
-    // SELECTION HELPERS
+    // HELPERS
     // =========================
     private int indexOfById(int dbId) {
         for (int i = 0; i < data.size(); i++) {
@@ -623,12 +660,8 @@ public class CompetenceFrontController {
         if (tfAnnees != null) tfAnnees.setText("0");
         if (tfCertification != null) tfCertification.clear();
         if (cbStatut != null) cbStatut.setValue("En cours");
-        if (tfEmail != null) tfEmail.clear();
     }
 
-    // =========================
-    // UI HELPERS
-    // =========================
     private void showInvalidCharMessage(String msg) {
         if (lblError != null) lblError.setText(msg);
     }
@@ -639,12 +672,6 @@ public class CompetenceFrontController {
 
     private static String nvl(String s) { return s == null ? "" : s; }
 
-    private static String normalize(String s) {
-        if (s == null) return "";
-        String lower = s.trim().toLowerCase(Locale.ROOT);
-        return Normalizer.normalize(lower, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
-    }
-
     private static String normalizeComboValue(ComboBox<String> combo, String value, String fallback) {
         if (combo == null) return value;
         String v = nvl(value).trim();
@@ -653,8 +680,24 @@ public class CompetenceFrontController {
         return fallback;
     }
 
-    // (optionnel) si ton FXML appelle ça
     public void onToggleMusic(ActionEvent actionEvent) {
         // pas utilisé ici
+    }
+
+    // =========================
+    // ✅ CORRECTION RELATION EMAIL (LOGIN OU INSCRIPTION)
+    // =========================
+    private String getSessionEmail() {
+        try {
+            String email = Session.getEmail();
+            if (email != null && !email.trim().isEmpty()) return email.trim();
+
+            // Cas après inscription : Session.email pas set, mais currentUser existe
+            if (Session.getCurrentUser() != null && Session.getCurrentUser().getEmail() != null) {
+                return Session.getCurrentUser().getEmail().trim();
+            }
+        } catch (Exception ignored) {
+        }
+        return "";
     }
 }

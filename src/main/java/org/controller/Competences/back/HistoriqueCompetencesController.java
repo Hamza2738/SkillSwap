@@ -96,7 +96,7 @@ public class HistoriqueCompetencesController {
     private static final String ATTR_DESC = "Description";
 
     private static final DateTimeFormatter DT_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    private static final String CSS_PATH = "/view/css/competences/style.css";
+    private static final String CSS_PATH = "/view/css/competences/back/style.css";
 
     @FXML
     public void initialize() {

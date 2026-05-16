@@ -42,6 +42,26 @@
             <artifactId>javafx-media</artifactId>
             <version>${javafx.version}</version>
         </dependency>
+        <!-- JSON pour parser la réponse Gemini -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
+
+        <!-- ✅ AJOUT 1 : JavaFX WebView (emoji picker + bridge JS↔Java) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- ✅ AJOUT 2 : JavaFX Swing (Desktop.open() pour ouvrir vidéos) -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
 
         <!-- HTTP CLIENT -->
         <dependency>
@@ -68,12 +88,21 @@
             <artifactId>layout</artifactId>
             <version>8.0.2</version>
         </dependency>
+
+        <!-- MAIL -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
             <version>2.0.1</version>
         </dependency>
 
+        <!-- TESTS -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -85,6 +114,11 @@
                 <version>3.13.0</version>
                 <configuration>
                     <release>17</release>
+                    <!-- ✅ AJOUT 3 : accès à netscape.javascript (JSObject) -->
+                    <compilerArgs>
+                        <arg>--add-exports=javafx.web/com.sun.webkit.dom=ALL-UNNAMED</arg>
+                        <arg>--add-exports=javafx.web/netscape.javascript=ALL-UNNAMED</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
@@ -95,6 +129,13 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>org.example.Main</mainClass>
+                    <!-- ✅ AJOUT 4 : options JVM pour WebView + audio au runtime -->
+                    <options>
+                        <option>--add-exports=javafx.web/netscape.javascript=ALL-UNNAMED</option>
+                        <option>--add-opens=javafx.web/javafx.scene.web=ALL-UNNAMED</option>
+                        <option>--add-opens=java.desktop/javax.sound.sampled=ALL-UNNAMED</option>
+                        <option>--add-modules=javafx.web,javafx.media,java.desktop</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>

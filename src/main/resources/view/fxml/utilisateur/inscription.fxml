@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.controller.utilisateur.InscriptionController"
+            styleClass="app-root">
+
+    <center>
+        <VBox alignment="CENTER" spacing="20" styleClass="page">
+
+            <Label text="Créer un compte" styleClass="page-title"/>
+
+            <VBox spacing="14" maxWidth="450" styleClass="card">
+
+                <Label text="Inscription" styleClass="card-title"/>
+
+                <TextField fx:id="tfNom" promptText="Nom" styleClass="input"/>
+                <TextField fx:id="tfPrenom" promptText="Prénom" styleClass="input"/>
+                <TextField fx:id="tfEmail" promptText="Email" styleClass="input"/>
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <PasswordField fx:id="tfPassword"
+                                   promptText="Mot de passe"
+                                   styleClass="input"
+                                   HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="tfPasswordVisible"
+                               promptText="Mot de passe"
+                               styleClass="input"
+                               visible="false"
+                               managed="false"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="btnTogglePassword"
+                            onAction="#togglePasswordVisibility"
+                            focusTraversable="false"
+                            contentDisplay="GRAPHIC_ONLY"
+                            style="-fx-background-color: transparent; -fx-cursor: hand;"/>
+                </HBox>
+                <!-- Confirmation mot de passe -->
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <PasswordField fx:id="tfConfirmPassword"
+                                   promptText="Confirmer le mot de passe"
+                                   styleClass="input"
+                                   HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="tfConfirmPasswordVisible"
+                               promptText="Confirmer le mot de passe"
+                               styleClass="input"
+                               visible="false"
+                               managed="false"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="btnToggleConfirmPassword"
+                            onAction="#toggleConfirmPasswordVisibility"
+                            focusTraversable="false"
+                            contentDisplay="GRAPHIC_ONLY"
+                            style="-fx-background-color: transparent; -fx-cursor: hand;"/>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="0" styleClass="phone-container">
+                    <ComboBox fx:id="cbCountry" prefWidth="110" styleClass="phone-country"/>
+                    <Region styleClass="phone-sep"/>
+                    <TextField fx:id="tfPhone" promptText="(201) 555-0123" styleClass="phone-number" HBox.hgrow="ALWAYS"/>
+                    <Button text="Verify" fx:id="btnVerifyPhone" onAction="#verifyPhone" styleClass="phone-verify"/>
+                </HBox>
+
+                <ComboBox fx:id="cbRole" promptText="Sélectionner un rôle" styleClass="input"/>
+                <VBox fx:id="boxCleAcces" spacing="6">
+                    <Label text="Clé d'accès" styleClass="field-label"/>
+                    <TextField fx:id="tfCleAcces"  styleClass="input"/>
+                </VBox>
+                <CheckBox fx:id="cbNotRobot"
+                          text="Je ne suis pas un robot"
+                          styleClass="checkbox"/>
+
+                <Label fx:id="lblMsg" wrapText="true" styleClass="hint"/>
+
+                <Button text="S'inscrire" onAction="#inscrire"
+                        styleClass="btn" maxWidth="Infinity"/>
+
+                <Hyperlink text="J’ai déjà un compte" onAction="#goLogin"/>
+
+            </VBox>
+
+        </VBox>
+    </center>
+</BorderPane>

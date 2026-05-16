@@ -12,27 +12,6 @@
             fx:controller="org.controller.Competences.back.HistoriqueCompetencesController"
             styleClass="app-root">
 
-    <top>
-        <VBox styleClass="topbar">
-            <padding>
-                <Insets top="14" right="22" bottom="14" left="22"/>
-            </padding>
-
-            <HBox alignment="CENTER_LEFT" spacing="14">
-                <HBox alignment="CENTER_LEFT" spacing="10">
-                    <ImageView fitHeight="50" preserveRatio="true" smooth="true">
-                        <image>
-                            <Image url="@/view/image/competences/logo.png"/>
-                        </image>
-                    </ImageView>
-                    <Label text="SkillSwap" styleClass="brand"/>
-                </HBox>
-
-                <Region HBox.hgrow="ALWAYS"/>
-            </HBox>
-        </VBox>
-    </top>
-
     <center>
         <StackPane alignment="CENTER">
             <VBox spacing="25" styleClass="page" maxWidth="2000">

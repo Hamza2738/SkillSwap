@@ -31,8 +31,11 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
+
                 <Button text="Accueil" styleClass="nav-btn" onAction="#onAccueil"/>
-                <Button text="Profil" styleClass="nav-btn" onAction="#onProfil"/>
+                <Button text="Profil"
+                        styleClass="nav-btn"
+                        onAction="#goProfil"/>
                 <Button text="Offres" styleClass="nav-btn" onAction="#onOffres"/>
             </HBox>
         </VBox>
@@ -42,7 +45,7 @@
         <StackPane alignment="CENTER">
             <VBox spacing="18" styleClass="page" maxWidth="1400">
 
-                <Label text="Compétences" styleClass="page-title"/>
+                <Label text="Vos Compétences" styleClass="page-title"/>
 
 
 
@@ -94,7 +97,7 @@
                                     <Label text="Niveau" styleClass="field-label"/>
                                     <ComboBox fx:id="cbNiveau"
                                               promptText="Sélectionner un niveau"
-                                              styleClass="input dark-combo"
+                                              styleClass="dark-combo"
                                               maxWidth="Infinity"/>
                                 </VBox>
 
@@ -109,8 +112,7 @@
                             <Label text="Certification" styleClass="field-label"/>
                             <TextField fx:id="tfCertification" promptText="Ex: Oracle, AWS..." styleClass="input"/>
 
-                            <Label text="Email utilisateur" styleClass="field-label"/>
-                            <TextField fx:id="tfEmail" promptText="Ex:utilisateur@mail.com" styleClass="input"/>
+
                         </VBox>
 
                         <!-- ✅ Boutons désactivables -->

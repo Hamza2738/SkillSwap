@@ -1,0 +1,864 @@
+
+/* ====== Base ====== */
+.app-root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #0b1220;
+}
+
+/* ====== Topbar ====== */
+.topbar {
+    -fx-padding: 14 22;
+    -fx-background-color: rgba(20, 28, 46, 0.55);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0 0 1 0;
+}
+
+.brand {
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+}
+
+/* navbar buttons */
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.72);
+    -fx-padding: 8 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.nav-btn:hover { -fx-background-color: rgba(255,255,255,0.06); }
+.nav-active {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: white;
+}
+
+/* ====== Page ====== */
+.page { -fx-padding: 24 22 18 22; }
+
+.page-title {
+    -fx-text-fill: white;
+    -fx-font-size: 42px;
+    -fx-font-weight: 800;
+}
+
+/* ====== Cards ====== */
+.card {
+    -fx-padding: 18;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+
+    -fx-background-color: rgba(20, 28, 46, 0.55);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.40), 24, 0.25, 0, 10);
+}
+
+.card-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.section-title {
+    -fx-text-fill: rgba(255,255,255,0.92);
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+/* ====== Inputs (TextField + TextArea IDENTIQUES) ====== */
+.input {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.35);
+
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1;
+
+    -fx-padding: 10 12;
+}
+
+.input:focused {
+    -fx-border-color: rgba(123, 97, 255, 0.9);
+}
+
+/* TextArea a un content interne -> transparent pour garder même style */
+.text-area.input { -fx-background-insets: 0; }
+.text-area.input .content {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12;
+}
+
+/* Scroll interne TextArea dark */
+.text-area .scroll-pane { -fx-background-color: transparent; }
+.text-area .viewport { -fx-background-color: transparent; }
+
+/* ====== Buttons (TOUS BLEUS) ====== */
+.btn {
+    -fx-background-radius: 12;
+    -fx-padding: 10 14;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+
+    -fx-background-color: linear-gradient(to right, #5aa6ff, #7b61ff);
+}
+
+.btn:hover {
+    -fx-background-color: linear-gradient(to right, #4f99ff, #6f57ff);
+}
+
+.btn:pressed {
+    -fx-background-color: linear-gradient(to right, #3f88ff, #5a45ff);
+}
+
+/* ====== Table (dark) ====== */
+.dark-table {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+}
+
+.dark-table .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 14 14 0 0;
+}
+.dark-table .column-header { -fx-background-color: transparent; }
+.dark-table .column-header .label {
+    -fx-text-fill: rgba(255,255,255,0.85);
+    -fx-font-weight: 800;
+}
+
+.dark-table .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255,255,255,0.06);
+}
+.dark-table .table-row-cell:filled:selected {
+    -fx-background-color: rgba(123, 97, 255, 0.22);
+}
+.dark-table .table-cell {
+    -fx-text-fill: rgba(255,255,255,0.88);
+}
+
+/* ====== ScrollBar (Theme bleu dark) ====== */
+.scroll-bar { -fx-background-color: transparent; }
+
+.scroll-bar .track {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: linear-gradient(to bottom, #5aa6ff, #7b61ff);
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: linear-gradient(to bottom, #4f99ff, #6f57ff);
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+}
+
+/* ====== Small text ====== */
+.field-label {
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-weight: 700;
+}
+
+.hint {
+    -fx-text-fill: rgba(255,255,255,0.55);
+}
+
+/* ====== Footer ====== */
+.footer { -fx-padding: 10 22 16 22; }
+
+
+/* ==============================
+   ComboBox DARK FIX
+   ============================== */
+
+/* texte affiché dans le champ */
+.combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+/* popup (la liste déroulante) */
+.combo-box-popup .list-view {
+    -fx-background-color: #0E1422;
+}
+
+/* texte des items dans la liste */
+.combo-box-popup .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+/* hover souris */
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(140,120,255,0.20);
+    -fx-text-fill: white;
+}
+
+/* item sélectionné */
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(140,120,255,0.35);
+    -fx-text-fill: white;
+}
+/* ==========================
+   FIX ComboBox FIRST LINE
+   ========================== */
+
+/* cellule affichée (fermée) */
+.combo-box-base > .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+/* fond du champ combobox */
+.combo-box-base {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+}
+
+/* enlever le fond blanc interne */
+.combo-box-base .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* texte quand non sélectionné */
+.combo-box-base .text {
+    -fx-fill: white;
+}
+/* ==========================
+   CALENDAR THEME (DARK)
+   ========================== */
+
+.cal-root { -fx-background-color: #0b1220; }
+
+.cal-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.cal-selected {
+    -fx-text-fill: rgba(255,255,255,0.70);
+    -fx-font-size: 13px;
+}
+
+.cal-nav {
+    -fx-background-radius: 10;
+    -fx-padding: 6 10;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-text-fill: rgba(255,255,255,0.85);
+
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 10;
+}
+.cal-nav:hover { -fx-background-color: rgba(255,255,255,0.10); }
+
+.cal-combo, .cal-spinner {
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+}
+
+.cal-dow {
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-weight: 800;
+}
+
+.cal-day {
+    -fx-background-radius: 12;
+    -fx-padding: 8 0;
+    -fx-min-height: 36;
+    -fx-cursor: hand;
+
+    -fx-text-fill: rgba(255,255,255,0.88);
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+}
+.cal-day:hover { -fx-background-color: rgba(255,255,255,0.10); }
+
+.cal-day-selected {
+    -fx-background-color: rgba(123, 97, 255, 0.85);
+    -fx-text-fill: white;
+    -fx-border-color: rgba(123, 97, 255, 0.95);
+}
+
+.cal-today {
+    -fx-border-color: rgba(90, 166, 255, 0.95);
+    -fx-border-width: 2;
+}
+
+/* ===== ROOT ===== */
+.root {
+    -fx-font-family: "Segoe UI", "Inter", Arial;
+    -fx-background-color: #0b1220; /* fond global */
+}
+
+/* ===== SCROLL / ZONE MESSAGES ===== */
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.messages-area {
+    -fx-padding: 14;
+    -fx-spacing: 10;
+}
+
+/* ===== INPUT BAR ===== */
+.input-bar {
+    -fx-padding: 12;
+    -fx-spacing: 10;
+    -fx-background-color: rgba(15, 23, 42, 0.9);
+    -fx-border-color: rgba(99, 102, 241, 0.25);
+    -fx-border-width: 1 0 0 0;
+}
+
+.text-field {
+    -fx-background-color: rgba(30, 41, 59, 0.9);
+    -fx-text-fill: #e5e7eb;
+    -fx-prompt-text-fill: rgba(229, 231, 235, 0.5);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(148, 163, 184, 0.25);
+    -fx-padding: 10 12;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #4f46e5, #7c3aed);
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.btn-secondary {
+    -fx-background-color: rgba(148, 163, 184, 0.15);
+    -fx-text-fill: #e5e7eb;
+    -fx-background-radius: 12;
+    -fx-padding: 10 16;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-opacity: 0.92;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: rgba(148, 163, 184, 0.22);
+}
+
+/* ===== BUBBLES ===== */
+.bubble-row {
+    -fx-padding: 2 0 2 0;
+}
+
+.bubble {
+    -fx-padding: 10 12;
+    -fx-background-radius: 16;
+    -fx-font-size: 13px;
+    -fx-wrap-text: true;
+    -fx-max-width: 360px;
+}
+
+/* Bot bubble (gauche) */
+.bubble-bot {
+    -fx-background-color: rgba(30, 41, 59, 0.95); /* slate */
+    -fx-text-fill: #e5e7eb;
+    -fx-border-color: rgba(148, 163, 184, 0.18);
+    -fx-border-radius: 16;
+}
+
+/* User bubble (droite) */
+.bubble-user {
+    -fx-background-color: rgba(79, 70, 229, 0.18); /* indigo glow */
+    -fx-text-fill: #ffffff;
+    -fx-border-color: rgba(124, 58, 237, 0.35);
+    -fx-border-radius: 16;
+}
+
+/* Time label look (petit, discret) */
+.bubble-time {
+    -fx-font-size: 11px;
+    -fx-text-fill: rgba(229, 231, 235, 0.6);
+}
+.music-btn {
+    -fx-font-size: 18px;   /* taille emoji */
+}
+/* ==========================
+   MUSIC / VOLUME BAR (HBox)
+   ========================== */
+
+/* HBox container (optionnel si tu lui mets une styleClass) */
+.music-bar {
+    -fx-padding: 6 10;
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 12;
+}
+
+/* ImageView (icône) */
+#imgMusicIcon {
+    -fx-opacity: 0.90;
+    -fx-effect: dropshadow(gaussian, rgba(123,97,255,0.20), 12, 0.25, 0, 0);
+}
+
+/* Bouton toggle musique (tu as déjà nav-btn + music-btn) */
+.nav-btn.music-btn {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-text-fill: rgba(255,255,255,0.90);
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+    -fx-padding: 8 12;
+}
+.nav-btn.music-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+.nav-btn.music-btn:pressed {
+    -fx-background-color: rgba(123,97,255,0.20);
+}
+
+/* Etat "muted" (tu peux ajouter/enlever cette classe en code: btnMusicToggle.getStyleClass().add("muted");) */
+.nav-btn.music-btn.muted {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-text-fill: rgba(255,255,255,0.45);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-opacity: 0.85;
+}
+
+/* ==========================
+   SLIDER VOLUME (même thème)
+   ========================== */
+
+/* Slider global */
+#slVolume {
+    -fx-padding: 2 0 2 0;
+}
+
+/* Track (barre derrière) */
+#slVolume .track {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 8;
+    -fx-pref-height: 8;
+}
+
+/* Partie "remplie" (selon versions JavaFX, c’est aussi track + region colored)
+   -> On force un look clean via une petite ombre sur le thumb. */
+
+/* Thumb (le bouton rond) */
+#slVolume .thumb {
+    -fx-background-color: linear-gradient(to bottom, #5aa6ff, #7b61ff);
+    -fx-background-radius: 100;
+    -fx-pref-width: 14;
+    -fx-pref-height: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0.25, 0, 2);
+    -fx-cursor: hand;
+}
+#slVolume .thumb:hover {
+    -fx-background-color: linear-gradient(to bottom, #4f99ff, #6f57ff);
+}
+#slVolume .thumb:pressed {
+    -fx-effect: dropshadow(gaussian, rgba(123,97,255,0.35), 16, 0.30, 0, 2);
+}
+
+/* Tick marks / labels */
+#slVolume .axis {
+    -fx-tick-label-fill: rgba(255,255,255,0.55);
+}
+#slVolume .axis .tick-mark {
+    -fx-stroke: rgba(255,255,255,0.18);
+}
+#slVolume .axis .minor-tick-mark {
+    -fx-stroke: rgba(255,255,255,0.10);
+}
+
+/* ==========================
+   "Scrollbar" look pour le volume
+   (Slider n’utilise pas ScrollBar,
+   mais on imite l’idée track + thumb)
+   ========================== */
+
+/* Optionnel : rendre le slider plus "fin" */
+#slVolume.small .track { -fx-pref-height: 6; }
+#slVolume.small .thumb  { -fx-pref-width: 12; -fx-pref-height: 12; }
+/* ==========================
+   TABLE ROWS (2 couleurs images)
+   ========================== */
+
+/* Important: on enlève le "transparent" sinon tu ne verras pas le zebra */
+.dark-table .table-row-cell {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-cell-size: 40px;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER;
+}
+
+/* Alternance ligne par ligne */
+.dark-table .table-row-cell:filled:even {
+    -fx-background-color: #1C2638; /* image 1 */
+}
+.dark-table .table-row-cell:filled:odd {
+    -fx-background-color: #0F1523; /* image 2 */
+}
+
+/* Hover (optionnel) */
+.dark-table .table-row-cell:filled:hover {
+    -fx-background-color: rgba(123, 97, 255, 0.12);
+}
+
+/* Sélection (garde ta couleur de sélection) */
+.dark-table .table-row-cell:filled:selected,
+.dark-table .table-row-cell:filled:selected:hover {
+    -fx-background-color: rgba(123, 97, 255, 0.22);
+}
+
+/* Pour que la couleur de ligne soit bien visible derrière les cellules */
+.dark-table .table-cell {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER;
+}
+.dash-root {
+
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+/* ====== HEADER ====== */
+.dash-header {
+    -fx-background-color: rgba(0, 0, 0, 0.45);
+    -fx-background-radius: 14;
+}
+
+.dash-title {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.dash-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-size: 13px;
+}
+
+/* ====== FOOTER ====== */
+.dash-footer {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-background-radius: 14;
+}
+.btn:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+}
+
+/* ====== PIECHART (couleurs texte en blanc) ====== */
+.chart {
+    -fx-background-color: transparent;
+}
+
+.chart-title {
+    -fx-text-fill: white;
+}
+
+.chart-legend {
+    -fx-background-color: rgba(0, 0, 0, 0.35);
+    -fx-background-radius: 10;
+    -fx-padding: 8;
+}
+
+.chart-legend-item {
+    -fx-text-fill: white;
+}
+
+.chart-pie-label {
+    -fx-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.chart-pie-label-line {
+    -fx-stroke: rgba(255, 255, 255, 0.6);
+}
+/* ===== ALERT FULL DARK (NO WHITE ZONE) ===== */
+
+/* Le DialogPane lui-même */
+.dialog-pane.dark-dialog-pane {
+    -fx-background-color: #0b1220;
+    -fx-padding: 18;
+}
+
+/* Header (zone blanche en haut) */
+.dialog-pane.dark-dialog-pane > .header-panel {
+    -fx-background-color: #0b1220;
+}
+
+/* Label du header */
+.dialog-pane.dark-dialog-pane > .header-panel .label {
+    -fx-text-fill: #e5e7eb;
+    -fx-font-size: 13px;
+}
+
+/* Content (corps du message) */
+.dialog-pane.dark-dialog-pane > .content,
+.dialog-pane.dark-dialog-pane > .content.label {
+    -fx-background-color: #0b1220;
+    -fx-text-fill: #e5e7eb;
+    -fx-font-size: 13px;
+}
+
+/* Button bar (zone des boutons) */
+.dialog-pane.dark-dialog-pane > .button-bar,
+.dialog-pane.dark-dialog-pane > .button-bar-container {
+    -fx-background-color: #0b1220;
+}
+
+/* Boutons */
+.dialog-pane.dark-dialog-pane .button {
+    -fx-background-color: #111827;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.dialog-pane.dark-dialog-pane .button:hover {
+    -fx-background-color: #1f2937;
+}
+
+/* Bouton par défaut (souvent OK) */
+.dialog-pane.dark-dialog-pane .button:default {
+    -fx-background-color: #b91c1c;
+}
+
+.dialog-pane.dark-dialog-pane .button:default:hover {
+    -fx-background-color: #dc2626;
+}
+.forms-list {
+    -fx-background-color: transparent;
+    -fx-padding: 6;
+}
+
+.forms-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8;
+}
+
+.forms-list .list-cell:filled {
+    -fx-background-color: transparent;
+}
+
+/* Card “réponse Google Forms” */
+.forms-card {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+    -fx-border-color: rgba(255,255,255,0.12);
+    -fx-border-radius: 16;
+}
+
+.forms-card:hover {
+    -fx-border-color: #0A66C2;
+    -fx-cursor: hand;
+}
+
+
+/* ===== Facebook-like (Light) ===== */
+
+.fb-root {
+    -fx-font-family: "Segoe UI", "Inter", Arial;
+    -fx-background-color: #f0f2f5;
+}
+
+/* ===== Topbar ===== */
+.fb-topbar {
+    -fx-background-color: white;
+    -fx-border-color: #dadde1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.fb-brand {
+    -fx-text-fill: #1877f2;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+}
+
+.fb-nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #050505;
+    -fx-font-weight: 600;
+    -fx-padding: 8 12;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.fb-nav-btn:hover { -fx-background-color: #f0f2f5; }
+
+/* ===== Page ===== */
+.fb-page-wrap { -fx-padding: 18 0 18 0; }
+.fb-page { -fx-padding: 0 16 16 16; }
+
+.fb-title {
+    -fx-text-fill: #050505;
+    -fx-font-size: 26px;
+    -fx-font-weight: 800;
+    -fx-padding: 6 0 10 4;
+}
+
+/* ===== Cards ===== */
+.fb-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #dadde1;
+    -fx-border-width: 1;
+    -fx-padding: 14;
+}
+
+.fb-section-title {
+    -fx-text-fill: #050505;
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+}
+
+/* ===== Labels ===== */
+.fb-label {
+    -fx-text-fill: #65676b;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.fb-hint {
+    -fx-text-fill: #65676b;
+    -fx-font-size: 12px;
+}
+
+/* ===== Inputs ===== */
+.fb-input {
+    -fx-background-color: #f0f2f5;
+    -fx-text-fill: #050505;
+    -fx-prompt-text-fill: #8a8d91;
+
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-padding: 10 12;
+}
+
+.fb-input:focused {
+    -fx-background-color: white;
+    -fx-border-color: #1877f2;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.18), 16, 0.25, 0, 0);
+}
+
+.fb-textarea .content {
+    -fx-background-color: transparent;
+}
+
+/* ComboBox */
+.fb-combo {
+    -fx-background-color: #f0f2f5;
+}
+.fb-combo .list-cell {
+    -fx-text-fill: #050505;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: white;
+    -fx-border-color: #dadde1;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #f0f2f5;
+}
+
+/* ===== Buttons ===== */
+.fb-btn {
+    -fx-background-color: #e4e6eb;
+    -fx-text-fill: #050505;
+    -fx-font-weight: 800;
+    -fx-padding: 9 14;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.fb-btn:hover { -fx-background-color: #d8dadf; }
+
+.fb-btn-primary {
+    -fx-background-color: #1877f2;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-padding: 9 14;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.fb-btn-primary:hover { -fx-background-color: #166fe5; }
+
+.fb-btn-danger {
+    -fx-background-color: #fa383e;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-padding: 9 14;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.fb-btn-danger:hover { -fx-background-color: #e13238; }
+
+/* ===== ListView cards ===== */
+.fb-list {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+
+.fb-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 6 0;
+}
+
+.fb-list .list-cell:filled:selected {
+    -fx-background-color: transparent;
+}
+
+/* Card inside list cell */
+.fb-skill-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+}
+
+.fb-skill-card:hover {
+    -fx-border-color: #1877f2;
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.controller.suivi_tache.front.TacheFrontController"
+            styleClass="app-root"
+            stylesheets="@/view/css/suiviTache/back/style.css">
+
+    <top>
+        <VBox styleClass="topbar">
+            <padding>
+                <Insets top="14" right="22" bottom="14" left="22"/>
+            </padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="14">
+
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="50" preserveRatio="true" smooth="true">
+                        <image>
+                            <Image url="@/view/image/competences/logo.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="SkillSwap" styleClass="brand"/>
+                </HBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+
+                <Button text="competence" styleClass="nav-btn" onAction="#compButton"/>
+                <Button text="Profil"
+                        styleClass="nav-btn"
+                        onAction="#goProfil"/>
+
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane alignment="CENTER">
+            <VBox spacing="18" styleClass="page" maxWidth="1100">
+
+                <VBox spacing="14"
+                      styleClass="card"
+                      prefWidth="950"
+                      maxWidth="950">
+
+                    <Label text="Ajotée des proposition de tâche " styleClass="card-title"/>
+
+                    <TableView fx:id="tableTache"
+                               styleClass="dark-table"
+                               prefHeight="320">
+                        <columns>
+                            <TableColumn fx:id="colTitre"
+                                         text="Titre"
+                                         prefWidth="220"/>
+                            <TableColumn fx:id="colStatut"
+                                         text="Statut"
+                                         prefWidth="140"/>
+                            <TableColumn fx:id="colPriorite"
+                                         text="Priorité"
+                                         prefWidth="140"/>
+                            <TableColumn fx:id="colEcheance"
+                                         text="Échéance"
+                                         prefWidth="160"/>
+
+                            <TableColumn fx:id="colMailUser"
+                                         text="Mail"
+                                         prefWidth="240"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Projet :" styleClass="card-title"/>
+                        <ComboBox fx:id="projetBox"
+                                  promptText="Sélectionner un projet"
+                                  styleClass="input dark-combo"
+                                  prefWidth="420"/>
+                    </HBox>
+
+                    <Label text="Formulaire Tâche" styleClass="card-title"/>
+
+                    <VBox spacing="8">
+                        <Label text="Titre" styleClass="field-label"/>
+                        <TextField fx:id="titreField" styleClass="input"/>
+
+                        <Label text="Description" styleClass="field-label"/>
+                        <TextArea fx:id="descriptionField"
+                                  styleClass="input"
+                                  prefRowCount="3"/>
+
+                        <Label text="Statut" styleClass="field-label"/>
+                        <ComboBox fx:id="statutBox"
+                                  styleClass="input dark-combo"/>
+
+                        <Label text="Priorité" styleClass="field-label"/>
+                        <ComboBox fx:id="prioriteBox"
+                                  styleClass="input dark-combo"/>
+
+                        <Label text="Échéance" styleClass="field-label"/>
+                        <DatePicker fx:id="echeancePicker"/>
+
+                    </VBox>
+
+                    <HBox spacing="10">
+                        <Button text="Ajouter"
+                                onAction="#ajouterTache"
+                                styleClass="btn"/>
+
+                        <!-- ✅ fx:id ajoutés pour que le controller puisse disable selon ownership -->
+                        <Button fx:id="btnModifier"
+                                text="Modifier"
+                                onAction="#modifierTache"
+                                styleClass="btn"/>
+
+                        <Button fx:id="btnSupprimer"
+                                text="Supprimer"
+                                onAction="#supprimerTache"
+                                styleClass="btn"/>
+
+                        <Button text="Vider"
+                                onAction="#viderForm"
+                                styleClass="btn"/>
+                    </HBox>
+
+                </VBox>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

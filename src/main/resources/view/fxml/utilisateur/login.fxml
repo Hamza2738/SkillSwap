@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <?import javafx.scene.control.*?>
+    <?import javafx.scene.layout.*?>
+    <?import javafx.geometry.*?>
+    <?import javafx.scene.image.*?>
+
+    <AnchorPane xmlns:fx="http://javafx.com/fxml"
+                fx:controller="org.controller.utilisateur.LoginController"
+                styleClass="app-root">
+
+        <!-- ✅ IMAGE D'ARRIÈRE-PLAN -->
+        <ImageView fx:id="backgroundImage"
+                   styleClass="image-view"
+                   fitWidth="1920" fitHeight="1080"
+                   preserveRatio="false"
+                   AnchorPane.topAnchor="0"
+                   AnchorPane.leftAnchor="0"
+                   AnchorPane.rightAnchor="0"
+                   AnchorPane.bottomAnchor="0">
+            <image>
+                <Image url="@/view/image/business_image.jpg"/>
+            </image>
+        </ImageView>
+
+
+        <!-- ✅ CONTENU CENTRAL -->
+        <VBox alignment="CENTER_LEFT" spacing="30" styleClass="page"
+              AnchorPane.topAnchor="20"
+              AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="300"
+              AnchorPane.rightAnchor="0">
+
+            <!-- LOGO CENTRÉ AU-DESSUS DE LA CARTE -->
+            <HBox alignment="CENTER" maxWidth="380">
+                <ImageView fitHeight="220" fitWidth="220" preserveRatio="true" smooth="true">
+                    <image>
+                        <Image url="@/view/image/utilisateur/logo.png"/>
+                    </image>
+                </ImageView>
+            </HBox>
+
+            <!-- Carte login -->
+            <VBox spacing="14"
+                  alignment="CENTER"
+                  maxWidth="380"
+                  styleClass="card">
+
+                <Label text="Connexion" styleClass="card-title"/>
+
+                <TextField fx:id="tfEmail"
+                           promptText="Email"
+                           styleClass="input"/>
+
+                <!-- Mot de passe + œil -->
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <PasswordField fx:id="pfPassword"
+                                   promptText="Mot de passe"
+                                   styleClass="input"
+                                   HBox.hgrow="ALWAYS"/>
+
+                    <TextField fx:id="tfPasswordVisible"
+                               promptText="Mot de passe"
+                               styleClass="input"
+                               visible="false"
+                               managed="false"
+                               HBox.hgrow="ALWAYS"/>
+
+                    <Button fx:id="btnTogglePassword"
+                            onAction="#togglePasswordVisibility"
+                            focusTraversable="false"
+                            contentDisplay="GRAPHIC_ONLY"
+                            style="-fx-background-color: transparent; -fx-cursor: hand;"/>
+                </HBox>
+
+                <Hyperlink text="Mot de passe oublié ?"
+                           onAction="#motDePasseOublie"
+                           styleClass="forgot-link"/>
+
+                <CheckBox fx:id="cbNotRobot"
+                          text="Je ne suis pas un robot"
+                          styleClass="checkbox"/>
+
+                <Label fx:id="lblMsg" wrapText="true" styleClass="hint"/>
+
+                <Button text="Se connecter"
+                        onAction="#seConnecter"
+                        styleClass="btn"
+                        maxWidth="Infinity"/>
+
+                <Button text="Créer un compte"
+                        onAction="#goInscription"
+                        styleClass="btn"
+                        maxWidth="Infinity"/>
+
+                <Button fx:id="acceuilButton"
+                        text="Retour à l'accueil"
+                        onAction="#onAcceuilClick"
+                        styleClass="btn"
+                        maxWidth="Infinity"/>
+            </VBox>
+        </VBox>
+
+    </AnchorPane>

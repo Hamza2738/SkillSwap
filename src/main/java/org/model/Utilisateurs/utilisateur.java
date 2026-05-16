@@ -1,66 +1,67 @@
-package org.model.Utilisateurs;
+    package org.model.Utilisateurs;
 
-import org.model.Competences.Competence;
+    import java.time.LocalDateTime;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+    public class utilisateur {
 
-public class utilisateur {
+        private int id_utilisateur;
+        private String nom;
+        private String prenom;
+        private String email;
+        private String mot_de_passe;
+        private String telephone;
+        private String photo_profil;
+        private String cle_acces;
+        // ✅ nouveaux attributs profil
+        private String bio;
+        private String photo_couverture;
+        private String lieu;
 
-    private int id_utilisateur;
-    private String nom;
-    private String prenom;
-    private String email;
-    private String mot_de_passe;
-    private String telephone;
-    private String photo_profil;
-    private String role; // freelance / entrepreneur / admin
-    private LocalDateTime date_inscription;
-    private String statut; // actif / suspendu / supprimé
+        private String role;
+        private String statut;
+        private LocalDateTime date_inscription;
 
-    // ✅ Relation (Many-to-Many)
-    private List<Competence> competences = new ArrayList<>();
+        public utilisateur() {}
 
-    public utilisateur() {}
+        // ===== GETTERS =====
+        public String getCle_acces() {
+            return cle_acces;
+        }
+        public int getId_utilisateur() { return id_utilisateur; }
+        public String getNom() { return nom; }
+        public String getPrenom() { return prenom; }
+        public String getEmail() { return email; }
+        public String getMot_de_passe() { return mot_de_passe; }
+        public String getTelephone() { return telephone; }
+        public String getPhoto_profil() { return photo_profil; }
 
-    // --- getters/setters ---
-    public int getId_utilisateur() { return id_utilisateur; }
-    public void setId_utilisateur(int id_utilisateur) { this.id_utilisateur = id_utilisateur; }
+        // ✅ getters nouveaux attributs
+        public String getBio() { return bio; }
+        public String getPhoto_couverture() { return photo_couverture; }
+        public String getLieu() { return lieu; }
 
-    public String getNom() { return nom; }
-    public void setNom(String nom) { this.nom = nom; }
+        public String getRole() { return role; }
+        public String getStatut() { return statut; }
+        public LocalDateTime getDate_inscription() { return date_inscription; }
 
-    public String getPrenom() { return prenom; }
-    public void setPrenom(String prenom) { this.prenom = prenom; }
+        // ===== SETTERS =====
+        public void setCle_acces(String cle_acces) {
+            this.cle_acces = cle_acces;
+        }
+        public void setId_utilisateur(int id_utilisateur) { this.id_utilisateur = id_utilisateur; }
+        public void setNom(String nom) { this.nom = nom; }
+        public void setPrenom(String prenom) { this.prenom = prenom; }
+        public void setEmail(String email) { this.email = email; }
+        public void setMot_de_passe(String mot_de_passe) { this.mot_de_passe = mot_de_passe; }
+        public void setTelephone(String telephone) { this.telephone = telephone; }
+        public void setPhoto_profil(String photo_profil) { this.photo_profil = photo_profil; }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+        // ✅ setters nouveaux attributs
+        public void setBio(String bio) { this.bio = bio; }
+        public void setPhoto_couverture(String photo_couverture) { this.photo_couverture = photo_couverture; }
+        public void setLieu(String lieu) { this.lieu = lieu; }
 
-    public String getMot_de_passe() { return mot_de_passe; }
-    public void setMot_de_passe(String mot_de_passe) { this.mot_de_passe = mot_de_passe; }
-
-    public String getTelephone() { return telephone; }
-    public void setTelephone(String telephone) { this.telephone = telephone; }
-
-    public String getPhoto_profil() { return photo_profil; }
-    public void setPhoto_profil(String photo_profil) { this.photo_profil = photo_profil; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
-    public LocalDateTime getDate_inscription() { return date_inscription; }
-    public void setDate_inscription(LocalDateTime date_inscription) { this.date_inscription = date_inscription; }
-
-    public String getStatut() { return statut; }
-    public void setStatut(String statut) { this.statut = statut; }
-
-    // ✅ getters/setters relation
-    public List<Competence> getCompetences() { return competences; }
-    public void setCompetences(List<Competence> competences) { this.competences = competences; }
-
-    // ✅ helpers (pratique)
-    public void addCompetence(Competence c) {
-        if (c != null) competences.add(c);
+        public void setRole(String role) { this.role = role; }
+        public void setStatut(String statut) { this.statut = statut; }
+        public void setDate_inscription(LocalDateTime date_inscription) { this.date_inscription = date_inscription; }
     }
-}

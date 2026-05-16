@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.controller.Offres.front.OffreFrontController"
+            stylesheets="@/view/css/suiviTache/back/style.css">
+
+    <!-- ══════════ TOPBAR ══════════ -->
+    <top>
+        <VBox styleClass="topbar">
+            <padding>
+                <Insets top="14" right="22" bottom="14" left="22"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="50" preserveRatio="true">
+                        <image>
+                            <Image url="@/view/image/competences/logo.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="SkillSwap" styleClass="brand"/>
+                </HBox>
+
+
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="✨ Chat Gemini"
+                        onAction="#ouvrirChatGemini"
+                        styleClass="nav-btn"/>
+
+                <Button text="Profil"
+                        onAction="#retourProfil"
+                        styleClass="nav-btn"/>
+            </HBox>
+        </VBox>
+    </top>
+    <!-- ══════════ SIDEBAR GAUCHE — Mes abonnements ══════════ -->
+    <left>
+        <VBox prefWidth="280" spacing="0"
+              style="-fx-background-color: #0d1526;
+                     -fx-border-color: #1e293b;
+                     -fx-border-width: 0 1 0 0;">
+
+            <HBox style="-fx-background-color: #0d1526; -fx-padding: 14 14 10 14;">
+                <Label text="📦  Mes abonnements"
+                       style="-fx-text-fill: #6c8cff;
+                              -fx-font-weight: bold;
+                              -fx-font-size: 13px;"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true"
+                        VBox.vgrow="ALWAYS"
+                        style="-fx-background: #0d1526;
+                               -fx-background-color: #0d1526;">
+                <content>
+                    <VBox fx:id="mesAbonnementsBox"
+                          spacing="8"
+                          style="-fx-padding: 8 10; -fx-background-color: #0d1526;">
+
+                        <Label fx:id="lblAucunAbonnement"
+                               text="Aucun abonnement actif."
+                               style="-fx-text-fill: #475569; -fx-font-size: 11px;"/>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </left>
+
+    <!-- ══════════ CENTRE — Cartes offres ══════════ -->
+    <center>
+        <VBox spacing="0">
+
+            <!-- Grille de cartes -->
+            <ScrollPane fitToWidth="true"
+                        VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: #0d1526;
+                               -fx-background: #0d1526;">
+                <content>
+                    <FlowPane fx:id="offresContainer"
+                              hgap="18" vgap="18"
+                              style="-fx-padding: 16 20;
+                                     -fx-background-color: #0d1526;"/>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>

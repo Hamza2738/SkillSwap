@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.controller.AccueilController"
+            styleClass="app-root">
+
+    <!-- Définir la topbar avec un HBox -->
+    <HBox alignment="CENTER_LEFT" spacing="14">
+        <!-- Logo à gauche avec une taille définie -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <ImageView fitHeight="50" preserveRatio="true" smooth="true">
+                <image>
+                    <Image url="@/view/image/competences/logo.png"/>
+                </image>
+            </ImageView>
+            <Label text="SkillSwap" styleClass="brand"/>
+        </HBox>
+
+        <!-- Conteneur pour les boutons alignés à gauche -->
+        <HBox alignment="CENTER_LEFT" spacing="10" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0">
+            <!-- Boutons alignés à gauche -->
+            <Button fx:id="connecteeButton" text="connectée" styleClass="nav-btn" onAction="#onConnecteeClick"/>
+            <Button text="Offres" styleClass="nav-btn"/>
+            <!-- Espace flexible pour pousser les boutons à gauche -->
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </HBox>
+
+    <!-- Définir l'image d'arrière-plan avec ImageView -->
+    <ImageView fx:id="backgroundImage" styleClass="image-view" AnchorPane.topAnchor="50" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+               fitWidth="1920" fitHeight="1000">
+        <image>
+            <Image url="@/view/image/business_image.jpg"/>
+        </image>
+    </ImageView>
+
+    <HBox spacing="30"
+          AnchorPane.topAnchor="250"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="25"
+          alignment="CENTER_LEFT">
+
+        <!-- Logo à gauche -->
+        <ImageView fx:id="logoImage" styleClass="logo" fitHeight="350" fitWidth="350" preserveRatio="true">
+            <image>
+                <Image url="@/view/image/logo.png"/>
+            </image>
+        </ImageView>
+
+        <!-- Texte + Bouton à droite -->
+        <VBox spacing="25" alignment="CENTER_LEFT"
+              style="-fx-background-color: rgba(0, 0, 0, 0.55);
+             -fx-background-radius: 15px;
+             -fx-padding: 30px;">
+            <VBox.margin>
+                <Insets top="60"/>
+            </VBox.margin>
+
+            <!-- Titre principal -->
+            <Label text="Bienvenue sur SkillSwap"
+                   style="-fx-font-size: 36px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+
+            <!-- Description complète -->
+            <Label wrapText="true" maxWidth="600"
+                   style="-fx-font-size: 15px; -fx-text-fill: white; -fx-line-spacing: 4px;"
+                   text="Réflexion durant quelques secondes SkillSwap est une application privée web et desktop qui aide les professionnels, freelances, entrepreneurs et étudiants à valoriser leurs compétences.Elle permet de trouver des offres de travail, des stages, des missions et de collaborer avec des clients ou des équipes. Grâce à l’intelligence artificielle, elle améliore les profils, les CV et les propositions de projets."/>
+
+            <!-- Bouton sous les labels -->
+            <Button text="Se connecter"
+                    onAction="#onConnecteeClick"
+                    styleClass="btn"
+                    prefWidth="200"
+                    prefHeight="45"/>
+
+        </VBox>
+
+    </HBox>
+
+    <AnchorPane fx:id="footer" styleClass="footer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <HBox alignment="CENTER_LEFT" spacing="400" styleClass="footer-hbox">
+            <!-- Texte à gauche avec emoji -->
+            <Label text="📞 Contactez-nous" styleClass="footer-label"/>
+
+            <!-- Infos de contact avec emojis -->
+            <Label text="📱 Tél: 27387490" styleClass="footer-info"/>
+            <Label text="📧 Email: contact@skillswap.com" styleClass="footer-info"/>
+            <Label text="🌐 Facebook: /SkillSwap" styleClass="footer-info"/>
+
+            <!-- Espace flexible à droite si nécessaire -->
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </AnchorPane>
+</AnchorPane>

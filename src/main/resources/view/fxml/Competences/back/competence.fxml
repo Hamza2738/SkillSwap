@@ -32,8 +32,11 @@
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Button text="Accueil" styleClass="nav-btn"/>
-                <Button text="Profil" styleClass="nav-btn"/>
+                <Button text="Profil"
+                        styleClass="nav-btn"
+                        onAction="#goProfil"/>
                 <Button text="Offres" styleClass="nav-btn"/>
+
             </HBox>
         </VBox>
     </top>
@@ -44,7 +47,7 @@
 
                 <Label text="Compétences" styleClass="page-title"/>
 
-                <!-- 🎵 MUSIC CONTROLS -->
+                <!-- 🎵 MUSIC CONTROLS
                 <HBox alignment="CENTER_LEFT" spacing="10">
                     <ImageView fx:id="imgMusicIcon" fitHeight="22" fitWidth="22" preserveRatio="true"/>
 
@@ -59,7 +62,7 @@
                             blockIncrement="0.05"
                             showTickLabels="true"
                             showTickMarks="true"/>
-                </HBox>
+                </HBox>-->
 
                 <HBox spacing="18" alignment="CENTER">
 

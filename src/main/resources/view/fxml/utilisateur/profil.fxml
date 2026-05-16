@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.controller.utilisateur.ProfilController"
+            styleClass="app-root">
+
+    <!-- ================= TOPBAR ================= -->
+    <!-- ================= TOPBAR ================= -->
+    <top>
+        <HBox alignment="CENTER" styleClass="topbar">
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label text="Profil" styleClass="brand"/>
+            </HBox>
+
+            <Region prefWidth="650"/>
+
+            <HBox alignment="CENTER" spacing="8">
+                <TextField fx:id="tfSearch"
+                           promptText="Rechercher un utilisateur..."
+                           styleClass="input"
+                           prefWidth="500"
+                           prefHeight="35"
+                           onKeyReleased="#onSearchKey"/>
+                <Button text="🔍" styleClass="nav-btn" onAction="#onSearchClick"/>
+            </HBox>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <HBox alignment="CENTER_RIGHT" spacing="10">
+                <StackPane>
+                    <Button text="👥 Réseaux " styleClass="nav-btn" onAction="#onInvitationsClick"/>
+                    <Label fx:id="lblBadgeInvitations" styleClass="badge" visible="false"
+                           mouseTransparent="true" StackPane.alignment="TOP_RIGHT"/>
+                </StackPane>
+                <Button text="Les Rendez-vous"   styleClass="nav-btn" onAction="#postR"/>
+                <Button text="competences"       styleClass="nav-btn" onAction="#compButton"/>
+                <Button text="Les tâches"        styleClass="nav-btn" onAction="#goToTaches"/>
+                <Button text="Déconnexion"       styleClass="nav-btn" onAction="#logout"/>
+
+                <!-- Bouton Premium style LinkedIn -->
+                <Hyperlink text="Essayez Premium&#10;pour 0 USD"
+                           onAction="#goToOffres"
+                           style="-fx-text-fill: #c8960c;
+                      -fx-font-weight: bold;
+                      -fx-font-size: 11px;
+                      -fx-border-color: #c8960c;
+                      -fx-border-radius: 14;
+                      -fx-border-width: 1.5;
+                      -fx-background-color: transparent;
+                      -fx-background-radius: 14;
+                      -fx-padding: 5 12;
+                      -fx-cursor: hand;
+                      -fx-text-alignment: center;"/>
+            </HBox>
+
+        </HBox>
+    </top>
+    <!-- ================= SIDEBAR GAUCHE ================= -->
+    <left>
+        <VBox styleClass="contacts-sidebar"
+              prefWidth="290"
+              spacing="0"
+              style="-fx-background-color: #0d1526;">
+
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="contacts-header"
+                  style="-fx-background-color: #0d1526;">
+                <Label text="Mon activité" styleClass="field-label"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="contacts-scroll" VBox.vgrow="ALWAYS"
+                        style="-fx-background: #0d1526; -fx-background-color: #0d1526;">
+                <content>
+                    <VBox spacing="0"
+                          style="-fx-padding: 12 14; -fx-background-color: #0d1526;">
+
+                        <!-- ===== TÂCHES ===== -->
+                        <Label text="📋  Mes tâches de projet"
+                               style="-fx-text-fill: #6c8cff; -fx-font-size: 12px;
+                                      -fx-font-weight: bold; -fx-padding: 0 0 6 0;"/>
+
+                        <VBox fx:id="tachesListBox" spacing="0">
+                            <Label fx:id="lblNoTaches" text="Aucune tâche."
+                                   style="-fx-text-fill: #475569; -fx-font-size: 11px;
+                                          -fx-padding: 2 0 10 0;"/>
+                        </VBox>
+
+                        <!-- ===== RENDEZ-VOUS ===== -->
+                        <Label text="📅  Mes rendez-vous"
+                               style="-fx-text-fill: #6c8cff; -fx-font-size: 12px;
+                                      -fx-font-weight: bold; -fx-padding: 10 0 6 0;"/>
+
+                        <VBox fx:id="rdvListBox" spacing="0">
+                            <Label fx:id="lblNoRdv" text="Aucun rendez-vous."
+                                   style="-fx-text-fill: #475569; -fx-font-size: 11px;
+                                          -fx-padding: 2 0 10 0;"/>
+                        </VBox>
+
+                        <!-- ===== POSTULATIONS ===== -->
+                        <Label text="📨  Mes postulations"
+                               style="-fx-text-fill: #6c8cff; -fx-font-size: 12px;
+                                      -fx-font-weight: bold; -fx-padding: 10 0 6 0;"/>
+
+                        <VBox fx:id="postulationsListBox" spacing="0">
+                            <Label fx:id="lblNoPostulations" text="Aucune postulation."
+                                   style="-fx-text-fill: #475569; -fx-font-size: 11px;
+                                          -fx-padding: 2 0 4 0;"/>
+                        </VBox>
+
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </left>
+
+
+    <!-- ================= CONTENT (centre) ================= -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="page-scroll">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="18" styleClass="page">
+                    <VBox maxWidth="1000" styleClass="profile-shell">
+
+                        <!-- COVER -->
+                        <StackPane styleClass="cover">
+                            <ImageView fx:id="imgCover" fitHeight="250" fitWidth="1000"
+                                       preserveRatio="false" smooth="true"/>
+                            <Button text="Changer couverture" styleClass="nav-btn"
+                                    onAction="#onChangeCover" StackPane.alignment="BOTTOM_RIGHT"/>
+                        </StackPane>
+
+                        <!-- HEADER -->
+                        <VBox spacing="20">
+                            <HBox spacing="14" alignment="CENTER_LEFT" styleClass="avatar-row">
+                                <StackPane fx:id="avatarBox" prefWidth="130" prefHeight="130"
+                                           alignment="CENTER" styleClass="avatar-wrap"
+                                           onMouseClicked="#onChangePhoto">
+                                    <ImageView fx:id="imgProfile" fitWidth="150" fitHeight="150"
+                                               preserveRatio="true" smooth="true" styleClass="avatar">
+                                        <image><Image url="@../../image/utilisateur/avatar.png"/></image>
+                                    </ImageView>
+                                    <Label fx:id="lblChangePhoto" text="Changer" styleClass="avatar-overlay"
+                                           visible="false" mouseTransparent="true"/>
+                                </StackPane>
+
+                                <VBox spacing="6" alignment="CENTER_LEFT" styleClass="identity"
+                                      style="-fx-padding: 10 0 0 0;">
+                                    <Label text="Mon Profil" styleClass="profile-name"/>
+                                    <HBox spacing="6" alignment="CENTER_LEFT">
+                                        <Label text="Email :" styleClass="meta-label"/>
+                                        <Label fx:id="lblEmail" styleClass="meta-value"/>
+                                    </HBox>
+                                    <HBox spacing="6" alignment="CENTER_LEFT">
+                                        <Label text="Rôle :"  styleClass="meta-label"/>
+                                        <Label fx:id="lblRole"  styleClass="meta-value"/>
+                                    </HBox>
+                                    <Label fx:id="lblConnexion" text="Se connecter" styleClass="link-text"
+                                           visible="false" onMouseClicked="#onConnexionClick"/>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                            <Separator/>
+                        </VBox>
+
+                        <!-- CARD PROFIL + COMPETENCES -->
+                        <VBox spacing="14" styleClass="card-linkedin">
+
+                            <GridPane hgap="14" vgap="12">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="50"/>
+                                    <ColumnConstraints percentWidth="50"/>
+                                </columnConstraints>
+                                <VBox spacing="6">
+                                    <Label text="Nom" styleClass="field-label"/>
+                                    <TextField fx:id="tfNom" styleClass="input"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnIndex="1">
+                                    <Label text="Prénom" styleClass="field-label"/>
+                                    <TextField fx:id="tfPrenom" styleClass="input"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                                    <Label text="Téléphone" styleClass="field-label"/>
+                                    <TextField fx:id="tfTelephone" styleClass="input"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                    <Label text="Lieu" styleClass="field-label"/>
+                                    <TextField fx:id="tfLieu" styleClass="input"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                    <Label text="Bio" styleClass="field-label"/>
+                                    <TextArea fx:id="taBio" styleClass="input" prefRowCount="3"/>
+                                </VBox>
+                            </GridPane>
+
+
+                            <GridPane hgap="14" vgap="12">
+                                <columnConstraints>
+                                    <ColumnConstraints percentWidth="50"/>
+                                    <ColumnConstraints percentWidth="50"/>
+                                </columnConstraints>
+                                <VBox spacing="6">
+                                    <Label text="Type" styleClass="field-label"/>
+                                    <TextField fx:id="tfSkillType" styleClass="input" editable="false"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnIndex="1">
+                                    <Label text="Catégorie" styleClass="field-label"/>
+                                    <TextField fx:id="tfSkillCategory" styleClass="input" editable="false"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.rowIndex="1">
+                                    <Label text="Niveau" styleClass="field-label"/>
+                                    <TextField fx:id="tfSkillNiveau" styleClass="input" editable="false"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Label text="Années d'expérience" styleClass="field-label"/>
+                                    <TextField fx:id="tfSkillAnnees" styleClass="input" editable="false"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                                    <Label text="Certification" styleClass="field-label"/>
+                                    <TextField fx:id="tfSkillCertif" styleClass="input" editable="false"/>
+                                </VBox>
+                                <VBox spacing="6" GridPane.columnSpan="2" GridPane.rowIndex="3">
+                                    <Label text="Description" styleClass="field-label"/>
+                                    <TextArea fx:id="taSkillDesc" styleClass="input" editable="false" prefRowCount="3"/>
+                                </VBox>
+                            </GridPane>
+
+                            <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <Button text="Enregistrer"      styleClass="btn" onAction="#modifier"/>
+                                <Button text="Supprimer compte" styleClass="btn" onAction="#supprimerCompte"/>
+                            </HBox>
+
+                            <HBox spacing="12" alignment="CENTER" styleClass="skill-nav">
+                                <Button text="◀" styleClass="skill-arrow" onAction="#prevSkill"/>
+                                <Label fx:id="lblSkillInfo" text="Compétence 1 / 2" styleClass="skill-info"/>
+                                <Button text="▶" styleClass="skill-arrow" onAction="#nextSkill"/>
+                            </HBox>
+
+                            <Label fx:id="lblMsg" styleClass="hint"/>
+                        </VBox>
+
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- ================= SIDEBAR CONTACTS (droite) ================= -->
+    <right>
+        <VBox styleClass="contacts-sidebar"
+              prefWidth="260"
+              spacing="0"
+              style="-fx-background-color: #0d1526;">
+
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="contacts-header"
+                  style="-fx-background-color: #0d1526;">
+                <Label text="Contacts" styleClass="field-label"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="contacts-scroll" VBox.vgrow="ALWAYS"
+                        style="-fx-background: #0d1526; -fx-background-color: #0d1526;">
+                <content>
+                    <VBox fx:id="contactsListBox"
+                          spacing="2"
+                          styleClass="contacts-list"
+                          style="-fx-background-color: #0d1526;"/>
+                </content>
+            </ScrollPane>
+
+        </VBox>
+    </right>
+
+
+</BorderPane>

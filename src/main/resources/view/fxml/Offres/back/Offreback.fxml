@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.controller.Offres.back.OffreBackController"
+            styleClass="app-root"
+            stylesheets="@/view/css/suiviTache/back/style.css">
+
+    <!-- ══════════════════════ TOP BAR ══════════════════════ -->
+    <top>
+        <VBox styleClass="topbar">
+            <padding>
+                <Insets top="14" right="22" bottom="14" left="22"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="50" preserveRatio="true">
+                        <image>
+                            <Image url="@/view/image/competences/logo.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="SkillSwap" styleClass="brand"/>
+                </HBox>
+
+                <!-- ✅ Stats enrichies : likes + commentaires inclus -->
+                <Label fx:id="lblStats"
+                       text="📊 Chargement..."
+                       styleClass="nav-btn"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label fx:id="lblCreateur"
+                       text="👤 Créateur : —"
+                       style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-padding: 0 10 0 0;"/>
+
+                <Button text="Profil"
+                        onAction="#retourProfil"
+                        styleClass="nav-btn"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- ══════════════════════ CENTER ══════════════════════ -->
+    <center>
+        <StackPane alignment="CENTER">
+            <VBox spacing="18" styleClass="page" maxWidth="1900">
+
+                <Label text="Gestion des Offres et Candidatures"
+                       styleClass="page-title"/>
+
+                <HBox spacing="18" alignment="TOP_LEFT">
+
+                    <!-- ═══════════════════════════════════
+                         CARD GAUCHE : Formulaire + Table Offres
+                    ═══════════════════════════════════ -->
+                    <VBox spacing="14"
+                          styleClass="card"
+                          prefWidth="980"
+                          HBox.hgrow="ALWAYS">
+
+                        <!-- ── Titre carte + recherche ── -->
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="📋  Liste des Offres" styleClass="card-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <HBox spacing="6" alignment="CENTER_LEFT"
+                                  style="-fx-background-color: #1e293b;
+                                         -fx-background-radius: 16; -fx-padding: 4 12;">
+                                <Label text="🔍" style="-fx-text-fill: #64748b;"/>
+                                <TextField fx:id="tfRecherche"
+                                           promptText="Rechercher..."
+                                           prefWidth="150" prefHeight="24"
+                                           onKeyReleased="#onRechercher"
+                                           style="-fx-background-color: transparent;
+                                                  -fx-text-fill: white;
+                                                  -fx-border-width: 0;
+                                                  -fx-prompt-text-fill: #475569;"/>
+                            </HBox>
+                            <ComboBox fx:id="cbFiltreType"
+                                      promptText="Type"
+                                      prefWidth="110"
+                                      onAction="#onRechercher"
+                                      styleClass="input dark-combo"/>
+                        </HBox>
+
+                        <!-- ── Table Offres ── -->
+                        <TableView fx:id="tableOffres"
+                                   styleClass="dark-table"
+                                   prefHeight="300"
+                                   VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colMatricule"    text="Matricule"     prefWidth="110"/>
+                                <TableColumn fx:id="colTitre"        text="Titre"         prefWidth="190"/>
+                                <TableColumn fx:id="colType"         text="Type"          prefWidth="90"/>
+                                <TableColumn fx:id="colPrix"         text="Prix"          prefWidth="90"/>
+                                <TableColumn fx:id="colStatut"       text="Statut"        prefWidth="80"/>
+                                <TableColumn fx:id="colVues"         text="Vues"          prefWidth="55"/>
+                                <TableColumn fx:id="colLimite"       text="Limite"        prefWidth="90"/>
+                                <!-- ✅ Nouvelles colonnes Likes et Commentaires -->
+                                <TableColumn fx:id="colLikes"        text="❤️ Likes"      prefWidth="75"/>
+                                <TableColumn fx:id="colCommentaires" text="💬 Comm."      prefWidth="85"/>
+                                <TableColumn fx:id="colActions"      text="Actions"       prefWidth="130"/>
+                            </columns>
+                        </TableView>
+
+                        <!-- ── Formulaire Offre ── -->
+                        <Label text="📝  Formulaire Offre" styleClass="card-title"/>
+
+                        <ScrollPane fitToWidth="true"
+                                    prefHeight="420"
+                                    VBox.vgrow="ALWAYS"
+                                    style="-fx-background-color: transparent;
+                                           -fx-background: transparent;
+                                           -fx-border-color: transparent;">
+
+                            <VBox spacing="12"
+                                  style="-fx-padding: 4 8 8 4;">
+
+                                <Label fx:id="lblMatricule"
+                                       text="Matricule : (auto)"
+                                       style="-fx-text-fill: #f59e0b; -fx-font-size: 11px;"/>
+
+                                <Label text="Titre *" styleClass="field-label"/>
+                                <TextField fx:id="tfTitre"
+                                           promptText="Titre de l'offre"
+                                           styleClass="input"/>
+
+                                <Label text="Description" styleClass="field-label"/>
+                                <TextArea fx:id="taDescription"
+                                          prefRowCount="3"
+                                          promptText="Description détaillée..."
+                                          styleClass="input"/>
+
+                                <Label text="Type *" styleClass="field-label"/>
+                                <ComboBox fx:id="cbType"
+                                          maxWidth="Infinity"
+                                          styleClass="input dark-combo"/>
+
+                                <HBox spacing="10">
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="Prix (TND) *" styleClass="field-label"/>
+                                        <TextField fx:id="tfPrix"
+                                                   promptText="0.00"
+                                                   styleClass="input"/>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="Budget (TND)" styleClass="field-label"/>
+                                        <TextField fx:id="tfBudget"
+                                                   promptText="0.00"
+                                                   styleClass="input"/>
+                                    </VBox>
+                                </HBox>
+
+                                <Label text="Durée (jours) *" styleClass="field-label"/>
+                                <TextField fx:id="tfDuree"
+                                           promptText="30"
+                                           styleClass="input"/>
+
+                                <Label text="Statut" styleClass="field-label"/>
+                                <ComboBox fx:id="cbStatut"
+                                          maxWidth="Infinity"
+                                          styleClass="input dark-combo"/>
+
+                                <Label text="Localisation" styleClass="field-label"/>
+                                <TextField fx:id="tfLocalisation"
+                                           promptText="Tunis, Paris..."
+                                           styleClass="input"/>
+
+                                <HBox spacing="10">
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="Date limite" styleClass="field-label"/>
+                                        <DatePicker fx:id="dpLimite" maxWidth="Infinity"/>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS" spacing="4">
+                                        <Label text="Tags (virgule)" styleClass="field-label"/>
+                                        <TextField fx:id="tfTags"
+                                                   promptText="java,remote,senior..."
+                                                   styleClass="input"/>
+                                    </VBox>
+                                </HBox>
+
+                                <Label fx:id="lblMsg"
+                                       wrapText="true"
+                                       style="-fx-font-size: 12px;"/>
+
+                                <HBox spacing="10">
+                                    <Button text="➕ Ajouter"
+                                            onAction="#onAjouter"
+                                            styleClass="btn"
+                                            HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                                    <Button text="✏️ Modifier"
+                                            onAction="#onModifier"
+                                            styleClass="btn"
+                                            HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                                    <Button text="🗑 Vider"
+                                            onAction="#onVider"
+                                            styleClass="btn"
+                                            HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                                </HBox>
+
+                            </VBox>
+                        </ScrollPane>
+
+                    </VBox>
+
+                    <!-- ═══════════════════════════════════
+                         CARD DROITE : Table Candidatures
+                    ═══════════════════════════════════ -->
+                    <VBox spacing="14"
+                          styleClass="card"
+                          HBox.hgrow="ALWAYS"
+                          prefWidth="850">
+
+                        <Label text="👥  Candidatures de l'offre sélectionnée"
+                               styleClass="card-title"/>
+
+                        <TableView fx:id="tableCandidatures"
+                                   styleClass="dark-table"
+                                   VBox.vgrow="ALWAYS"
+                                   prefHeight="600">
+                            <columns>
+                                <TableColumn fx:id="cColMatricule"  text="Matricule"      prefWidth="110"/>
+                                <TableColumn fx:id="cColCandidat"   text="Candidat"       prefWidth="130"/>
+                                <TableColumn fx:id="cColMail"       text="Email"          prefWidth="170"/>
+                                <TableColumn fx:id="cColOffre"      text="Titre offre"    prefWidth="140"/>
+                                <TableColumn fx:id="cColPrix"       text="Prix payé"      prefWidth="80"/>
+                                <TableColumn fx:id="cColPaiement"   text="Paiement"       prefWidth="80"/>
+                                <TableColumn fx:id="cColRef"        text="Référence"      prefWidth="110"/>
+                                <TableColumn fx:id="cColAbonnement" text="Abonnement"     prefWidth="130"/>
+                                <TableColumn fx:id="cColExpiration" text="Expiration"     prefWidth="120"/>
+                                <TableColumn fx:id="cColStatut"     text="Statut"         prefWidth="100"/>
+                                <TableColumn fx:id="cColActif"      text="Actif"          prefWidth="70"/>
+                                <TableColumn fx:id="cColActions"    text="Actions"        prefWidth="110"/>
+                            </columns>
+                            <placeholder>
+                                <Label text="👆 Cliquez sur 👥 d'une offre pour voir ses candidatures"
+                                       style="-fx-text-fill: #475569; -fx-font-size: 13px;"/>
+                            </placeholder>
+                        </TableView>
+
+                        <!-- Légende -->
+                        <HBox spacing="18" alignment="CENTER_LEFT"
+                              style="-fx-padding: 10 0 0 0;">
+                            <Label text="Légende :"
+                                   style="-fx-text-fill: #64748b; -fx-font-size: 11px;"/>
+                            <Label text="✅ Accepter"
+                                   style="-fx-text-fill: #22c55e; -fx-font-size: 11px;"/>
+                            <Label text="❌ Refuser"
+                                   style="-fx-text-fill: #ef4444; -fx-font-size: 11px;"/>
+                            <Label text="📝 Note recruteur"
+                                   style="-fx-text-fill: #f59e0b; -fx-font-size: 11px;"/>
+                            <Label text="❤️ Likes (col. cliquable)"
+                                   style="-fx-text-fill: #f43f5e; -fx-font-size: 11px;"/>
+                            <Label text="💬 Comm. (voir + supprimer)"
+                                   style="-fx-text-fill: #0d9488; -fx-font-size: 11px;"/>
+                        </HBox>
+
+                    </VBox>
+
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

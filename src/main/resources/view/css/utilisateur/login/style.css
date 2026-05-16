@@ -1,0 +1,156 @@
+/* ================================================
+   LOGIN PAGE — style.css
+   Dédié uniquement à Login.fxml
+   ================================================ */
+
+/* ====== ROOT ====== */
+.app-root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #0b1220;
+}
+
+
+
+/* ====== PAGE (VBox centrale) ====== */
+.page {
+    -fx-padding: 10 22 18 22;
+}
+
+/* ====== CARD ====== */
+.card {
+    -fx-padding: 28 24;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-background-color: rgba(15, 22, 40, 0.78);
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 32, 0.30, 0, 12);
+}
+
+.card-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-padding: 0 0 6 0;
+}
+
+/* ====== INPUTS ====== */
+.input {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.35);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 1;
+    -fx-padding: 10 12;
+    -fx-font-size: 13px;
+}
+
+.input:focused {
+    -fx-border-color: rgba(123, 97, 255, 0.90);
+    -fx-background-color: rgba(255,255,255,0.08);
+}
+
+/* ====== LIEN MOT DE PASSE OUBLIÉ ====== */
+.forgot-link {
+    -fx-text-fill: rgba(123, 97, 255, 0.90);
+    -fx-font-size: 13px;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
+    -fx-padding: 0;
+}
+
+.forgot-link:hover {
+    -fx-text-fill: rgba(160, 140, 255, 1.0);
+    -fx-underline: true;
+}
+
+/* ====== CHECKBOX ====== */
+.checkbox {
+    -fx-text-fill: #E2E8F0;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+}
+
+.checkbox .box {
+    -fx-background-color: #1E293B;
+    -fx-border-color: #3B82F6;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-pref-width: 18px;
+    -fx-pref-height: 18px;
+    -fx-padding: 3;
+}
+
+.checkbox:hover .box {
+    -fx-border-color: #60A5FA;
+}
+
+.checkbox:selected .box {
+    -fx-background-color: #3B82F6;
+    -fx-border-color: #3B82F6;
+}
+
+.checkbox:selected .mark {
+    -fx-background-color: white;
+}
+
+.checkbox:selected {
+    -fx-text-fill: #60A5FA;
+}
+
+/* ====== LABEL MESSAGE (erreur / info) ====== */
+.hint {
+    -fx-text-fill: rgba(255, 100, 100, 0.85);
+    -fx-font-size: 12px;
+    -fx-wrap-text: true;
+}
+
+/* ====== BOUTONS ====== */
+.btn {
+    -fx-background-radius: 12;
+    -fx-padding: 11 14;
+    -fx-font-weight: 800;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to right, #5aa6ff, #7b61ff);
+}
+
+.btn:hover {
+    -fx-background-color: linear-gradient(to right, #4f99ff, #6f57ff);
+}
+
+.btn:pressed {
+    -fx-background-color: linear-gradient(to right, #3f88ff, #5a45ff);
+}
+
+/* ====== Topbar ====== */
+.topbar {
+    -fx-padding: 14 22;
+    -fx-background-color: rgba(20, 28, 46, 0.55);
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-width: 0 0 1 0;
+}
+
+.brand {
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-font-size: 16px;
+}
+
+/* navbar buttons */
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.72);
+    -fx-padding: 8 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+}
+.nav-btn:hover { -fx-background-color: rgba(255,255,255,0.06); }
+.nav-active {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: white;
+}

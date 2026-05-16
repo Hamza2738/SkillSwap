@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.controller.RendezVous.front.PostulationsController"
+            styleClass="app-root"
+            stylesheets="@/view/css/RendezVous/back/style.css">
+
+    <top>
+        <VBox styleClass="topbar">
+            <padding><Insets top="14" right="22" bottom="14" left="22"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <ImageView fitHeight="50" preserveRatio="true">
+                        <image><Image url="@/view/image/competences/logo.png"/></image>
+                    </ImageView>
+                    <Label text="SkillSwap" styleClass="brand"/>
+                </HBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Competences" styleClass="nav-btn" onAction="#compButton"/>
+                <Button text="Profil" styleClass="nav-btn" onAction="#goProfil"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    style="-fx-background-color:transparent;-fx-background:transparent;"
+                    hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="18" styleClass="page">
+
+                    <Label text="Mes Rendez-vous et Postulations" styleClass="page-title"/>
+
+                    <HBox spacing="18" alignment="TOP_LEFT">
+
+                        <!-- CARD GAUCHE -->
+                        <VBox spacing="14" styleClass="card" prefWidth="760" HBox.hgrow="ALWAYS">
+
+                            <Label text="Tous les Rendez-vous" styleClass="card-title"/>
+
+                            <HBox spacing="10" alignment="CENTER" VBox.vgrow="NEVER">
+                                <ComboBox fx:id="filterComboBox" styleClass="input dark-combo" HBox.hgrow="ALWAYS">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Tous"/>
+                                            <String fx:value="Titre"/>
+                                            <String fx:value="Competence"/>
+                                            <String fx:value="Type"/>
+                                            <String fx:value="Email"/>
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                                <TextField fx:id="searchTextField"
+                                           promptText="Rechercher..."
+                                           onKeyReleased="#onSearchKeyReleased"
+                                           styleClass="input" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+
+                            <!-- TABLE FIXE -->
+                            <TableView fx:id="tableRv" styleClass="dark-table"
+                                       prefHeight="320" minHeight="320" maxHeight="320"
+                                       VBox.vgrow="NEVER">
+                                <columns>
+                                    <TableColumn fx:id="colDate"           text="Date RDV"          prefWidth="190"/>
+                                    <TableColumn fx:id="colTitre"          text="Titre"              prefWidth="200"/>
+                                    <TableColumn fx:id="colRvNombrePlaces" text="Nombre de places"   prefWidth="130"/>
+                                    <TableColumn fx:id="colChefMail"       text="Email Organisateur" prefWidth="200"/>
+                                    <TableColumn fx:id="colType"           text="Type"               prefWidth="110"/>
+                                    <TableColumn fx:id="colCompetence"     text="Competence"         prefWidth="160"/>
+                                    <TableColumn fx:id="colDateCreation"   text="Date de creation"   prefWidth="190"/>
+                                </columns>
+                            </TableView>
+
+                            <!-- FORMULAIRE RV -->
+                            <VBox spacing="12" VBox.vgrow="NEVER">
+                                <Label text="Formulaire rendez-vous" styleClass="card-title"/>
+
+                                <Label text="Titre" styleClass="field-label"/>
+                                <TextField fx:id="titreField" styleClass="input"/>
+
+                                <Label text="Description" styleClass="field-label"/>
+                                <TextArea fx:id="descriptionField" styleClass="input" prefRowCount="3" wrapText="true"/>
+
+                                <Label text="Competence" styleClass="field-label"/>
+                                <TextField fx:id="competenceField" styleClass="input"/>
+
+                                <HBox spacing="10">
+                                    <VBox HBox.hgrow="ALWAYS">
+                                        <Label text="Date" styleClass="field-label"/>
+                                        <DatePicker fx:id="datePicker"/>
+                                    </VBox>
+                                    <VBox>
+                                        <Label text="Heure" styleClass="field-label"/>
+                                        <HBox spacing="6">
+                                            <Spinner fx:id="hourSpinner" prefWidth="80" styleClass="input-spinner"/>
+                                            <Label text=":" styleClass="field-label"/>
+                                            <Spinner fx:id="minuteSpinner" prefWidth="80" styleClass="input-spinner"/>
+                                        </HBox>
+                                        <Label text="Nombre de places" styleClass="field-label"/>
+                                        <TextField fx:id="nombrePlacesField" styleClass="input"/>
+                                    </VBox>
+                                </HBox>
+
+                                <Label text="Type" styleClass="field-label"/>
+                                <ComboBox fx:id="typeBox" styleClass="input dark-combo" maxWidth="Infinity"/>
+
+                                <HBox spacing="10">
+                                    <Button text="Ajouter"            onAction="#ajouterRv"   styleClass="btn"/>
+                                    <Button fx:id="btnModifier"  text="Modifier"  onAction="#modifierRv"  styleClass="btn"/>
+                                    <Button fx:id="btnSupprimer" text="Supprimer" onAction="#supprimerRv" styleClass="btn"/>
+                                    <Button text="Vider"              onAction="#viderForm"   styleClass="btn"/>
+                                </HBox>
+
+                                <Label text="Modifier / Supprimer uniquement vos propres rendez-vous."
+                                       styleClass="hint" wrapText="true"/>
+                            </VBox>
+
+                        </VBox>
+
+                        <!-- CARD DROITE -->
+                        <VBox spacing="14" styleClass="card" prefWidth="820" HBox.hgrow="ALWAYS">
+
+                            <Label text="Mes postulations" styleClass="card-title"/>
+
+                            <!-- TABLE FIXE -->
+                            <TableView fx:id="tableMesPost" styleClass="dark-table"
+                                       prefHeight="320" minHeight="320" maxHeight="320"
+                                       VBox.vgrow="NEVER">
+                                <columns>
+                                    <TableColumn fx:id="colStatus"     text="Statut"          prefWidth="120"/>
+                                    <TableColumn fx:id="colDatePost"   text="Date postulation" prefWidth="180"/>
+                                    <TableColumn fx:id="colNom"        text="Nom"              prefWidth="120"/>
+                                    <TableColumn fx:id="colPrenom"     text="Prenom"           prefWidth="120"/>
+                                    <TableColumn fx:id="colRole"       text="Role"             prefWidth="110"/>
+                                    <TableColumn fx:id="colEmail"      text="Email"            prefWidth="170"/>
+                                    <TableColumn fx:id="colCvPost"     text="CV"               prefWidth="150"/>
+                                    <TableColumn fx:id="colMsgPost"    text="Message"          prefWidth="220"/>
+                                    <TableColumn fx:id="colDeletePost" text="Annulation"       prefWidth="100"/>
+                                </columns>
+                            </TableView>
+                            <HBox spacing="10">
+                                <Button fx:id="btnAccepter"
+                                        text="Accepter"
+                                        onAction="#accepterPostulation"
+                                        styleClass="btn"/>
+                                <Button fx:id="btnRefuser"
+                                        text="Refuser"
+                                        onAction="#refuserPostulation"
+                                        styleClass="btn"/>
+                            </HBox>
+                            <Label text="Vous pouvez annuler une postulation en attente."
+                                   styleClass="hint" wrapText="true"/>
+
+                            <Separator/>
+
+                            <VBox fx:id="formPostulerBox" spacing="10" visible="false" managed="false">
+                                <Label text="Postuler a ce rendez-vous" styleClass="card-title"/>
+                                <HBox spacing="10">
+                                    <Button fx:id="pdfButton" onAction="#handleFileChooser" styleClass="pdf-button"/>
+                                    <TextField fx:id="cvField" styleClass="input" editable="false"
+                                               HBox.hgrow="ALWAYS" promptText="Selectionner votre CV (PDF)"/>
+                                </HBox>
+                                <Label text="Message" styleClass="field-label"/>
+                                <TextArea fx:id="messageField" styleClass="input" prefRowCount="3" wrapText="true"/>
+                                <Button text="Postuler" onAction="#postuler" styleClass="btn"/>
+                            </VBox>
+
+                            <Label text="Selectionnez un rendez-vous a gauche pour postuler."
+                                   styleClass="hint" wrapText="true"/>
+
+                        </VBox>
+
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
