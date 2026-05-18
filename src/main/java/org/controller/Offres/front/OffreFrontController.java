@@ -56,12 +56,21 @@ public class OffreFrontController {
     private static final DateTimeFormatter D_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // ── Gemini ─────────────────────────────────────────────────
-    private static final String GEMINI_API_KEY =
-            "AIzaSyBI6im6aifWh7Fq3eRim7e6sC8QiN5L9hQ";
-    private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key="
-                    + GEMINI_API_KEY;
+    private static final String GEMINI_API_KEY = System.getenv("GEMINI_API_KEY");
 
+    private static final String GEMINI_MODEL =
+            System.getenv().getOrDefault("GEMINI_MODEL", "gemini-2.5-flash");
+
+    private static String getGeminiUrl() {
+        if (GEMINI_API_KEY == null || GEMINI_API_KEY.isBlank()) {
+            throw new IllegalStateException("GEMINI_API_KEY non définie dans les variables d'environnement.");
+        }
+
+        return "https://generativelanguage.googleapis.com/v1beta/models/"
+                + GEMINI_MODEL
+                + ":generateContent?key="
+                + GEMINI_API_KEY;
+    }
     // ════════════════════════════════════════════════════════════
     //  INITIALIZE
     // ════════════════════════════════════════════════════════════
@@ -799,7 +808,7 @@ public class OffreFrontController {
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(GEMINI_URL))
+                .uri(URI.create(getGeminiUrl()))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
